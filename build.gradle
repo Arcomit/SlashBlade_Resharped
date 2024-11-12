@@ -162,7 +162,11 @@ repositories {
 	maven {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/"
-	}    
+	}
+
+    maven {
+        url "https://cursemaven.com"
+    }
 
 }
 
@@ -194,14 +198,24 @@ dependencies {
 
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim}")
     
-        // compile against the JEI API but do not include it at runtime
+    // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
     
     compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
-	runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}") 
+	runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
+
+    //引入假人(含前置)，测试伤害
+    runtimeOnly fg.deobf("curse.maven:selene-499980:5890838")
+    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:5737040")
+    //引入性能分析工具模组
+    runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
+    //引入光影，测试光影兼容性及性能
+    runtimeOnly fg.deobf("curse.maven:xenon-564239:5752040")
+    runtimeOnly fg.deobf("curse.maven:oculus-581495:5299671")
+
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
