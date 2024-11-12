@@ -164,7 +164,7 @@ public class BladeRenderState extends RenderStateShard {
                 //该着色器支持处理lightmap,overlaymap，详见https://zh.minecraft.wiki/w/着色器#entity_cutout
                 //注：该页面中介绍的为渲染类型，但其信息基本与着色器一致，若真感兴趣，可查看开发环境依赖库中client-extra.jar中assets/shaders/core/目录中rendertype_entity_cutout前缀的相关文件。
                 .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)//该渲染写入游戏物品渲染帧缓冲
-                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, true))
                 .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)//半透明渲染
                 .setCullState(NO_CULL)//不剔除背面(刀鞘)
                 .setLightmapState(LIGHTMAP)//使用光照图
