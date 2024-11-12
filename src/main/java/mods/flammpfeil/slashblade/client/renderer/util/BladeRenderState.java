@@ -154,15 +154,21 @@ public class BladeRenderState extends RenderStateShard {
          */
 
         RenderType.CompositeState state = RenderType.CompositeState.builder()
-                .setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-                .setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
+                //.setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
+                //该着色器无法正确处理lightmap
+                //.setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
+                //该渲染写入半透明渲染帧缓冲，鉴于帧缓冲主要用于后处理管线，渲染物品使用可能会使部分光影出现问题
+                //.setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
+                //不透明渲染
+                .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_CUTOUT_SHADER)//该着色器支持处理lightmap,overlaymap,详见https://zh.minecraft.wiki/w/%E7%9D%80%E8%89%B2%E5%99%A8?variant=zh-cn#%E6%B8%B2%E6%9F%93%E7%B1%BB%E5%9E%8BUniform
+                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)//该渲染写入游戏物品渲染帧缓冲
                 .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, false))
-                .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
-//                .setCullState(NO_CULL)
-                // .setDiffuseLightingState(DIFFUSE_LIGHTING)
-                .setLightmapState(LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)
+                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)//半透明渲染
+                .setCullState(NO_CULL)//不剔除背面(刀鞘)
+                .setLightmapState(LIGHTMAP)//使用光照图
+                .setOverlayState(RenderStateShard.OVERLAY)//使用叠加层纹理，被攻击时变红
                 // .overlay(OVERLAY_ENABLED)
+                .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
                 .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
 
         return RenderType.create("slashblade_blend", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
