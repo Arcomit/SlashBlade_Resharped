@@ -160,7 +160,9 @@ public class BladeRenderState extends RenderStateShard {
                 //该渲染写入半透明渲染帧缓冲，鉴于帧缓冲主要用于后处理管线，渲染物品使用可能会使部分光影出现问题
                 //.setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
                 //不透明渲染
-                .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_CUTOUT_SHADER)//该着色器支持处理lightmap,overlaymap,详见https://zh.minecraft.wiki/w/%E7%9D%80%E8%89%B2%E5%99%A8?variant=zh-cn#%E6%B8%B2%E6%9F%93%E7%B1%BB%E5%9E%8BUniform
+                .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_CUTOUT_SHADER)
+                //该着色器支持处理lightmap,overlaymap，详见https://zh.minecraft.wiki/w/着色器#entity_cutout
+                //注：该页面中介绍的为渲染类型，但其信息基本与着色器一致，若真感兴趣，可查看开发环境依赖库中client-extra.jar中assets/shaders/core/目录中rendertype_entity_cutout前缀的相关文件。
                 .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)//该渲染写入游戏物品渲染帧缓冲
                 .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, false))
                 .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)//半透明渲染
