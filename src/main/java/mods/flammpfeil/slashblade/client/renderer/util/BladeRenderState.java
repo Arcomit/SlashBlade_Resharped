@@ -168,7 +168,6 @@ public class BladeRenderState extends RenderStateShard {
                 .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)//半透明渲染
                 .setCullState(NO_CULL)//不剔除背面
                 .setLightmapState(LIGHTMAP)//使用光照图
-                .setOverlayState(RenderStateShard.OVERLAY)//使用叠加层纹理，被攻击时变红
                 // .overlay(OVERLAY_ENABLED)
                 .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
                 .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
@@ -196,7 +195,7 @@ public class BladeRenderState extends RenderStateShard {
     public static RenderType getSlashBladeBlendColorWrite(ResourceLocation p_228638_0_) {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(RENDERTYPE_ENTITY_CUTOUT_SHADER)
-                .setOutputState(ITEM_ENTITY_TARGET)
+                .setOutputState(RenderStateShard.PARTICLES_TARGET)
                 .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, true))
                 .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
@@ -233,7 +232,6 @@ public class BladeRenderState extends RenderStateShard {
                 .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)//使用叠加层纹理，被攻击时变红
                 // .overlay(OVERLAY_ENABLED)
                 .setWriteMaskState(COLOR_WRITE)
                 .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
@@ -263,12 +261,11 @@ public class BladeRenderState extends RenderStateShard {
     public static RenderType getSlashBladeBlendLuminousDepthWrite(ResourceLocation p_228638_0_) {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
-                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
+                .setOutputState(RenderStateShard.PARTICLES_TARGET)
                 .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, true, true))
                 .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)//使用叠加层纹理，被攻击时变红
                 // .overlay(OVERLAY_ENABLED)
                 .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
                 .setWriteMaskState(COLOR_DEPTH_WRITE).createCompositeState(false);
@@ -291,12 +288,11 @@ public class BladeRenderState extends RenderStateShard {
     public static RenderType getSlashBladeBlendReverseLuminous(ResourceLocation p_228638_0_) {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
-                .setOutputState(ITEM_ENTITY_TARGET)
+                .setOutputState(RenderStateShard.PARTICLES_TARGET)
                 .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, true, true))
                 .setTransparencyState(LIGHTNING_REVERSE_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(RenderStateShard.LIGHTMAP)
-                .setOverlayState(RenderStateShard.OVERLAY)//使用叠加层纹理，被攻击时变红
                 // .overlay(OVERLAY_ENABLED)
                 .setWriteMaskState(COLOR_WRITE)
                 .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
