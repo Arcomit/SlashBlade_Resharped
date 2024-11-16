@@ -11,6 +11,7 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
@@ -115,31 +116,31 @@ public class RequestDefinition {
     }
 
     public void initItemStack(ItemStack blade) {
-        blade.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
-            if (!this.name.equals(SlashBlade.prefix("none")))
-                state.setTranslationKey(getTranslationKey());
-            state.setProudSoulCount(getProudSoulCount());
-            state.setKillCount(getKillCount());
-            state.setRefine(getRefineCount());
-            
-            this.getEnchantments()
-                    .forEach(enchantment -> blade.enchant(
-                            ForgeRegistries.ENCHANTMENTS.getValue(enchantment.getEnchantmentID()),
-                            enchantment.getEnchantmentLevel()));
-            this.defaultType.forEach(type -> {
-                switch (type) {
-                case BEWITCHED -> state.setDefaultBewitched(true);
-                case BROKEN -> {
-                    blade.setDamageValue(blade.getMaxDamage() - 1);
-                    state.setBroken(true);
-                }
-                case SEALED -> state.setSealed(true);
-                default -> {}
-                }
-            });
-            
-            blade.getOrCreateTag().put("bladeState", state.serializeNBT());
+        var state = blade.getCapability(ItemSlashBlade.BLADESTATE).orElse(new SlashBladeState(blade));
+        
+        if (!this.name.equals(SlashBlade.prefix("none")))
+            state.setTranslationKey(getTranslationKey());
+        state.setProudSoulCount(getProudSoulCount());
+        state.setKillCount(getKillCount());
+        state.setRefine(getRefineCount());
+        
+        this.getEnchantments()
+                .forEach(enchantment -> blade.enchant(
+                        ForgeRegistries.ENCHANTMENTS.getValue(enchantment.getEnchantmentID()),
+                        enchantment.getEnchantmentLevel()));
+        this.defaultType.forEach(type -> {
+            switch (type) {
+            case BEWITCHED -> state.setDefaultBewitched(true);
+            case BROKEN -> {
+                blade.setDamageValue(blade.getMaxDamage() - 1);
+                state.setBroken(true);
+            }
+            case SEALED -> state.setSealed(true);
+            default -> {}
+            }
         });
+        
+        blade.getOrCreateTag().put("bladeState", state.serializeNBT());
     }
     
     

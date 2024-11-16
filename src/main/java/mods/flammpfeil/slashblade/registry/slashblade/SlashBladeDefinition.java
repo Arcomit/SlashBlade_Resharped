@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.Util;
@@ -72,38 +73,36 @@ public class SlashBladeDefinition {
 
     public ItemStack getBlade(Item bladeItem) {
         ItemStack result = new ItemStack(bladeItem);
-        result.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
-
-            state.setBaseAttackModifier(this.stateDefinition.getBaseAttackModifier());
-            state.setMaxDamage(this.stateDefinition.getMaxDamage());
-            state.setComboRoot(this.stateDefinition.getComboRoot());
-            state.setSlashArtsKey(this.stateDefinition.getSpecialAttackType());
-            
-            this.stateDefinition.getSpecialEffects().forEach(state::addSpecialEffect);
-            
-            this.stateDefinition.getDefaultType().forEach(type -> {
-                switch (type) {
-                case BEWITCHED -> state.setDefaultBewitched(true);
-                case BROKEN -> {
-                    result.setDamageValue(result.getMaxDamage() - 1);
-                    state.setBroken(true);
-                }
-                case SEALED -> state.setSealed(true);
-                default -> {
-                }
-                }
-            });
-
-            state.setModel(this.renderDefinition.getModelName());
-            state.setTexture(this.renderDefinition.getTextureName());
-            state.setColorCode(this.renderDefinition.getSummonedSwordColor());
-            state.setEffectColorInverse(this.renderDefinition.isSummonedSwordColorInverse());
-            state.setCarryType(this.renderDefinition.getStandbyRenderType());
-            if (!this.getName().equals(SlashBlade.prefix("none")))
-                state.setTranslationKey(this.getTranslationKey());
-            
-            result.getOrCreateTag().put("bladeState", state.serializeNBT());
+        var state = result.getCapability(ItemSlashBlade.BLADESTATE).orElse(new SlashBladeState(result));
+        
+        state.setBaseAttackModifier(this.stateDefinition.getBaseAttackModifier());
+        state.setMaxDamage(this.stateDefinition.getMaxDamage());
+        state.setComboRoot(this.stateDefinition.getComboRoot());
+        state.setSlashArtsKey(this.stateDefinition.getSpecialAttackType());
+        
+        this.stateDefinition.getSpecialEffects().forEach(state::addSpecialEffect);
+        
+        this.stateDefinition.getDefaultType().forEach(type -> {
+            switch (type) {
+            case BEWITCHED -> state.setDefaultBewitched(true);
+            case BROKEN -> {
+                result.setDamageValue(result.getMaxDamage() - 1);
+                state.setBroken(true);
+            }
+            case SEALED -> state.setSealed(true);
+            default -> {}
+            }
         });
+
+        state.setModel(this.renderDefinition.getModelName());
+        state.setTexture(this.renderDefinition.getTextureName());
+        state.setColorCode(this.renderDefinition.getSummonedSwordColor());
+        state.setEffectColorInverse(this.renderDefinition.isSummonedSwordColorInverse());
+        state.setCarryType(this.renderDefinition.getStandbyRenderType());
+        if (!this.getName().equals(SlashBlade.prefix("none")))
+            state.setTranslationKey(this.getTranslationKey());
+        
+        result.getOrCreateTag().put("bladeState", state.serializeNBT());
         
         for (var instance : this.enchantments) {
             var enchantment = ForgeRegistries.ENCHANTMENTS.getValue(instance.getEnchantmentID());

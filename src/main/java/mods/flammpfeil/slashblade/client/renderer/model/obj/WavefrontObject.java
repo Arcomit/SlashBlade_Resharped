@@ -26,7 +26,8 @@ import java.util.regex.Pattern;
 public class WavefrontObject {
     static public VertexFormat POSITION_TEX_LMAP_COL_NORMAL = new VertexFormat(
             ImmutableMap.<String, VertexFormatElement>builder().put("Position", DefaultVertexFormat.ELEMENT_POSITION)
-                    .put("Color", DefaultVertexFormat.ELEMENT_COLOR).put("UV0", DefaultVertexFormat.ELEMENT_UV0).put("UV1",DefaultVertexFormat.ELEMENT_UV1)
+                    .put("Color", DefaultVertexFormat.ELEMENT_COLOR).put("UV0", DefaultVertexFormat.ELEMENT_UV0)
+                    .put("UV1",DefaultVertexFormat.ELEMENT_UV1)
                     .put("UV2", DefaultVertexFormat.ELEMENT_UV2).put("Normal", DefaultVertexFormat.ELEMENT_NORMAL)
                     .put("Padding", DefaultVertexFormat.ELEMENT_PADDING).build());
 

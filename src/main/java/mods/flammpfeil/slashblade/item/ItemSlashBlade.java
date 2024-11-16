@@ -444,19 +444,19 @@ public class ItemSlashBlade extends SwordItem {
 	@Nullable
 	@Override
 	public CompoundTag getShareTag(ItemStack stack) {
-		var tag = super.getShareTag(stack) == null ? stack.getOrCreateTag() : super.getShareTag(stack);
+		var tag = stack.getOrCreateTag().copy();
 		stack.getCapability(BLADESTATE).ifPresent(state -> tag.put("bladeState", state.serializeNBT()));
 		return tag;
 	}
 
 	@Override
 	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
+
+		if (nbt != null){
+			if (nbt.contains("bladeState")) 
+				stack.getCapability(BLADESTATE).ifPresent(state -> state.deserializeNBT(nbt.getCompound("bladeState")));
+		}
 		super.readShareTag(stack, nbt);
-		if (nbt == null)
-			return;
-		if (!nbt.contains("bladeState"))
-			return;
-		stack.getCapability(BLADESTATE).ifPresent(state -> state.deserializeNBT(nbt.getCompound("bladeState")));
 	}
 
 	// damage ----------------------------------------------------------

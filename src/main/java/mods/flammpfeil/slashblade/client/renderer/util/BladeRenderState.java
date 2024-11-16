@@ -56,11 +56,6 @@ public class BladeRenderState extends RenderStateShard {
     static public void renderOverrided(ItemStack stack, WavefrontObject model, String target, ResourceLocation texture,
                                        PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 
-//        Face.forceQuad = true;
-//        renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn,
-//                Util.memoize(RenderType::entitySmoothCutout), true);
-//        Face.forceQuad = false;
-
         renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn,
                 packedLightIn, Util.memoize(BladeRenderState::getSlashBladeBlend), true);
     }
@@ -182,21 +177,12 @@ public class BladeRenderState extends RenderStateShard {
          */
 
         RenderType.CompositeState state = RenderType.CompositeState.builder()
-                //.setShaderState(RenderStateShard.POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-                //该着色器无法正确处理lightmap，且无法兼容光影
-                //.setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
-                //该渲染写入半透明渲染帧缓冲，鉴于帧缓冲主要用于后处理管线，渲染物品使用可能会使部分光影出现问题
-                //.setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
-                //不透明渲染
                 .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_CUTOUT_SHADER)
-                //该着色器支持处理lightmap,overlaymap，详见https://zh.minecraft.wiki/w/着色器#entity_cutout
-                //注：该页面中介绍的为渲染类型，但其信息基本与着色器一致，若真感兴趣，可查看开发环境依赖库中client-extra.jar中assets/shaders/core/目录中rendertype_entity_cutout前缀的相关文件。
-                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)//该渲染写入游戏物品渲染帧缓冲
-                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, true))
-                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)//半透明渲染
-                .setCullState(NO_CULL)//不剔除背面
-                .setLightmapState(LIGHTMAP)//使用光照图
-                // .overlay(OVERLAY_ENABLED)
+                .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
+                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, false))
+                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                .setCullState(NO_CULL)
+                .setLightmapState(LIGHTMAP)
                 .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
                 .setWriteMaskState(RenderStateShard.COLOR_DEPTH_WRITE).createCompositeState(true);
 
@@ -222,10 +208,10 @@ public class BladeRenderState extends RenderStateShard {
 
     public static RenderType getSlashBladeBlendColorWrite(ResourceLocation p_228638_0_) {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
-                .setShaderState(RENDERTYPE_ENTITY_CUTOUT_SHADER)
+                .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_CUTOUT_SHADER)
                 .setOutputState(RenderStateShard.PARTICLES_TARGET)
                 .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, true))
-                .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                 // .setDiffuseLightingState(RenderStateShard.NO_DIFFUSE_LIGHTING)
                 .setLightmapState(LIGHTMAP)
                 // .overlay(OVERLAY_ENABLED)
