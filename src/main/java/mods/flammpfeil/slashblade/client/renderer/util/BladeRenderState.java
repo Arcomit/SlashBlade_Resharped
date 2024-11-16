@@ -9,18 +9,22 @@ import mods.flammpfeil.slashblade.client.renderer.model.obj.Face;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.event.client.RenderOverrideEvent;
 import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL14;
 
 import java.awt.*;
+import java.lang.reflect.Field;
 import java.util.function.Function;
 
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import org.lwjgl.opengl.GL20;
 
 public class BladeRenderState extends RenderStateShard {
 
@@ -87,15 +91,16 @@ public class BladeRenderState extends RenderStateShard {
 
     static public void renderOverridedReverseLuminous(ItemStack stack, WavefrontObject model, String target,
                                                       ResourceLocation texture, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
-        renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn,
-                Util.memoize(BladeRenderState::getSlashBladeBlendReverseLuminous), false);
+            renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn,
+                    Util.memoize(BladeRenderState::getSlashBladeBlendReverseLuminous), false);
     }
 
     static public void renderOverrided(ItemStack stack, WavefrontObject model, String target, ResourceLocation texture,
                                        PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn,
                                        Function<ResourceLocation, RenderType> getRenderType, boolean enableEffect) {
+        MultiBufferSource.BufferSource bufferSource = Minecraft.getInstance().renderBuffers().bufferSource();
         RenderOverrideEvent event = RenderOverrideEvent.onRenderOverride(stack, model, target, texture, matrixStackIn,
-                bufferIn);
+                bufferSource);
 
         if (event.isCanceled())
             return;
@@ -103,17 +108,40 @@ public class BladeRenderState extends RenderStateShard {
         ResourceLocation loc = event.getTexture();
 
         RenderType rt = getRenderType.apply(loc);// getSlashBladeBlendLuminous(event.getTexture());
-        VertexConsumer vb = bufferIn.getBuffer(rt);
+        VertexConsumer vb = bufferSource.getBuffer(rt);
+
 
         Face.setCol(col);
         Face.setLightMap(packedLightIn);
-        Face.setMatrix(matrixStackIn);
+        //Face.setMatrix(matrixStackIn);
+        //添加顶点数据
         event.getModel().tessellateOnly(vb, event.getTarget());
 
+
+        //获取当前modelViewMatrix对象
+        Matrix4f modelViewMatrix = RenderSystem.getModelViewMatrix();
+        //获取变换矩阵
+        Matrix4f poseMatrix = matrixStackIn.last().pose();
+        //记录当前矩阵
+        Matrix4f oldMatrix = new Matrix4f(modelViewMatrix);
+        //将变换矩阵应用到模型视图矩阵中
+        Matrix4f newMatrix = new Matrix4f(modelViewMatrix);
+        newMatrix.mul(poseMatrix);
+        modelViewMatrix.set(newMatrix);
+        //添加完顶点数据后,直接结束批处理并开始渲染（主要是为了矩阵能够上传使用）
+        bufferSource.endBatch(rt);
+
+
+        //附魔效果的渲染
         if (stack.hasFoil() && enableEffect) {
-            vb = bufferIn.getBuffer(BladeRenderState.getSlashBladeGlint());
-            event.getModel().tessellateOnly(vb, event.getTarget());
+            rt = BladeRenderState.getSlashBladeGlint();
+            vb = bufferSource.getBuffer(rt);
+            //event.getModel().tessellateOnly(vb, event.getTarget());
+            //添加完顶点数据后,直接结束批处理并开始渲染（主要是为了矩阵能够上传使用）
+            //bufferSource.endBatch(rt);
         }
+        //渲染完成后还原矩阵
+        modelViewMatrix.set(oldMatrix);
 
         Face.resetMatrix();
         Face.resetLightMap();
