@@ -3,6 +3,9 @@
   "mixins": [
     "MixinBlockBehaviour"
   ],
+  "client": [
+    "MixinBufferBuilder"
+  ],
   "refmap": "slashblade.refmap.json",
   "required": true,
   "minVersion": "0.8",

@@ -1,18 +1,25 @@
 package mods.flammpfeil.slashblade.client.renderer.model.obj;
 
 import com.google.common.base.Suppliers;
+import com.mojang.blaze3d.platform.MemoryTracker;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import mods.flammpfeil.slashblade.mixin.MixinBufferBuilder;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.awt.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -117,22 +124,81 @@ public class Face {
             transform = defaultTransform.get();
         }
 
-        for (int i = 0; i < vertices.length; ++i) {
-            putVertex(wr, i, transform, textureOffset, averageU, averageV);
+//        for (int i = 0; i < vertices.length; ++i) {
+//            putVertex(wr, i, textureOffset, averageU, averageV);
+//        }
+
+        if (wr instanceof BufferBuilder){
+            BufferBuilder bufferBuilder = (BufferBuilder) wr;
+            for (int i = 0; i < vertices.length; ++i) {
+                putVertex(bufferBuilder, i, textureOffset, averageU, averageV);
+            }
         }
     }
 
-    void putVertex(VertexConsumer wr, int i, Matrix4f transform, float textureOffset, float averageU, float averageV) {
-        float offsetU, offsetV;
-        wr.vertex(transform, vertices[i].x, vertices[i].y, vertices[i].z);
+    {
+        //    void putVertex(VertexConsumer wr, int i, Matrix4f transform, float textureOffset, float averageU, float averageV) {
+//        float offsetU, offsetV;
+//        wr.vertex(transform, vertices[i].x, vertices[i].y, vertices[i].z);
+//
+//        wr.color(col.getRed(), col.getGreen(), col.getBlue(),
+//                alphaOverride.apply(new Vector4f(vertices[i].x, vertices[i].y, vertices[i].z, 1.0F), col.getAlpha()));
+//
+//        if ((textureCoordinates != null) && (textureCoordinates.length > 0)) {
+//            offsetU = textureOffset;
+//            offsetV = textureOffset;
+//
+//            float textureU = textureCoordinates[i].u * uvOperator.x() + uvOperator.z();
+//            float textureV = textureCoordinates[i].v * uvOperator.y() + uvOperator.w();
+//
+//            if (textureU > averageU) {
+//                offsetU = -offsetU;
+//            }
+//            if (textureV > averageV) {
+//                offsetV = -offsetV;
+//            }
+//
+//            wr.uv(textureU + offsetU, textureV + offsetV);
+//        } else {
+//            wr.uv(0, 0);
+//        }
+//
+//        wr.overlayCoords(OverlayTexture.NO_OVERLAY);
+//        wr.uv2(lightmap);
+//
+//        Vector3f vector3f;
+//        if (isSmoothShade && vertexNormals != null) {
+//
+//            Vertex normal = vertexNormals[i];
+//
+//            Vec3 nol = new Vec3(normal.x, normal.y, normal.z);
+//            // nol.rotatePitch(180);
+//            vector3f = new Vector3f((float) nol.x, (float) nol.y, (float) nol.z);
+//        } else {
+//            vector3f = new Vector3f(faceNormal.x, faceNormal.y, faceNormal.z);
+//        }
+//        vector3f.mul(new Matrix3f(transform));
+//        vector3f.normalize();
+//        wr.normal(vector3f.x(), vector3f.y(), vector3f.z());
+//
+//        wr.endVertex();
+//    }
+    }
 
+
+    //避免重复创建对象
+    private final Vector3f vector3f = new Vector3f();
+    private final Vector4f vector4f = new Vector4f();
+
+    void putVertex(VertexConsumer wr, int i,float textureOffset, float averageU, float averageV) {
+        wr.vertex(vertices[i].x, vertices[i].y, vertices[i].z);
+
+        vector4f.set(vertices[i].x, vertices[i].y, vertices[i].z, 1.0F);
         wr.color(col.getRed(), col.getGreen(), col.getBlue(),
-                alphaOverride.apply(new Vector4f(vertices[i].x, vertices[i].y, vertices[i].z, 1.0F), col.getAlpha()));
+                alphaOverride.apply(vector4f, col.getAlpha()));
 
-        if ((textureCoordinates != null) && (textureCoordinates.length > 0)) {
-            offsetU = textureOffset;
-            offsetV = textureOffset;
-
+        if (textureCoordinates != null && textureCoordinates.length > 0) {
+            float offsetU = textureOffset, offsetV = textureOffset;
             float textureU = textureCoordinates[i].u * uvOperator.x() + uvOperator.z();
             float textureV = textureCoordinates[i].v * uvOperator.y() + uvOperator.w();
 
@@ -151,18 +217,12 @@ public class Face {
         wr.overlayCoords(OverlayTexture.NO_OVERLAY);
         wr.uv2(lightmap);
 
-        Vector3f vector3f;
         if (isSmoothShade && vertexNormals != null) {
-
             Vertex normal = vertexNormals[i];
-
-            Vec3 nol = new Vec3(normal.x, normal.y, normal.z);
-            // nol.rotatePitch(180);
-            vector3f = new Vector3f((float) nol.x, (float) nol.y, (float) nol.z);
+            vector3f.set(normal.x, normal.y, normal.z);
         } else {
-            vector3f = new Vector3f(faceNormal.x, faceNormal.y, faceNormal.z);
+            vector3f.set(faceNormal.x, faceNormal.y, faceNormal.z);
         }
-        vector3f.mul(new Matrix3f(transform));
         vector3f.normalize();
         wr.normal(vector3f.x(), vector3f.y(), vector3f.z());
 
