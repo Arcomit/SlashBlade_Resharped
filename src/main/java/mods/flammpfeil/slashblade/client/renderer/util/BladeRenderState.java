@@ -151,7 +151,7 @@ public class BladeRenderState extends RenderStateShard {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
                 .setShaderState(RenderStateShard.RENDERTYPE_ENTITY_CUTOUT_SHADER)
                 .setOutputState(RenderStateShard.ITEM_ENTITY_TARGET)
-                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, false))
+                .setTextureState(new RenderStateShard.TextureStateShard(p_228638_0_, false, true))
                 .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
                 .setCullState(NO_CULL)
                 .setLightmapState(LIGHTMAP)
@@ -165,13 +165,14 @@ public class BladeRenderState extends RenderStateShard {
     public static RenderType getSlashBladeGlint() {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
         	    .setShaderState(RENDERTYPE_ENTITY_GLINT_SHADER)
-        	    .setTextureState(new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ENTITY, true, false))
+        	    .setTextureState(new RenderStateShard.TextureStateShard(ItemRenderer.ENCHANTED_GLINT_ENTITY, true, true))
         	    .setWriteMaskState(COLOR_WRITE)
         	    .setCullState(NO_CULL)
         	    .setDepthTestState(EQUAL_DEPTH_TEST)
         	    .setTransparencyState(LIGHTNING_ADDITIVE_TRANSPARENCY)
         	    .setOutputState(ITEM_ENTITY_TARGET)
         	    .setTexturingState(ENTITY_GLINT_TEXTURING)
+                .setLayeringState(RenderStateShard.POLYGON_OFFSET_LAYERING)//使用深度偏移叠加，避免Z-fighting
         	    .createCompositeState(false);
         return RenderType.create("slashblade_glint", WavefrontObject.POSITION_TEX_LMAP_COL_NORMAL,
                 VertexFormat.Mode.TRIANGLES, 256, true, false, state);
