@@ -5,9 +5,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import mods.flammpfeil.slashblade.IMixinFullyBufferedMultiBufferSource;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.Face;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.event.client.RenderOverrideEvent;
+import net.irisshaders.batchedentityrendering.impl.FullyBufferedMultiBufferSource;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -89,7 +91,8 @@ public class BladeRenderState extends RenderStateShard {
             renderOverrided(stack, model, target, texture, matrixStackIn, bufferIn, packedLightIn,
                     Util.memoize(BladeRenderState::getSlashBladeBlendReverseLuminous), false);
     }
-
+    static Matrix4f oldMatrix = new Matrix4f();
+    static Matrix4f newMatrix = new Matrix4f();
     static public void renderOverrided(ItemStack stack, WavefrontObject model, String target, ResourceLocation texture,
                                        PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn,
                                        Function<ResourceLocation, RenderType> getRenderType, boolean enableEffect) {
@@ -118,22 +121,28 @@ public class BladeRenderState extends RenderStateShard {
         //获取变换矩阵
         Matrix4f poseMatrix = matrixStackIn.last().pose();
         //记录当前矩阵
-        Matrix4f oldMatrix = new Matrix4f(modelViewMatrix);
+        oldMatrix.set(modelViewMatrix);
         //将变换矩阵应用到模型视图矩阵中
-        Matrix4f newMatrix = new Matrix4f(modelViewMatrix);
+        newMatrix.set(modelViewMatrix);
         newMatrix.mul(poseMatrix);
         modelViewMatrix.set(newMatrix);
         //添加完顶点数据后,直接结束批处理并开始渲染（主要是为了矩阵能够上传使用）
         bufferSource.endBatch(rt);
+        if (bufferSource instanceof FullyBufferedMultiBufferSource FBMBS){
+            ((IMixinFullyBufferedMultiBufferSource)FBMBS).onEndBatchCustom(rt);
+        }
 
 
         //附魔效果的渲染
         if (stack.hasFoil() && enableEffect) {
             rt = BladeRenderState.getSlashBladeGlint();
             vb = bufferSource.getBuffer(rt);
-            //event.getModel().tessellateOnly(vb, event.getTarget());
+            event.getModel().tessellateOnly(vb, event.getTarget());
             //添加完顶点数据后,直接结束批处理并开始渲染（主要是为了矩阵能够上传使用）
-            //bufferSource.endBatch(rt);
+            bufferSource.endBatch(rt);
+            if (bufferSource instanceof FullyBufferedMultiBufferSource FBMBS){
+                ((IMixinFullyBufferedMultiBufferSource)FBMBS).onEndBatchCustom(rt);
+            }
         }
         //渲染完成后还原矩阵
         modelViewMatrix.set(oldMatrix);

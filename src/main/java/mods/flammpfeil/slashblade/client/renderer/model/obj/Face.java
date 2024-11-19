@@ -1,21 +1,14 @@
 package mods.flammpfeil.slashblade.client.renderer.model.obj;
 
 import com.google.common.base.Suppliers;
-import com.mojang.blaze3d.platform.MemoryTracker;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import mods.flammpfeil.slashblade.mixin.MixinBufferBuilder;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.awt.*;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -124,16 +117,16 @@ public class Face {
             transform = defaultTransform.get();
         }
 
-//        for (int i = 0; i < vertices.length; ++i) {
-//            putVertex(wr, i, textureOffset, averageU, averageV);
-//        }
-
-        if (wr instanceof BufferBuilder){
-            BufferBuilder bufferBuilder = (BufferBuilder) wr;
-            for (int i = 0; i < vertices.length; ++i) {
-                putVertex(bufferBuilder, i, textureOffset, averageU, averageV);
-            }
+        for (int i = 0; i < vertices.length; ++i) {
+            putVertex(wr, i, textureOffset, averageU, averageV);
         }
+
+//        if (wr instanceof BufferBuilder){
+//            BufferBuilder bufferBuilder = (BufferBuilder) wr;
+//            for (int i = 0; i < vertices.length; ++i) {
+//                putVertex(bufferBuilder, i, textureOffset, averageU, averageV);
+//            }
+//        }
     }
 
     {

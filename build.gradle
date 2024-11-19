@@ -213,8 +213,8 @@ dependencies {
     //引入性能分析工具模组
     runtimeOnly fg.deobf("curse.maven:spark-361579:4738952")
     //引入光影，测试光影兼容性及性能
-    //runtimeOnly fg.deobf("curse.maven:xenon-564239:5752040")
-    //runtimeOnly fg.deobf("curse.maven:oculus-581495:5299671")
+    implementation fg.deobf("curse.maven:xenon-564239:5752040")
+    implementation fg.deobf("curse.maven:oculus-581495:5299671")
 
 }
 
