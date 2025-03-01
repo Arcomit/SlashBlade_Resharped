@@ -242,7 +242,7 @@ public class SlashBladeBuiltInRegistry {
                         .standbyRenderType(CarryType.PSO2)
                         .build(),
                 PropertiesDefinition.Builder.newInstance().baseAttackModifier(5.0F).maxDamage(70)
-                        .slashArtsType(SlashArtsRegistry.VOID_SLASH.getId())
+                        .slashArtsType(SlashArtsRegistry.PIERCING.getId())
                         .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
                 List.of(new EnchantmentDefinition(getEnchantmentID(Enchantments.SMITE), 4),
                         new EnchantmentDefinition(getEnchantmentID(Enchantments.KNOCKBACK), 2),
@@ -312,7 +312,7 @@ public class SlashBladeBuiltInRegistry {
                         .standbyRenderType(CarryType.PSO2)
                         .build(),
                 PropertiesDefinition.Builder.newInstance().baseAttackModifier(6.0F).maxDamage(70)
-                        .slashArtsType(SlashArtsRegistry.SAKURA_END.getId())
+                        .slashArtsType(SlashArtsRegistry.VOID_SLASH.getId())
                         .defaultSwordType(List.of(SwordType.BEWITCHED)).build(),
                 Lists.newArrayList()));
 

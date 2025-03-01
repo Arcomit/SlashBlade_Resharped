@@ -33,7 +33,7 @@
   "overrides": [
     {
       "predicate": {
-        "slashblade:user": "exists"
+        "slashblade:user": "exist"
       },
       "model": "slashblade:eproudsoul"
     }

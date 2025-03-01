@@ -39,4 +39,9 @@ public class SlashArtsRegistry {
 
     public static final RegistryObject<SlashArts> WAVE_EDGE = SLASH_ARTS.register("wave_edge",
             () -> new SlashArts((e) -> ComboStateRegistry.WAVE_EDGE_VERTICAL.getId()));
+    
+    public static final RegistryObject<SlashArts> PIERCING = SLASH_ARTS.register("piercing",
+            () -> new SlashArts((e) -> ComboStateRegistry.PIERCING.getId())
+            .setComboStateJust((e) -> ComboStateRegistry.PIERCING_JUST.getId())
+            );
 }

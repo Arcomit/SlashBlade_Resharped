@@ -128,7 +128,7 @@ public class ComboStateRegistry {
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_a3_end3"))::build);
 
     public static final RegistryObject<ComboState> COMBO_A3_END3 = COMBO_STATE.register("combo_a3_end3",
-            ComboState.Builder.newInstance().startAndEnd(281, 314).priority(100)
+            ComboState.Builder.newInstance().startAndEnd(281, 306).priority(100)
                     .motionLoc(DefaultResources.ExMotionLocation).next(entity -> SlashBlade.prefix("none"))
                     .nextOfTimeout(entity -> SlashBlade.prefix("none"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
@@ -1207,4 +1207,65 @@ public class ComboStateRegistry {
         .addHitEffect(StunManager::setStun)
         ::build
     );
+    
+    public static final RegistryObject<ComboState> PIERCING = COMBO_STATE.register("piercing", ComboState.Builder
+            .newInstance().startAndEnd(1, 31).priority(50).motionLoc(DefaultResources.testLocation)
+            .next(entity -> SlashBlade.prefix("piercing"))
+            .nextOfTimeout(entity -> SlashBlade.prefix("piercing_2"))
+            .addTickAction(entity -> UserPoseOverrider.resetRot(entity))
+            ::build);
+    
+    public static final RegistryObject<ComboState> PIERCING_2 = COMBO_STATE.register("piercing_2", ComboState.Builder
+            .newInstance().startAndEnd(31, 55).priority(50).motionLoc(DefaultResources.testLocation)
+            .next(ComboState.TimeoutNext.buildFromFrame(10, entity -> SlashBlade.prefix("none")))
+            .nextOfTimeout(entity -> SlashBlade.prefix("piercing_end"))
+            .addTickAction((entity) -> {
+
+                long elapsed = ComboState.getElapsed(entity);
+
+                if (elapsed < 3) {
+                    if (entity.onGround())
+                    	entity.moveRelative(entity.isInWater() ? 0.35f : 0.8f, new Vec3(0, 0, 1));
+                    AttackManager.areaAttack(entity, KnockBacks.toss.action, 1.1f, true, false, true);
+                } 
+                if(elapsed == 1)
+                	AttackManager.playPiercingSoundAction(entity);
+            })
+            .addTickAction(entity -> UserPoseOverrider.resetRot(entity))
+            .addHitEffect(StunManager::setStun)::build);
+    
+    public static final RegistryObject<ComboState> PIERCING_JUST = COMBO_STATE.register("piercing_just", ComboState.Builder
+            .newInstance().startAndEnd(32, 55).priority(50).motionLoc(DefaultResources.testLocation)
+            .next(ComboState.TimeoutNext.buildFromFrame(10, entity -> SlashBlade.prefix("none")))
+            .nextOfTimeout(entity -> SlashBlade.prefix("piercing_end"))
+            .addTickAction((entity) -> {
+
+                long elapsed = ComboState.getElapsed(entity);
+
+                if (elapsed < 3) {
+                    if (entity.onGround())
+                        entity.moveRelative(entity.isInWater() ? 0.35f : 0.8f, new Vec3(0, 0, 1));
+                    AttackManager.areaAttack(entity, KnockBacks.toss.action, 1.1f, true, false, true);
+                } 
+                if(elapsed == 1)
+                	AttackManager.playPiercingSoundAction(entity);
+            })
+            .addTickAction(entity -> UserPoseOverrider.resetRot(entity))
+            .addHitEffect(StunManager::setStun)::build);
+
+    public static final RegistryObject<ComboState> PIERCING_END = COMBO_STATE.register("piercing_end",
+            ComboState.Builder.newInstance().startAndEnd(55, 65).priority(50)
+                    .motionLoc(DefaultResources.testLocation)
+                    .next(entity -> SlashBlade.prefix("none"))
+                    .nextOfTimeout(entity -> SlashBlade.prefix("piercing_end2"))
+                    ::build);
+    
+    public static final RegistryObject<ComboState> PIERCING_END2 = COMBO_STATE.register("piercing_end2",
+            ComboState.Builder.newInstance().startAndEnd(65, 92).priority(50)
+                    .motionLoc(DefaultResources.testLocation)
+                    .next(entity -> SlashBlade.prefix("none"))
+                    .nextOfTimeout(entity -> SlashBlade.prefix("none"))
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder()
+                    .put(0,AttackManager::playQuickSheathSoundAction).build())
+                    .releaseAction(ComboState::releaseActionQuickCharge)::build);
 }

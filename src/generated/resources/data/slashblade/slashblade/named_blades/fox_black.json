@@ -17,7 +17,7 @@
   "properties": {
     "attack_base": 5.0,
     "max_damage": 70,
-    "slash_art": "slashblade:void_slash",
+    "slash_art": "slashblade:piercing",
     "sword_type": [
       "bewitched"
     ]

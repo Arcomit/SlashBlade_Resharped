@@ -56,7 +56,7 @@ public class MoveCommandMessage {
                 });
 
                 InputCommandEvent.onInputChange(sender, state, old, current);
-                // todo: quick turnも実装したい
+                
             });
         });
         ctx.get().setPacketHandled(true);

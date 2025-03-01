@@ -1,8 +1,8 @@
-// 1.20.1	2025-02-06T04:17:47.273164	SlashBlade Definition Registry
+// 1.20.1	2025-03-01T15:32:03.5840035	SlashBlade Definition Registry
 81c10764ab2328ce525c1d14bd090ad3cb3f813b data/slashblade/slashblade/named_blades/agito.json
 66513cfc342247431b5f1fa4c4426ef13e482144 data/slashblade/slashblade/named_blades/agito_rust.json
 7d3f2f035d61b40c9989fabc8698a35c5e1824a6 data/slashblade/slashblade/named_blades/doutanuki.json
-7d182743589a90a8a4f1aef424bad4d6f0b98737 data/slashblade/slashblade/named_blades/fox_black.json
+5a0b432a64dbd56f87a013356fd91d8f710c8cde data/slashblade/slashblade/named_blades/fox_black.json
 9899744eada294b6616c4c605de10e314e569354 data/slashblade/slashblade/named_blades/fox_white.json
 4756ab0ef3ab37dab3da9c4d60372f92faeb6bec data/slashblade/slashblade/named_blades/koseki.json
 b0543ff0060438687184db5d3c1beeddf4403186 data/slashblade/slashblade/named_blades/muramasa.json
@@ -18,7 +18,7 @@ d7d2a4732ccfc5a085fd36556c1786d13d642577 data/slashblade/slashblade/named_blades
 237da49b0bf0b84e4559af326d7260d94a317337 data/slashblade/slashblade/named_blades/ruby.json
 99a3a8b8dec2240a85e23d2ebf09a2e86a9a10b7 data/slashblade/slashblade/named_blades/sabigatana.json
 9bf358485c5604a318fd9ca946826ef45d257181 data/slashblade/slashblade/named_blades/sabigatana_broken.json
-1f7f6684435f08bad62f57d8a3e62696666df2f5 data/slashblade/slashblade/named_blades/sange.json
+2ed7b8464e11de00e13a98415d3512d9f226c4f0 data/slashblade/slashblade/named_blades/sange.json
 4447fbb30a25bf20461ee9d1a6d0587ca7db8b60 data/slashblade/slashblade/named_blades/tagayasan.json
 fd14d79e0ec3fcca1da51165b9f051ebcb31ae7a data/slashblade/slashblade/named_blades/yamato.json
 ef3dde9b67d9079f5e353b5122f9540b58eecd26 data/slashblade/slashblade/named_blades/yamato_broken.json

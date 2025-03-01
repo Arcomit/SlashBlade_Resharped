@@ -88,7 +88,6 @@ public class VmdAnimation implements IAnimation {
         this.end = end;
 
         this.span = TimeValueHelper.getTicksFromFrames((float) Math.abs(end - start));
-        ;
 
         this.loop = loop;
 

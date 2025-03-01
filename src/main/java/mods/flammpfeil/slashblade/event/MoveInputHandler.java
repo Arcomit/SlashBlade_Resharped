@@ -2,6 +2,7 @@ package mods.flammpfeil.slashblade.event;
 
 import mods.flammpfeil.slashblade.capability.inputstate.IInputState;
 import mods.flammpfeil.slashblade.client.SlashBladeKeyMappings;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.network.MoveCommandMessage;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.util.*;
@@ -34,6 +35,9 @@ public class MoveInputHandler {
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
     public static void onPlayerPostTick(TickEvent.PlayerTickEvent event) {
+        if (!event.player.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+            return;
+    	
         if (event.phase != TickEvent.Phase.END)
             return;
 
@@ -55,28 +59,15 @@ public class MoveInputHandler {
 
         if (player.input.shiftKeyDown)
             commands.add(InputCommand.SNEAK);
-
+        
+        if (player.input.jumping) {
+            commands.add(InputCommand.JUMP);
+        }
+        
         final Minecraft minecraftInstance = Minecraft.getInstance();
 
         if (SlashBladeKeyMappings.KEY_SPECIAL_MOVE.isDown())
             commands.add(InputCommand.SPRINT);
-
-        if (minecraftInstance.options.keyJump.isDown()) {
-            commands.add(InputCommand.JUMP);
-        }
-
-        /*
-         * if((player.movementInput.sneak && SlashBlade.SneakForceLockOn) ||
-         * CoreProxyClient.lockon.isKeyDown()) message.activeTag +=
-         * MoveCommandMessage.SNEAK;
-         * 
-         * 
-         * if(CoreProxyClient.camera.isKeyDown()) message.activeTag +=
-         * MoveCommandMessage.CAMERA;
-         * 
-         * if(CoreProxyClient.styleaction.isKeyDown()) message.activeTag +=
-         * MoveCommandMessage.STYLE;
-         */
 
         if (minecraftInstance.options.keyUse.isDown())
             commands.add(InputCommand.R_DOWN);
@@ -90,15 +81,6 @@ public class MoveInputHandler {
                 .orElseGet(() -> EnumSet.noneOf(InputCommand.class));
 
         Level worldIn = player.getCommandSenderWorld();
-
-        /*
-         * if(player.movementInput.forwardKeyDown && (0 <
-         * (player.getPersistentData().getInt(KEY) & MoveCommandMessage.SNEAK)))
-         * player.getPersistentData().putLong("SB.MCS.F",currentTime);
-         * if(player.movementInput.backKeyDown && (0 <
-         * (player.getPersistentData().getInt(KEY) & MoveCommandMessage.SNEAK)))
-         * player.getPersistentData().putLong("SB.MCS.B",currentTime);
-         */
 
         long currentTime = worldIn.getGameTime();
         boolean doSend = !old.equals(commands);

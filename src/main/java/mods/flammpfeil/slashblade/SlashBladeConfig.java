@@ -13,6 +13,8 @@ public class SlashBladeConfig {
     public static ForgeConfigSpec.BooleanValue FRIENDLY_ENABLE;
     public static ForgeConfigSpec.DoubleValue SABIGATANA_SPAWN_CHANCE;
     public static ForgeConfigSpec.DoubleValue BROKEN_SABIGATANA_SPAWN_CHANCE;
+    public static ForgeConfigSpec.IntValue REFINE_LEVEL_COST;
+    
     static {
         ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
         COMMON_BUILDER.comment("General settings").push("general");
@@ -30,6 +32,9 @@ public class SlashBladeConfig {
                 "If enable, player can attack player with SlashBlade.").define("pvp_enable", false);
         FRIENDLY_ENABLE = COMMON_BUILDER.comment("Determines whether to enable slashblade's friendly fire.",
                 "If enable, player can attack friendly entity with SlashBlade.").define("friendly_enable", false);
+        
+        REFINE_LEVEL_COST = COMMON_BUILDER.comment("Determining the level cost for refine a slashblade.")
+                .defineInRange("refine_level_cost", 1, 1, Integer.MAX_VALUE);
         
         SUMMON_SWORD_COST = COMMON_BUILDER.comment("Determining the proud soul cost for single summon mirage blade.")
                 .defineInRange("summon_sword_cost", 2, 1, Integer.MAX_VALUE);

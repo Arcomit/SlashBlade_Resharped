@@ -110,6 +110,7 @@ public class SummonedSwordArts {
                                                 || !input.getCommands().contains(InputCommand.SNEAK))
                                         && input.getLastPressTime(targetCommnad) == pressTime)
                                 .isPresent();
+                        
                         if (!inputSucceed)
                             return;
 
@@ -150,7 +151,7 @@ public class SummonedSwordArts {
                                 for (int i = 0; i < count; i++) {
                                     EntitySpiralSwords ss = new EntitySpiralSwords(
                                             SlashBlade.RegistryEvents.SpiralSwords, worldIn);
-
+                                    
                                     worldIn.addFreshEntity(ss);
 
                                     ss.setOwner(entity);

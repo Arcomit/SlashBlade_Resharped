@@ -1,6 +1,7 @@
 package mods.flammpfeil.slashblade.event;
 
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.common.MinecraftForge;
@@ -40,6 +41,11 @@ public class RankPointHandler {
         Entity trueSource = event.getSource().getEntity();
         if (!(trueSource instanceof LivingEntity))
             return;
+        
+    	LivingEntity sourceEntity = (LivingEntity) trueSource;
+		if (!sourceEntity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+            return;
+        
         trueSource.getCapability(CapabilityConcentrationRank.RANK_POINT)
                 .ifPresent(cr -> cr.addRankPoint(event.getSource()));
     }

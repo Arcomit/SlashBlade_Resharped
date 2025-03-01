@@ -1,6 +1,7 @@
 package mods.flammpfeil.slashblade.event;
 
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,13 +39,13 @@ public class RefineHandler {
 
         if (base.isEmpty())
             return;
-        if (!(base.getItem() instanceof ItemSlashBlade))
+        if (!(base.getCapability(ItemSlashBlade.BLADESTATE).isPresent()))
             return;
+        
         if (material.isEmpty())
             return;
 
         boolean isRepairable = base.getItem().isValidRepairItem(base, material);
-
         if (!isRepairable)
             return;
 
@@ -58,10 +59,13 @@ public class RefineHandler {
         int refineLimit = Math.max(10, level);
 
         int cost = 0;
+        int levelCostBase = SlashBladeConfig.REFINE_LEVEL_COST.get();
+        int costResult = levelCostBase * cost;
         while (cost < material.getCount()) {
             cost++;
-
-            int damage = result.getCapability(ItemSlashBlade.BLADESTATE).map(s -> {
+            costResult = levelCostBase * cost;
+            
+            result.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
                 s.setProudSoulCount(s.getProudSoulCount() + Math.min(5000, level * 10));
                 if (s.getRefine() < refineLimit) {
                     s.setRefine(s.getRefine() + 1);
@@ -71,16 +75,15 @@ public class RefineHandler {
                 
                 result.setDamageValue(result.getDamageValue() - Math.max(1, level / 2));
                 result.getOrCreateTag().put("bladeState", s.serializeNBT());
-                return result.getDamageValue();
-            }).orElse(0);
+            });
 
-            if (damage <= 0)
+            boolean refineable = !event.getPlayer().getAbilities().instabuild && event.getPlayer().experienceLevel <= costResult;
+			if (refineable)
                 break;
         }
 
         event.setMaterialCost(cost);
-        int levelCostBase = 1;
-        event.setCost(levelCostBase * cost);
+		event.setCost(costResult);
         event.setOutput(result);
     }
 

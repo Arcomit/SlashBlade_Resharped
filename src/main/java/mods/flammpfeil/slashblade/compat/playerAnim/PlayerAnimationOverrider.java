@@ -5,6 +5,7 @@ import dev.kosmx.playerAnim.api.layered.AnimationStack;
 import dev.kosmx.playerAnim.minecraftApi.PlayerAnimationAccess;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
+import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.ResourceLocation;
@@ -59,13 +60,16 @@ public class PlayerAnimationOverrider {
     private Map<ResourceLocation, VmdAnimation> initAnimations() {
         Map<ResourceLocation, VmdAnimation> map = Maps.newHashMap();
 
+        map.put(ComboStateRegistry.PIERCING.getId(), new VmdAnimation(DefaultResources.testPLLocation, 6, 92, false));
+        map.put(ComboStateRegistry.PIERCING_JUST.getId(), new VmdAnimation(DefaultResources.testPLLocation, 37, 92, false));
+        
         // guard
         map.put(ComboStateRegistry.COMBO_A1_END2.getId(), new VmdAnimation(MotionLocation, 21, 41, false));
 
         map.put(ComboStateRegistry.COMBO_A1.getId(), new VmdAnimation(MotionLocation, 1, 41, false));
         map.put(ComboStateRegistry.COMBO_A2.getId(), new VmdAnimation(MotionLocation, 100, 151, false));
         map.put(ComboStateRegistry.COMBO_C.getId(), new VmdAnimation(MotionLocation, 400, 488, false));
-        map.put(ComboStateRegistry.COMBO_A3.getId(), new VmdAnimation(MotionLocation, 200, 314, false));
+        map.put(ComboStateRegistry.COMBO_A3.getId(), new VmdAnimation(MotionLocation, 200, 306, false));
         map.put(ComboStateRegistry.COMBO_A4.getId(), new VmdAnimation(MotionLocation, 500, 608, false));
 
         map.put(ComboStateRegistry.COMBO_A4_EX.getId(), new VmdAnimation(MotionLocation, 800, 894, false));

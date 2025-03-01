@@ -7,7 +7,6 @@ import mods.flammpfeil.slashblade.ability.TNTExtinguisher;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
-import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
@@ -100,7 +99,7 @@ public class AttackManager {
         jc.setIsCritical(critical);
 
         jc.setDamage(damage);
-
+        
         jc.setKnockBack(knockback);
 
         if (playerIn != null)
@@ -334,6 +333,13 @@ public class AttackManager {
     		return ;
     	entity.level().playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), 
     			SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 1.0F, 1.0F);
+    }
+    
+    public static void playPiercingSoundAction(LivingEntity entity) {
+    	if(entity.level().isClientSide())
+    		return ;
+    	entity.level().playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), 
+    			SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     public static Vec3 genRushOffset(LivingEntity entityIn) {

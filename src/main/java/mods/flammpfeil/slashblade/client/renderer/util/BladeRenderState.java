@@ -195,11 +195,11 @@ public class BladeRenderState extends RenderStateShard {
                 .setWriteMaskState(COLOR_WRITE)
                 .createCompositeState(false);
         return RenderType.create("slashblade_blend_write_color", DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.TRIANGLES, 256, true, false, state);
+                VertexFormat.Mode.TRIANGLES, 256, false, true, state);
     }
 
     protected static final RenderStateShard.TransparencyStateShard LIGHTNING_ADDITIVE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard(
-            "lightning_transparency", () -> {
+            "lightning_additive_transparency", () -> {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
                         GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
@@ -221,7 +221,7 @@ public class BladeRenderState extends RenderStateShard {
                 
                 .createCompositeState(false);
         return RenderType.create("slashblade_blend_luminous", DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.TRIANGLES, 256, true, false, state);
+                VertexFormat.Mode.TRIANGLES, 256, false, true, state);
     }
 
     public static RenderType getChargeEffect(ResourceLocation p_228638_0_, float x, float y) {
@@ -239,7 +239,7 @@ public class BladeRenderState extends RenderStateShard {
                 
                 .createCompositeState(false);
         return RenderType.create("slashblade_charge_effect", DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.TRIANGLES, 256, true, false, state);
+                VertexFormat.Mode.TRIANGLES, 256, false, true, state);
     }
 
     public static RenderType getSlashBladeBlendLuminousDepthWrite(ResourceLocation p_228638_0_) {
@@ -254,11 +254,11 @@ public class BladeRenderState extends RenderStateShard {
                 
                 .setWriteMaskState(COLOR_DEPTH_WRITE).createCompositeState(false);
         return RenderType.create("slashblade_blend_luminous_depth_write", DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.TRIANGLES, 256, true, false, state);
+                VertexFormat.Mode.TRIANGLES, 256, false, true, state);
     }
 
     protected static final RenderStateShard.TransparencyStateShard LIGHTNING_REVERSE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard(
-            "lightning_transparency", () -> {
+            "lightning_reverse_transparency", () -> {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
                         GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
@@ -282,7 +282,7 @@ public class BladeRenderState extends RenderStateShard {
                 
                 .createCompositeState(false);
         return RenderType.create("slashblade_blend_reverse_luminous", DefaultVertexFormat.NEW_ENTITY,
-                VertexFormat.Mode.TRIANGLES, 256, true, false, state);
+                VertexFormat.Mode.TRIANGLES, 256, false, true, state);
     }
 
 }
