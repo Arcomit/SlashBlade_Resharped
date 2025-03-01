@@ -238,6 +238,36 @@ public class VmdAnimation implements IAnimation {
     Vector3d QuaternionToEulerZYX(Quaterniond qt) {
         Vector3d tmp = new Vector3d();
 
+        // 1. 归一化四元数
+        Quaterniond normalizedQt = qt.normalize();
+
+        // 2. 计算旋转矩阵元素(修正后的公式)
+        double wx = normalizedQt.w * normalizedQt.x;
+        double wy = normalizedQt.w * normalizedQt.y;
+        double wz = normalizedQt.w * normalizedQt.z;
+        double xx = normalizedQt.x * normalizedQt.x;
+        double xy = normalizedQt.x * normalizedQt.y;
+        double xz = normalizedQt.x * normalizedQt.z;
+        double yy = normalizedQt.y * normalizedQt.y;
+        double yz = normalizedQt.y * normalizedQt.z;
+        double zz = normalizedQt.z * normalizedQt.z;
+
+        // 旋转矩阵 R 的元素(ZYX顺序)
+        double m00 = 1.0 - 2.0 * (yy + zz);
+        double m01 = 2.0 * (xy + wz);
+        double m02 = 2.0 * (xz - wy);
+        double m12 = 2.0 * (yz + wx);
+        double m22 = 1.0 - 2.0 * (xx + yy);
+
+        // 3. 计算欧拉角(Z-Y-X顺序)
+        tmp.z = Math.atan2(m01, m00);
+        tmp.y = Math.asin(-m02);  // 确保参数在-1~1内
+        tmp.x = Math.atan2(m12, m22);
+
+        return tmp;
+        
+/*        Vector3d tmp = new Vector3d();
+
         double a_x_x = Math.pow(qt.w, 2) + Math.pow(qt.x, 2) - Math.pow(qt.y, 2) - Math.pow(qt.z, 2);
         double a_x_y = 2 * (qt.x * qt.y + qt.w * qt.z);
         double a_x_z = 2 * (qt.x * qt.z - qt.w * qt.y);
@@ -255,7 +285,7 @@ public class VmdAnimation implements IAnimation {
         tmp.y = Math.asin(-a_x_z);
         tmp.x = Math.atan2(a_y_z, a_z_z);
 
-        return tmp;
+        return tmp;*/
     }
 
     @Override
