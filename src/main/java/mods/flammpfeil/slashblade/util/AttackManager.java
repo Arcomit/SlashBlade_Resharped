@@ -330,7 +330,7 @@ public class AttackManager {
                 });
             }, target, forceHit, resetHit);
         } else {
-            float baseAmount = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
+            float baseAmount = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * getSlashBladeDamageScale(attacker);
             doAttackWith(attacker.damageSources().mobAttack(attacker), baseAmount * getSlashBladeDamageScale(attacker), target, forceHit, resetHit);
         }
 
