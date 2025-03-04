@@ -11,6 +11,7 @@ import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
 import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.ModAttributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -151,8 +152,10 @@ public class AttackManager {
                                         (double) (-Math.sin(yRot * (float) Math.PI / 180.0F) * 0.5),
                                         0.05D,
                                         (double) (Math.cos(yRot * (float) Math.PI / 180.0F) * 0.5)));
+                                float scale = 1f;
+                                if (this.getShooter() instanceof LivingEntity shooter) scale = getSlashBladeDamageScale(shooter);
                                 doAttackWith(this.damageSources().indirectMagic(this, this.getShooter()),
-                                        (float) (living.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2F), entity, true,
+                                        (float) (living.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2F * scale), entity, true,
                                         true);
                             }
                         });
@@ -258,7 +261,8 @@ public class AttackManager {
 	                	int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
 	                	baseAmount += ((float) powerLevel * 0.1F);
                 	}
-                	baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
+                	baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE) * getSlashBladeDamageScale(living);
+
                 }
 
                 doAttackWith(owner.damageSources().indirectMagic(owner, owner.getShooter()), baseAmount, entity,
@@ -307,21 +311,27 @@ public class AttackManager {
 
                     AttributeModifier am = new AttributeModifier("RankDamageBonus", modifiedRatio,
                             AttributeModifier.Operation.ADDITION);
+
+                    AttributeModifier scale = new AttributeModifier("SlashBladeDamageScale", getSlashBladeDamageScale(attacker) - 1.0,
+                            AttributeModifier.Operation.MULTIPLY_TOTAL);
+
                     try {
                         state.setOnClick(true);
                         attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(am);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(scale);
 
                         ((Player) attacker).attack(t);
 
                     } finally {
                         attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(am);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(scale);
                         state.setOnClick(false);
                     }
                 });
             }, target, forceHit, resetHit);
         } else {
             float baseAmount = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue();
-            doAttackWith(attacker.damageSources().mobAttack(attacker), baseAmount, target, forceHit, resetHit);
+            doAttackWith(attacker.damageSources().mobAttack(attacker), baseAmount * getSlashBladeDamageScale(attacker), target, forceHit, resetHit);
         }
 
         ArrowReflector.doReflect(target, attacker);
@@ -345,4 +355,12 @@ public class AttackManager {
     public static Vec3 genRushOffset(LivingEntity entityIn) {
         return new Vec3(entityIn.getRandom().nextFloat() - 0.5f, entityIn.getRandom().nextFloat() - 0.5f, 0).scale(2.0);
     }
+
+    public static float getSlashBladeDamageScale(LivingEntity entity) {
+//        SlashBlade.LOGGER.error("SCALE_DEBUG");
+//        SlashBlade.LOGGER.error("SCALE_DEBUG: {}", entity);
+//        SlashBlade.LOGGER.error("SCALE_DEBUG: {}", entity.getAttribute(ModAttributes.getSlashBladeDamage()).getValue());
+        return (float) entity.getAttribute(ModAttributes.getSlashBladeDamage()).getValue();
+    }
+
 }

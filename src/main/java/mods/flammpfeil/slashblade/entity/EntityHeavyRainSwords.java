@@ -121,15 +121,15 @@ public class EntityHeavyRainSwords extends EntityAbstractSummonedSword {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult p_213868_1_) {
+    protected void onHitEntity(EntityHitResult entityHitResult) {
 
-        Entity targetEntity = p_213868_1_.getEntity();
+        Entity targetEntity = entityHitResult.getEntity();
         if (targetEntity instanceof LivingEntity) {
             KnockBacks.cancel.action.accept((LivingEntity) targetEntity);
             StunManager.setStun((LivingEntity) targetEntity);
         }
 
-        super.onHitEntity(p_213868_1_);
+        super.onHitEntity(entityHitResult);
     }
 
     int ON_GROUND_LIFE_TIME = 20;

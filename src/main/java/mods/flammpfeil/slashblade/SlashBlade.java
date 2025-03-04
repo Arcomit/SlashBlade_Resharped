@@ -17,6 +17,7 @@ import mods.flammpfeil.slashblade.item.ItemTierSlashBlade;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.recipe.RecipeSerializerRegistry;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.ModAttributes;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
@@ -45,6 +46,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -77,6 +79,7 @@ public class SlashBlade {
 		modEventBus.addListener(this::setup);
 
         // Register ourselves for server and other game events we are interested in
+        ModAttributes.ATTRIBUTES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
         NetworkManager.register();
 
@@ -459,6 +462,11 @@ public class SlashBlade {
             CapabilityMobEffect.register(event);
             CapabilityInputState.register(event);
             CapabilityConcentrationRank.register(event);
+        }
+
+        @SubscribeEvent
+        public static void onEntityAttributeModificationEvent(final EntityAttributeModificationEvent event) {
+            event.add(EntityType.PLAYER, ModAttributes.SLASHBLADE_DAMAGE.get());
         }
 
         public static ResourceLocation SWORD_SUMMONED;
