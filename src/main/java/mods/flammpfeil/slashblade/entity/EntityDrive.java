@@ -290,8 +290,8 @@ public class EntityDrive extends EntityAbstractSummonedSword {
         return this.damage;
     }
 
-    protected void onHitEntity(EntityHitResult p_213868_1_) {
-        Entity targetEntity = p_213868_1_.getEntity();
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        Entity targetEntity = entityHitResult.getEntity();
         int i = Mth.ceil(this.getDamage());
 
         if (this.getIsCritical()) {
@@ -320,9 +320,9 @@ public class EntityDrive extends EntityAbstractSummonedSword {
 
         // todo: attack manager
         targetEntity.invulnerableTime = 0;
-        float damageValue = (float) i;
+        float damageValue = i;
         if(this.getOwner() instanceof LivingEntity living) {
-        	damageValue *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        	damageValue *= living.getAttributeValue(Attributes.ATTACK_DAMAGE) * AttackManager.getSlashBladeDamageScale(living);
         }
 
 		if (targetEntity.hurt(damagesource, damageValue)) {

@@ -132,8 +132,8 @@ public class SlayerStyleArts {
                             EntityAbstractSummonedSword ss = new EntityAbstractSummonedSword(
                                     SlashBlade.RegistryEvents.SummonedSword, worldIn) {
                                 @Override
-                                protected void onHitEntity(EntityHitResult p_213868_1_) {
-                                    super.onHitEntity(p_213868_1_);
+                                protected void onHitEntity(EntityHitResult entityHitResult) {
+                                    super.onHitEntity(entityHitResult);
 
                                     LivingEntity target = sender.getLastHurtMob();
                                     if (target != null && this.getHitEntity() == target) {

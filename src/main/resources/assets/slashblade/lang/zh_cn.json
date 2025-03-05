@@ -201,5 +201,7 @@
     "item.slashblade.ex.muramasa.material": "刀组件「村正」",
     "item.slashblade.ex.tukumo.desc": "结月刀「付丧」\n铁制刀刃的轨迹",
     "item.slashblade.slashblade_silverbamboo.desc": "工艺品",
-    "slash_art.slashblade.drive": "幻影刃"
+    "slash_art.slashblade.drive": "幻影刃",
+
+    "attribute.name.generic.slashblade_damage": "拔刀剑伤害系数"
 }
