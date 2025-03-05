@@ -19,6 +19,8 @@ import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.util.TimeValueHelper;
 import mods.flammpfeil.slashblade.util.VectorHelper;
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -92,7 +94,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
             return;
         }
         
-        renderStandbyBlade(matrixStack, bufferIn, lightIn, offhandStack);
+        renderStandbyBlade(matrixStack, bufferIn, lightIn, offhandStack, entity);
 	}
     
     public void renderHotbarItem(PoseStack matrixStack, MultiBufferSource bufferIn, int lightIn, T entity) {
@@ -104,11 +106,11 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 	        if (blade.isEmpty()) 
 	            return;
 	        
-	        renderStandbyBlade(matrixStack, bufferIn, lightIn, blade);
+	        renderStandbyBlade(matrixStack, bufferIn, lightIn, blade, entity);
         }
 	}
 
-	public void renderStandbyBlade(PoseStack matrixStack, MultiBufferSource bufferIn, int lightIn, ItemStack blade) {
+	public void renderStandbyBlade(PoseStack matrixStack, MultiBufferSource bufferIn, int lightIn, ItemStack blade, T entity) {
 		LazyOptional<ISlashBladeState> state = blade.getCapability(CapabilitySlashBlade.BLADESTATE);
         state.ifPresent(s -> {
 	        double modelScaleBase = 0.0078125F; // 0.5^7
@@ -127,26 +129,32 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 			case PSO2:
 				matrixStack.translate(1F,-1.125f, 0.20f);
 				matrixStack.mulPose(new Quaternionf().rotateZYX(-0.122173F, 0, 0));
-				break;
+                if(Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON
+                && entity == Minecraft.getInstance().player) return;
+                break;
 				
 			case KATANA:
-				matrixStack.translate(0.25F,-0.875f, -0.75f);
+				matrixStack.translate(0.25F,-0.875f, -0.55f);
 				matrixStack.mulPose(new Quaternionf().rotateZYX(3.1415927F, 1.570796f, 0.261799F));
 				break;
 				
 			case DEFAULT:
-				matrixStack.translate(0.25F,-0.875f, -0.75f);
+				matrixStack.translate(0.25F,-0.875f, -0.55f);
 				matrixStack.mulPose(new Quaternionf().rotateZYX(0F, 1.570796f, 0.261799F));
 				break;
 				
 			case NINJA:
 				matrixStack.translate(-0.5F,-2f, 0.20f);
 				matrixStack.mulPose(new Quaternionf().rotateZYX(-2.094395F, 0f, 3.1415927F));
+                if(Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON
+                        && entity == Minecraft.getInstance().player) return;
 				break;
 				
 			case RNINJA:
 				matrixStack.translate(0.5F,-2f, 0.20f);
 				matrixStack.mulPose(new Quaternionf().rotateZYX(-1.047198F, 0, 0));
+                if(Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON
+                        && entity == Minecraft.getInstance().player) return;
 				break;
 				
 			default:
