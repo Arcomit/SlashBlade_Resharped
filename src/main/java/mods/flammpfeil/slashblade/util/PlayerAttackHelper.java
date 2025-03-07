@@ -19,34 +19,34 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
 
 public class PlayerAttackHelper {
-    public static void attack(Player attacker, Entity target){
+    public static void attack(Player attacker, Entity target) {
         // 触发Forge事件，以兼容其他模组
         if (!net.minecraftforge.common.ForgeHooks.onPlayerAttackTarget(attacker, target)) return;
         // 判断攻击目标是否可以被攻击
         if (target.isAttackable()) {
             if (!target.skipAttackInteraction(attacker)) {
                 // 获取攻击者的攻击伤害属性
-                float baseDamage = (float)attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
+                float baseDamage = (float) attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
                 // 获取附魔伤害加成（针对生物类型），
-                float enchantmentDamageBonus ;// ps:杀死类附魔攻击对应的生物加成2.5n。(n为附魔等级)
+                float enchantmentDamageBonus;// ps:杀死类附魔攻击对应的生物加成2.5n。(n为附魔等级)
                 if (target instanceof LivingEntity) {
-                    enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity)target).getMobType());
+                    enchantmentDamageBonus = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity) target).getMobType());
                 } else {
-                    enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), MobType.UNDEFINED);
+                    enchantmentDamageBonus = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), MobType.UNDEFINED);
                 }
 
                 // 补正伤害DPS至修改公式前水平
                 baseDamage *= 0.25f;
                 //伤害或附魔伤害>0时
-                if (baseDamage > 0.0F || enchantmentDamageBonus  > 0.0F) {
+                if (baseDamage > 0.0F || enchantmentDamageBonus > 0.0F) {
 
                     // 获取攻击者的击退属性
-                    float knockback = (float)attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK); // Forge: Initialize attacker value to the attack knockback attribute of the player, which is by default 0
+                    float knockback = (float) attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK); // Forge: Initialize attacker value to the attack knockback attribute of the player, which is by default 0
                     // 加上当前击退附魔加成
-                    knockback  += EnchantmentHelper.getKnockbackBonus(attacker);
+                    knockback += EnchantmentHelper.getKnockbackBonus(attacker);
                     if (attacker.isSprinting()) {
-                        attacker.level().playSound((Player)null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, attacker.getSoundSource(), 1.0F, 1.0F);
-                        ++knockback ;
+                        attacker.level().playSound(null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, attacker.getSoundSource(), 1.0F, 1.0F);
+                        ++knockback;
                     }
 
                     // 暴击
@@ -61,16 +61,16 @@ public class PlayerAttackHelper {
                     }
 
                     // 加上附魔伤害加成
-                    baseDamage += enchantmentDamageBonus ;
+                    baseDamage += enchantmentDamageBonus;
 
                     //火焰附加
                     float preAttackHealth = 0.0F;
                     boolean shouldSetFire = false;
                     int fireAspectLevel = EnchantmentHelper.getFireAspect(attacker);
                     if (target instanceof LivingEntity) {
-                        preAttackHealth  = ((LivingEntity)target).getHealth();
+                        preAttackHealth = ((LivingEntity) target).getHealth();
                         if (fireAspectLevel > 0 && !target.isOnFire()) {
-                            shouldSetFire  = true;
+                            shouldSetFire = true;
                             target.setSecondsOnFire(1);
                         }
                     }
@@ -79,11 +79,11 @@ public class PlayerAttackHelper {
                     boolean damageSuccess = target.hurt(attacker.damageSources().playerAttack(attacker), baseDamage);
                     if (damageSuccess) {
                         //击退
-                        if (knockback  > 0) {
-                            if (target instanceof LivingEntity) {
-                                ((LivingEntity)target).knockback((double)((float)knockback  * 0.5F), (double) Mth.sin(attacker.getYRot() * ((float)Math.PI / 180F)), (double)(-Mth.cos(attacker.getYRot() * ((float)Math.PI / 180F))));
+                        if (knockback > 0) {
+                            if (target instanceof LivingEntity living) {
+                                living.knockback(knockback * 0.5D, Mth.sin(attacker.getYRot() * ((float) Math.PI / 180F)), -Mth.cos(attacker.getYRot() * ((float) Math.PI / 180F)));
                             } else {
-                                target.push((double)(-Mth.sin(attacker.getYRot() * ((float)Math.PI / 180F)) * (float)knockback  * 0.5F), 0.1D, (double)(Mth.cos(attacker.getYRot() * ((float)Math.PI / 180F)) * (float)knockback  * 0.5F));
+                                target.push(-Mth.sin(attacker.getYRot() * ((float) Math.PI / 180F)) * knockback * 0.5D, 0.1D, Mth.cos(attacker.getYRot() * ((float) Math.PI / 180F)) * knockback * 0.5D);
                             }
 
                             attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
@@ -91,23 +91,23 @@ public class PlayerAttackHelper {
                         }
 
                         if (target instanceof ServerPlayer && target.hurtMarked) {
-                            ((ServerPlayer)target).connection.send(new ClientboundSetEntityMotionPacket(target));
+                            ((ServerPlayer) target).connection.send(new ClientboundSetEntityMotionPacket(target));
                             target.hurtMarked = false;
                             target.setDeltaMovement(vec3);
                         }
 
                         //音效
                         if (isCritical) {
-                            attacker.level().playSound((Player)null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, attacker.getSoundSource(), 1.0F, 1.0F);
+                            attacker.level().playSound(null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, attacker.getSoundSource(), 1.0F, 1.0F);
                             attacker.crit(target);
-                        }else {
-                            attacker.level().playSound((Player)null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, attacker.getSoundSource(), 1.0F, 1.0F);
+                        } else {
+                            attacker.level().playSound(null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, attacker.getSoundSource(), 1.0F, 1.0F);
                         }
 
                         //触发攻击目标的附魔效果
                         attacker.setLastHurtMob(target);
                         if (target instanceof LivingEntity) {
-                            EnchantmentHelper.doPostHurtEffects((LivingEntity)target, attacker);
+                            EnchantmentHelper.doPostHurtEffects((LivingEntity) target, attacker);
                         }
 
                         EnchantmentHelper.doPostDamageEffects(attacker, target);
@@ -120,7 +120,7 @@ public class PlayerAttackHelper {
                         // 减少耐久
                         if (!attacker.level().isClientSide && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
                             ItemStack copy = itemstack1.copy();
-                            itemstack1.hurtEnemy((LivingEntity)entity, attacker);
+                            itemstack1.hurtEnemy((LivingEntity) entity, attacker);
                             if (itemstack1.isEmpty()) {
                                 net.minecraftforge.event.ForgeEventFactory.onPlayerDestroyItem(attacker, copy, InteractionHand.MAIN_HAND);
                                 attacker.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
@@ -128,7 +128,7 @@ public class PlayerAttackHelper {
                         }
 
                         if (target instanceof LivingEntity) {
-                            float damageDealt = preAttackHealth  - ((LivingEntity)target).getHealth();
+                            float damageDealt = preAttackHealth - ((LivingEntity) target).getHealth();
                             //伤害统计
                             attacker.awardStat(Stats.DAMAGE_DEALT, Math.round(damageDealt * 10.0F));
                             //应用完整的火焰附加效果(每级4秒)
@@ -138,15 +138,15 @@ public class PlayerAttackHelper {
 
 
                             if (attacker.level() instanceof ServerLevel && damageDealt > 2.0F) {
-                                int k = (int)((double)damageDealt  * 0.5D);
-                                ((ServerLevel)attacker.level()).sendParticles(ParticleTypes.DAMAGE_INDICATOR, target.getX(), target.getY(0.5D), target.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
+                                int k = (int) (damageDealt * 0.5D);
+                                ((ServerLevel) attacker.level()).sendParticles(ParticleTypes.DAMAGE_INDICATOR, target.getX(), target.getY(0.5D), target.getZ(), k, 0.1D, 0.0D, 0.1D, 0.2D);
                             }
                         }
 
                         attacker.causeFoodExhaustion(0.1F);// 消耗饱食度
                     } else {//伤害未成功应用
-                        attacker.level().playSound((Player)null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_NODAMAGE, attacker.getSoundSource(), 1.0F, 1.0F);
-                        if (shouldSetFire ) {
+                        attacker.level().playSound(null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_NODAMAGE, attacker.getSoundSource(), 1.0F, 1.0F);
+                        if (shouldSetFire) {
                             //取消预火焰附加效果
                             target.clearFire();
                         }
