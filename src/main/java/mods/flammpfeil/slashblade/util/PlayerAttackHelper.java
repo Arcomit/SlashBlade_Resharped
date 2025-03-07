@@ -35,6 +35,8 @@ public class PlayerAttackHelper {
                     enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), MobType.UNDEFINED);
                 }
 
+                // 补正伤害DPS至修改公式前水平
+                baseDamage *= 0.25f;
                 //伤害或附魔伤害>0时
                 if (baseDamage > 0.0F || enchantmentDamageBonus  > 0.0F) {
 

@@ -317,7 +317,7 @@ public class AttackManager {
                     AttributeModifier am = new AttributeModifier("RankDamageBonus", modifiedRatio,
                             AttributeModifier.Operation.ADDITION);
 
-                    AttributeModifier scale = new AttributeModifier("SlashBladeDamageScale", 0.25 * getSlashBladeDamageScale(attacker) * SLASHBLADE_DAMAGE_MULTIPLIER.get() - 1.0,
+                    AttributeModifier scale = new AttributeModifier("SlashBladeDamageScale", getSlashBladeDamageScale(attacker) * SLASHBLADE_DAMAGE_MULTIPLIER.get() - 1.0,
                             AttributeModifier.Operation.MULTIPLY_TOTAL);
 
                     try {
