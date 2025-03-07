@@ -62,6 +62,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static mods.flammpfeil.slashblade.SlashBladeConfig.TRAPEZOHEDRON_MAX_REFINE;
+
 @Mod(SlashBlade.MODID)
 public class SlashBlade {
     public static final String MODID = "slashblade";
@@ -328,7 +330,7 @@ public class SlashBlade {
 
                             @Override
                             public int getEnchantmentValue(ItemStack stack) {
-                                return Integer.MAX_VALUE;
+                                return TRAPEZOHEDRON_MAX_REFINE.get();
                             }
                         });
 

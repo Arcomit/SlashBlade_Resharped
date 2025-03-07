@@ -14,6 +14,11 @@ public class SlashBladeConfig {
     public static ForgeConfigSpec.DoubleValue SABIGATANA_SPAWN_CHANCE;
     public static ForgeConfigSpec.DoubleValue BROKEN_SABIGATANA_SPAWN_CHANCE;
     public static ForgeConfigSpec.IntValue REFINE_LEVEL_COST;
+
+    public static ForgeConfigSpec.DoubleValue SLASHBLADE_DAMAGE_MULTIPLIER;
+    public static ForgeConfigSpec.DoubleValue REFINE_DAMAGE_MULTIPLIER;
+    public static ForgeConfigSpec.IntValue TRAPEZOHEDRON_MAX_REFINE;
+
     
     static {
         ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
@@ -46,6 +51,15 @@ public class SlashBladeConfig {
         BEWITCHED_HUNGER_EXHAUSTION = COMMON_BUILDER
                 .comment("Determining the base exhaustion for slashblade's self-repair.")
                 .defineInRange("bewitched_hunger_exhaustion", 0.05D, 0.0001D, Double.MAX_VALUE);
+
+        SLASHBLADE_DAMAGE_MULTIPLIER = COMMON_BUILDER.comment("Blade Damage: Base Damage × Multiplier.[Default: 1.0D]")
+                .defineInRange("slashblade_damage_multiplier", 1.0D, 0.0D, 1024.0D);
+
+        REFINE_DAMAGE_MULTIPLIER = COMMON_BUILDER.comment("S-Rank Bonus: Each Refine × Multiplier'value Damage.[Default: 0.785D]")
+                .defineInRange("refine_damage_multiplier", 0.785D, 0.0D, 1024.0D);
+
+        TRAPEZOHEDRON_MAX_REFINE = COMMON_BUILDER.comment("The maximum number of refine of Trapezohedron.[Default: 2147483647(infinity)]")
+                .defineInRange("max_proud_soul_got", Integer.MAX_VALUE, 200, Integer.MAX_VALUE);
 
         COMMON_BUILDER.pop();
         COMMON_CONFIG = COMMON_BUILDER.build();
