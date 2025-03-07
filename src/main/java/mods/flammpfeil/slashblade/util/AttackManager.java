@@ -29,8 +29,12 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static mods.flammpfeil.slashblade.SlashBladeConfig.PLAYER_DAMAGE_MULTIPLIER;
+import static mods.flammpfeil.slashblade.SlashBladeConfig.REFINE_DAMAGE_MULTIPLIER;
 
 public class AttackManager {
     static public void areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit) {
@@ -50,17 +54,17 @@ public class AttackManager {
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, boolean mute, boolean critical,
-            double damage) {
+                                            double damage) {
         return doSlash(playerIn, roll, Vec3.ZERO, mute, critical, damage);
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, Vec3 centerOffset, boolean mute,
-            boolean critical, double damage) {
+                                            boolean critical, double damage) {
         return doSlash(playerIn, roll, centerOffset, mute, critical, damage, KnockBacks.cancel);
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, Vec3 centerOffset, boolean mute,
-            boolean critical, double damage, KnockBacks knockback) {
+                                            boolean critical, double damage, KnockBacks knockback) {
 
         int colorCode = playerIn.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(state -> state.getColorCode()).orElseGet(() -> 0xFFFFFF);
@@ -69,17 +73,17 @@ public class AttackManager {
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, int colorCode, Vec3 centerOffset,
-            boolean mute, boolean critical, double damage, KnockBacks knockback) {
+                                            boolean mute, boolean critical, double damage, KnockBacks knockback) {
 
         if (playerIn.level().isClientSide())
             return null;
         ItemStack blade = playerIn.getMainHandItem();
-		if(!blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
-        	return null;
-        if (MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.DoSlashEvent(blade, 
-        		blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new),
-        		playerIn, roll, critical, damage, knockback)))
-			return null;
+        if (!blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+            return null;
+        if (MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.DoSlashEvent(blade,
+                blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new),
+                playerIn, roll, critical, damage, knockback)))
+            return null;
         Vec3 pos = playerIn.position().add(0.0D, (double) playerIn.getEyeHeight() * 0.75D, 0.0D)
                 .add(playerIn.getLookAngle().scale(0.3f));
 
@@ -100,7 +104,7 @@ public class AttackManager {
         jc.setIsCritical(critical);
 
         jc.setDamage(damage);
-        
+
         jc.setKnockBack(knockback);
 
         if (playerIn != null)
@@ -148,12 +152,13 @@ public class AttackManager {
 
                             if (entity.isAlive()) {
                                 float yRot = this.getOwner() != null ? this.getOwner().getYRot() : 0;
-								entity.addDeltaMovement(new Vec3(
+                                entity.addDeltaMovement(new Vec3(
                                         (double) (-Math.sin(yRot * (float) Math.PI / 180.0F) * 0.5),
                                         0.05D,
                                         (double) (Math.cos(yRot * (float) Math.PI / 180.0F) * 0.5)));
                                 float scale = 1f;
-                                if (this.getShooter() instanceof LivingEntity shooter) scale = getSlashBladeDamageScale(shooter);
+                                if (this.getShooter() instanceof LivingEntity shooter)
+                                    scale = (float) (getSlashBladeDamageScale(shooter) * PLAYER_DAMAGE_MULTIPLIER.get());
                                 doAttackWith(this.damageSources().indirectMagic(this, this.getShooter()),
                                         (float) (living.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2F * scale), entity, true,
                                         true);
@@ -192,14 +197,14 @@ public class AttackManager {
     }
 
     static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float ratio,
-            boolean forceHit, boolean resetHit, boolean mute) {
+                                          boolean forceHit, boolean resetHit, boolean mute) {
         return areaAttack(playerIn, beforeHit, ratio, forceHit, resetHit, mute, null);
     }
 
     static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float ratio,
-            boolean forceHit, boolean resetHit, boolean mute, List<Entity> exclude) {
+                                          boolean forceHit, boolean resetHit, boolean mute, List<Entity> exclude) {
         List<Entity> founds = Lists.newArrayList();
-        float modifiedRatio = (1.0F + EnchantmentHelper.getSweepingDamageRatio(playerIn) * 0.5f) * ratio;
+        float modifiedRatio = (EnchantmentHelper.getSweepingDamageRatio(playerIn) * 0.5f) * ratio;
         AttributeModifier am = new AttributeModifier("SweepingDamageRatio", modifiedRatio,
                 AttributeModifier.Operation.MULTIPLY_BASE);
 
@@ -233,12 +238,12 @@ public class AttackManager {
     }
 
     static public <E extends Entity & IShootable> List<Entity> areaAttack(E owner, Consumer<LivingEntity> beforeHit,
-            double reach, boolean forceHit, boolean resetHit) {
+                                                                          double reach, boolean forceHit, boolean resetHit) {
         return areaAttack(owner, beforeHit, reach, forceHit, resetHit, null);
     }
 
     static public <E extends Entity & IShootable> List<Entity> areaAttack(E owner, Consumer<LivingEntity> beforeHit,
-            double reach, boolean forceHit, boolean resetHit, List<Entity> exclude) {
+                                                                          double reach, boolean forceHit, boolean resetHit, List<Entity> exclude) {
         List<Entity> founds = Lists.newArrayList();
 
         // AABB bb = owner.getBoundingBox();
@@ -256,12 +261,12 @@ public class AttackManager {
                     beforeHit.accept(living);
 
                 float baseAmount = (float) owner.getDamage();
-                if(owner.getShooter() instanceof LivingEntity living) {
-                	if(!(owner instanceof EntitySlashEffect)) {
-	                	int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
-	                	baseAmount += ((float) powerLevel * 0.1F);
-                	}
-                	baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE) * getSlashBladeDamageScale(living);
+                if (owner.getShooter() instanceof LivingEntity living) {
+                    if (!(owner instanceof EntitySlashEffect)) {
+                        int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+                        baseAmount += ((float) powerLevel * 0.1F);
+                    }
+                    baseAmount *= (float) (living.getAttributeValue(Attributes.ATTACK_DAMAGE) * getSlashBladeDamageScale(living) * PLAYER_DAMAGE_MULTIPLIER.get());
 
                 }
 
@@ -303,53 +308,67 @@ public class AttackManager {
                             .orElse(IConcentrationRank.ConcentrationRanks.NONE);
 
                     float modifiedRatio = rankBonus.level / 2.0f;
-                    if (attacker instanceof Player
-                            && IConcentrationRank.ConcentrationRanks.S.level <= rankBonus.level) {
-                        int level = ((Player) attacker).experienceLevel;
-                        modifiedRatio = Math.max(modifiedRatio, Math.min(level, state.getRefine()));
-                    }
+                    if (attacker instanceof Player playerAttacker) {
+                        if (IConcentrationRank.ConcentrationRanks.S.level <= rankBonus.level) {
+                            int level = playerAttacker.experienceLevel;
+                            modifiedRatio = (float) Math.max(modifiedRatio, Math.min(level, state.getRefine()) * REFINE_DAMAGE_MULTIPLIER.get());
+                        }
 
-                    AttributeModifier am = new AttributeModifier("RankDamageBonus", modifiedRatio,
-                            AttributeModifier.Operation.ADDITION);
+                        AttributeModifier am = new AttributeModifier("RankDamageBonus", modifiedRatio,
+                                AttributeModifier.Operation.ADDITION);
 
-                    AttributeModifier scale = new AttributeModifier("SlashBladeDamageScale", getSlashBladeDamageScale(attacker) - 1.0,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL);
+                        AttributeModifier playerScale = new AttributeModifier("SlashBladeDamageScale", (0.25D * getSlashBladeDamageScale(attacker) * PLAYER_DAMAGE_MULTIPLIER.get()) - 1.0D,
+                                AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-                    try {
-                        state.setOnClick(true);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(am);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(scale);
+                        try {
+                            state.setOnClick(true);
+                            playerAttacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(am);
+                            playerAttacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(playerScale);
 
-                        ((Player) attacker).attack(t);
+                            fillAttackStrengthTicker(playerAttacker);
+                            playerAttacker.attack(t);
 
-                    } finally {
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(am);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(scale);
-                        state.setOnClick(false);
+                        } finally {
+                            playerAttacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(am);
+                            playerAttacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(playerScale);
+
+                            state.setOnClick(false);
+                        }
                     }
                 });
             }, target, forceHit, resetHit);
         } else {
-            float baseAmount = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * getSlashBladeDamageScale(attacker);
-            doAttackWith(attacker.damageSources().mobAttack(attacker), baseAmount * getSlashBladeDamageScale(attacker), target, forceHit, resetHit);
+            float baseAmount = (float) (attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * getSlashBladeDamageScale(attacker) * PLAYER_DAMAGE_MULTIPLIER.get());
+            doAttackWith(attacker.damageSources().mobAttack(attacker), baseAmount, target, forceHit, resetHit);
         }
 
         ArrowReflector.doReflect(target, attacker);
         TNTExtinguisher.doExtinguishing(target, attacker);
     }
 
-    public static void playQuickSheathSoundAction(LivingEntity entity) {
-    	if(entity.level().isClientSide())
-    		return ;
-    	entity.level().playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), 
-    			SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 1.0F, 1.0F);
+    private static void fillAttackStrengthTicker(Player playerAttacker) {
+        try {
+            Field attackStrengthTickerField = LivingEntity.class.getDeclaredField("attackStrengthTicker");
+            attackStrengthTickerField.setAccessible(true);
+            attackStrengthTickerField.set(playerAttacker, 100);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+
+        }
     }
-    
+
+    public static void playQuickSheathSoundAction(LivingEntity entity) {
+        if (entity.level().isClientSide())
+            return;
+        entity.level().playSound((Player) null, entity.getX(), entity.getY(), entity.getZ(),
+                SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 1.0F, 1.0F);
+    }
+
     public static void playPiercingSoundAction(LivingEntity entity) {
-    	if(entity.level().isClientSide())
-    		return ;
-    	entity.level().playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), 
-    			SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+        if (entity.level().isClientSide())
+            return;
+        entity.level().playSound((Player) null, entity.getX(), entity.getY(), entity.getZ(),
+                SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     public static Vec3 genRushOffset(LivingEntity entityIn) {
@@ -357,9 +376,8 @@ public class AttackManager {
     }
 
     public static float getSlashBladeDamageScale(LivingEntity entity) {
-//        SlashBlade.LOGGER.error("SCALE_DEBUG");
-//        SlashBlade.LOGGER.error("SCALE_DEBUG: {}", entity);
-//        SlashBlade.LOGGER.error("SCALE_DEBUG: {}", entity.getAttribute(ModAttributes.getSlashBladeDamage()).getValue());
+        if (entity.getAttribute(ModAttributes.getSlashBladeDamage()) == null) return 1.0F;
+
         return (float) entity.getAttribute(ModAttributes.getSlashBladeDamage()).getValue();
     }
 

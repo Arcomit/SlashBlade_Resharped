@@ -76,11 +76,13 @@ public class SlashBlade {
     public SlashBlade() {
         // Register the setup method for modloading
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		modEventBus.addListener(this::setup);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SlashBladeConfig.COMMON_CONFIG);
+
+        modEventBus.addListener(this::setup);
 
         // Register ourselves for server and other game events we are interested in
-        ModAttributes.ATTRIBUTES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
+        ModAttributes.ATTRIBUTES.register(modEventBus);
         NetworkManager.register();
 
         ComboStateRegistry.COMBO_STATE.register(modEventBus);
@@ -88,8 +90,7 @@ public class SlashBlade {
         SlashBladeCreativeGroup.CREATIVE_MODE_TABS.register(modEventBus);
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register(modEventBus);
         SpecialEffectsRegistry.SPECIAL_EFFECT.register(modEventBus);
-        
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SlashBladeConfig.COMMON_CONFIG);
+
 
     }
 
