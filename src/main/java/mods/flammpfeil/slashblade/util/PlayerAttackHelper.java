@@ -28,7 +28,7 @@ public class PlayerAttackHelper {
                 // 获取攻击者的攻击伤害属性
                 float baseDamage = (float)attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
                 // 获取附魔伤害加成（针对生物类型），
-                float enchantmentDamageBonus ;// ps:n为等级，锋利加成为(0.5n+0.5)，其余为对对应的生物加成2.5n。
+                float enchantmentDamageBonus ;// ps:杀死类附魔攻击对应的生物加成2.5n。(n为附魔等级)
                 if (target instanceof LivingEntity) {
                     enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity)target).getMobType());
                 } else {
