@@ -118,7 +118,7 @@ public class ItemSlashBlade extends SwordItem {
 
 				float attackAmplifier = s.getAttackAmplifier();
 				if (s.isBroken()){
-					//断刀0.5伤害
+					//断刀-0.5伤害
 					attackAmplifier = -0.5F - baseAttackModifier;
 				}else{
 					float refineFactor = swordType.contains(SwordType.FIERCEREDGE) ? 0.1F : 0.05F;
