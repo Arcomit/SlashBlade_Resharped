@@ -435,8 +435,8 @@ public class ItemSlashBlade extends SwordItem {
 				ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(loc) != null
 						? ComboStateRegistry.REGISTRY.get().getValue(loc)
 						: ComboStateRegistry.NONE.get();
-				cs.tickAction(living);
 				if(isSelected)
+					cs.tickAction(living);
 					state.sendChanges(living);
 			}
 		});

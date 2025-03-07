@@ -53,6 +53,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 
+import static mods.flammpfeil.slashblade.SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER;
+
 public class EntityAbstractSummonedSword extends Projectile implements IShootable {
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData
             .<Integer>defineId(EntityAbstractSummonedSword.class, EntityDataSerializers.INT);
@@ -518,7 +520,9 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         // todo: attack manager
         targetEntity.invulnerableTime = 0;
         float scale = 1f;
-        if (shooter instanceof LivingEntity living) scale = AttackManager.getSlashBladeDamageScale(living);
+        if (shooter instanceof LivingEntity living) {
+            scale = (float) (AttackManager.getSlashBladeDamageScale(living) * SLASHBLADE_DAMAGE_MULTIPLIER.get());
+        }
         float damageValue = i * scale;
         if (targetEntity.hurt(damagesource, damageValue)) {
             Entity hits = targetEntity;

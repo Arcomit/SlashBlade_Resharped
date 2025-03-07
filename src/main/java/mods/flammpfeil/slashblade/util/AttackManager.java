@@ -32,6 +32,9 @@ import net.minecraftforge.common.MinecraftForge;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static mods.flammpfeil.slashblade.SlashBladeConfig.REFINE_DAMAGE_MULTIPLIER;
+import static mods.flammpfeil.slashblade.SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER;
+
 public class AttackManager {
     static public void areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit) {
         areaAttack(playerIn, beforeHit, 1.0f, true, true, false);
@@ -153,7 +156,9 @@ public class AttackManager {
                                         0.05D,
                                         (double) (Math.cos(yRot * (float) Math.PI / 180.0F) * 0.5)));
                                 float scale = 1f;
-                                if (this.getShooter() instanceof LivingEntity shooter) scale = getSlashBladeDamageScale(shooter);
+                                if (this.getShooter() instanceof LivingEntity shooter){
+                                    scale = (float) (getSlashBladeDamageScale(shooter) * SLASHBLADE_DAMAGE_MULTIPLIER.get());
+                                }
                                 doAttackWith(this.damageSources().indirectMagic(this, this.getShooter()),
                                         (float) (living.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2F * scale), entity, true,
                                         true);
@@ -199,7 +204,7 @@ public class AttackManager {
     static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float ratio,
             boolean forceHit, boolean resetHit, boolean mute, List<Entity> exclude) {
         List<Entity> founds = Lists.newArrayList();
-        float modifiedRatio = (1.0F + EnchantmentHelper.getSweepingDamageRatio(playerIn) * 0.5f) * ratio;
+        float modifiedRatio = (EnchantmentHelper.getSweepingDamageRatio(playerIn) * 0.5f) * ratio;
         AttributeModifier am = new AttributeModifier("SweepingDamageRatio", modifiedRatio,
                 AttributeModifier.Operation.MULTIPLY_BASE);
 
@@ -261,7 +266,7 @@ public class AttackManager {
 	                	int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
 	                	baseAmount += ((float) powerLevel * 0.1F);
                 	}
-                	baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE) * getSlashBladeDamageScale(living);
+                	baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE) * getSlashBladeDamageScale(living) * SLASHBLADE_DAMAGE_MULTIPLIER.get();
 
                 }
 
@@ -306,21 +311,20 @@ public class AttackManager {
                     if (attacker instanceof Player
                             && IConcentrationRank.ConcentrationRanks.S.level <= rankBonus.level) {
                         int level = ((Player) attacker).experienceLevel;
-                        modifiedRatio = Math.max(modifiedRatio, Math.min(level, state.getRefine()));
+                        modifiedRatio = (float) Math.max(modifiedRatio, Math.min(level, state.getRefine()) * REFINE_DAMAGE_MULTIPLIER.get());
                     }
 
                     AttributeModifier am = new AttributeModifier("RankDamageBonus", modifiedRatio,
                             AttributeModifier.Operation.ADDITION);
 
-                    AttributeModifier scale = new AttributeModifier("SlashBladeDamageScale", getSlashBladeDamageScale(attacker) - 1.0,
+                    AttributeModifier scale = new AttributeModifier("SlashBladeDamageScale", 0.25 * getSlashBladeDamageScale(attacker) * SLASHBLADE_DAMAGE_MULTIPLIER.get() - 1.0,
                             AttributeModifier.Operation.MULTIPLY_TOTAL);
 
                     try {
                         state.setOnClick(true);
                         attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(am);
                         attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(scale);
-
-                        ((Player) attacker).attack(t);
+                        PlayerAttackHelper.attack(((Player) attacker),t);
 
                     } finally {
                         attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(am);
@@ -330,8 +334,8 @@ public class AttackManager {
                 });
             }, target, forceHit, resetHit);
         } else {
-            float baseAmount = (float) attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * getSlashBladeDamageScale(attacker);
-            doAttackWith(attacker.damageSources().mobAttack(attacker), baseAmount * getSlashBladeDamageScale(attacker), target, forceHit, resetHit);
+            float baseAmount = (float) (attacker.getAttribute(Attributes.ATTACK_DAMAGE).getValue() * getSlashBladeDamageScale(attacker) * SLASHBLADE_DAMAGE_MULTIPLIER.get());
+            doAttackWith(attacker.damageSources().mobAttack(attacker), baseAmount, target, forceHit, resetHit);
         }
 
         ArrowReflector.doReflect(target, attacker);
@@ -357,10 +361,10 @@ public class AttackManager {
     }
 
     public static float getSlashBladeDamageScale(LivingEntity entity) {
-//        SlashBlade.LOGGER.error("SCALE_DEBUG");
-//        SlashBlade.LOGGER.error("SCALE_DEBUG: {}", entity);
-//        SlashBlade.LOGGER.error("SCALE_DEBUG: {}", entity.getAttribute(ModAttributes.getSlashBladeDamage()).getValue());
-        return (float) entity.getAttribute(ModAttributes.getSlashBladeDamage()).getValue();
+        if (entity.getAttribute(ModAttributes.getSlashBladeDamage()) != null){
+            return (float) entity.getAttribute(ModAttributes.getSlashBladeDamage()).getValue();
+        }
+        return 1.0f;
     }
 
 }
