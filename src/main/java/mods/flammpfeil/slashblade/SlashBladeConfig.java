@@ -17,6 +17,7 @@ public class SlashBladeConfig {
 
     public static ForgeConfigSpec.DoubleValue SLASHBLADE_DAMAGE_MULTIPLIER;
     public static ForgeConfigSpec.DoubleValue REFINE_DAMAGE_MULTIPLIER;
+    public static ForgeConfigSpec.IntValue TRAPEZOHEDRON_MAX_REFINE;
 
     
     static {
@@ -56,6 +57,9 @@ public class SlashBladeConfig {
 
         REFINE_DAMAGE_MULTIPLIER = COMMON_BUILDER.comment("S-Rank Bonus: Each Refine × Multiplier'value Damage.[Default: 0.785D]")
                 .defineInRange("refine_damage_multiplier", 0.785D, 0.0D, 1024.0D);
+
+        TRAPEZOHEDRON_MAX_REFINE = COMMON_BUILDER.comment("The maximum number of refine of Trapezohedron.[Default: 2147483647(infinity)]")
+                .defineInRange("max_proud_soul_got", Integer.MAX_VALUE, 200, Integer.MAX_VALUE);
 
         COMMON_BUILDER.pop();
         COMMON_CONFIG = COMMON_BUILDER.build();
