@@ -64,8 +64,7 @@ minecraft {
     // However, it must be at "META-INF/accesstransformer.cfg" in the final mod jar to be loaded by Forge.
     // This default location is a best practice to automatically put the file in the right place in the final jar.
     // See https://docs.minecraftforge.net/en/latest/advanced/accesstransformers/ for more information.
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    // Currently, this location cannot be changed from the default.
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
     // Default run configurations.
     // These can be tweaked, removed, or duplicated as needed.
@@ -88,14 +87,14 @@ minecraft {
 
             // Mixin
             arg "-mixin.config=slashblade.mixins.json"
-
+            
             mods {
                 "${mod_id}" {
                     source sourceSets.main
                 }
             }
         }
-
+        
         client {
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             property 'forge.enabledGameTestNamespaces', mod_id
@@ -153,20 +152,20 @@ repositories {
         name "KosmX's maven"
         url 'https://maven.kosmx.dev/'
     }
-
+    
     maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.dev"
+      // location of a maven mirror for JEI files, as a fallback
+      name = "ModMaven"
+      url = "https://modmaven.dev"
     }
+    
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
+	}
 
     maven {
-        name = "TerraformersMC"
-        url = "https://maven.terraformersmc.com/"
-    }
-
-    maven {
-        url = "https://cursemaven.com"
+        url "https://cursemaven.com"
     }
 
 }
@@ -181,7 +180,7 @@ dependencies {
 
     // Apply Mixin AP
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-
+    
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
@@ -199,18 +198,17 @@ dependencies {
 
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim}")
 
-    // compile against the JEI API but do not include it at runtime
+    //假人(含前置)
+    runtimeOnly fg.deobf("curse.maven:selene-499980:6023899")
+    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:5737040")
+        // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-
+    
     //compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
-    //runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
-
-    runtimeOnly fg.deobf("curse.maven:selene-499980:6249659")
-    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:6237015")
-
+	//runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}") 
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -219,11 +217,11 @@ dependencies {
 // See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [
-            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
-            forge_version       : forge_version, forge_version_range: forge_version_range,
+            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
+            forge_version: forge_version, forge_version_range: forge_version_range,
             loader_version_range: loader_version_range,
-            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-            mod_authors         : mod_authors, mod_description: mod_description,
+            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors: mod_authors, mod_description: mod_description,
     ]
     inputs.properties replaceProperties
 
@@ -263,10 +261,10 @@ java {
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            artifact jar
-        }
-    }
-
+        	artifact jar
+	    }
+	}
+	
     repositories {
         maven {
             url "file://${maven_loc}"
