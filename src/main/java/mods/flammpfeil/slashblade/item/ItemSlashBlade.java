@@ -109,20 +109,25 @@ public class ItemSlashBlade extends SwordItem {
 		if (slot == EquipmentSlot.MAINHAND) {
 			LazyOptional<ISlashBladeState> state = stack.getCapability(BLADESTATE);
 			state.ifPresent(s -> {
+				//刀的状态
 				var swordType = SwordType.from(stack);
+				//获得基础攻击力
 				float baseAttackModifier = s.getBaseAttackModifier();
-
+				//锻造数
 				int refine = s.getRefine();
-				float attackAmplifier = s.getAttackAmplifier() - 1F;
-				if (s.isBroken())
+
+				float attackAmplifier = s.getAttackAmplifier();
+				if (s.isBroken()){
+					//断刀0.5伤害
 					attackAmplifier = -0.5F - baseAttackModifier;
-				else
-					attackAmplifier = (swordType.contains(SwordType.FIERCEREDGE)
-							? 1.0F - (1.0F / (1.0F + (0.1F * refine)))
-							: 1.0F - (1.0F / (1.0F + (0.05F * refine)))) * baseAttackModifier;
+				}else{
+					float refineFactor = swordType.contains(SwordType.FIERCEREDGE) ? 0.1F : 0.05F;
+					//锻造伤害面板增加计算，非线性，收益递减。(理论最大值为额外100%基础攻击)
+					attackAmplifier = (1.0F - (1.0F / (1.0F + (refineFactor * refine)))) * baseAttackModifier;
+				}
 
 				AttributeModifier attack = new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier",
-						(double) baseAttackModifier + attackAmplifier, AttributeModifier.Operation.ADDITION);
+						(double) baseAttackModifier + attackAmplifier - 1F, AttributeModifier.Operation.ADDITION);
 
 				result.remove(Attributes.ATTACK_DAMAGE, attack);
 				result.put(Attributes.ATTACK_DAMAGE, attack);
