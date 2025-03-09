@@ -745,6 +745,12 @@ public class ComboStateRegistry {
                     .clickAction((entityIn) -> AdvancementHelper.grantCriterion(entityIn,
                             AdvancementHelper.ADVANCEMENT_RAPID_SLASH))
                     .addHoldAction((e) -> {
+                        int elapsed = e.getTicksUsingItem();
+
+                        int fireTime = (int) TimeValueHelper.getTicksFromFrames(3);
+                        if (elapsed < fireTime)
+                            return;
+
                         AttributeModifier am = new AttributeModifier("SweepingDamageRatio", -3,
                                 AttributeModifier.Operation.ADDITION);
                         AttributeInstance mai = e.getAttribute(ForgeMod.ENTITY_REACH.get());
