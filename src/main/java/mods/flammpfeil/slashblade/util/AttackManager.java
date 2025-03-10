@@ -205,19 +205,8 @@ public class AttackManager {
     static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float comboRatio,
             boolean forceHit, boolean resetHit, boolean mute, List<Entity> exclude) {
         List<Entity> founds = Lists.newArrayList();
-        //横扫之刃附魔加成(三级加成3.25攻击力)
-        AttributeModifier sdb = new AttributeModifier("SweepingDamageBonus",
-                10 * (EnchantmentHelper.getSweepingDamageRatio(playerIn) * 0.5f), AttributeModifier.Operation.ADDITION);
-        //连招伤害系数(用于调整招式中单个剑气的伤害，以控制DPS)
-        AttributeModifier cdr = new AttributeModifier("ComboDamageRatio",
-                comboRatio - 1.0,AttributeModifier.Operation.MULTIPLY_TOTAL);
-
 
         if (!playerIn.level().isClientSide()) {
-            try {
-                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(sdb);
-                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(cdr);
-
                 founds = TargetSelector.getTargettableEntitiesWithinAABB(playerIn.level(), playerIn);
 
                 if (exclude != null)
@@ -226,14 +215,8 @@ public class AttackManager {
                 for (Entity entity : founds) {
                     if (entity instanceof LivingEntity living)
                         beforeHit.accept(living);
-
-                    doMeleeAttack(playerIn, entity, forceHit, resetHit);
+                    doMeleeAttack(playerIn, entity, forceHit, resetHit, comboRatio);
                 }
-
-            } finally {
-                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(sdb);
-                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(cdr);
-            }
         }
 
         if (!mute)
@@ -305,55 +288,18 @@ public class AttackManager {
     }
 
     static public void doMeleeAttack(LivingEntity attacker, Entity target, boolean forceHit, boolean resetHit) {
+        doMeleeAttack(attacker, target, forceHit, resetHit,1.0f);
+    }
+
+    static public void doMeleeAttack(LivingEntity attacker, Entity target, boolean forceHit, boolean resetHit, float comboRatio) {
         if (attacker instanceof Player) {
             doManagedAttack((t) -> {
                 attacker.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
-
-                    //评分等级加成
-                    IConcentrationRank.ConcentrationRanks rankBonus = attacker
-                            .getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
-                            .map(rp -> rp.getRank(attacker.getCommandSenderWorld().getGameTime()))
-                            .orElse(IConcentrationRank.ConcentrationRanks.NONE);
-                    float rankDamageBonus = rankBonus.level / 2.0f;
-                    if (attacker instanceof Player
-                            && IConcentrationRank.ConcentrationRanks.S.level <= rankBonus.level) {
-                        int level = ((Player) attacker).experienceLevel;
-                        rankDamageBonus = (float) Math.max(rankDamageBonus, Math.min(level, state.getRefine()) * REFINE_DAMAGE_MULTIPLIER.get());
-                    }
-                    AttributeModifier rdb = new AttributeModifier("RankDamageBonus", rankDamageBonus,
-                            AttributeModifier.Operation.ADDITION);
-
-                    //杀手类附魔加成(杀死类附魔攻击对应的生物加成2.5*附魔等级)
-                    float enchantmentDamageBonus;
-                    if (target instanceof LivingEntity) {
-                        enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity)target).getMobType());
-                    } else {
-                        enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), MobType.UNDEFINED);
-                    }
-                    AttributeModifier edb = new AttributeModifier("EnchantmentDamageBonus", enchantmentDamageBonus,
-                            AttributeModifier.Operation.ADDITION);
-
-                    //拔刀伤害系数(饰品单独给拔刀剑增伤用)
-                    AttributeModifier sdr = new AttributeModifier("SlashBladeDamageRatio", getSlashBladeDamageScale(attacker) - 1.0,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL);
-
-                    //拔刀剑伤害调整比例(用于提供配置文件使整合包方便调整整体拔刀伤害)
-                    AttributeModifier sdm = new AttributeModifier("SlashBladeDamageMultiplier", SLASHBLADE_DAMAGE_MULTIPLIER.get() - 1.0,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL);
-
                     try {
                         state.setOnClick(true);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(rdb);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(edb);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(sdr);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(sdm);
-                        PlayerAttackHelper.attack(((Player) attacker),t);
+                        PlayerAttackHelper.attack(((Player) attacker),t,comboRatio);
 
                     } finally {
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(rdb);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(edb);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(sdr);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(sdm);
                         state.setOnClick(false);
                     }
                 });

@@ -1,5 +1,8 @@
 package mods.flammpfeil.slashblade.util;
 
+import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
+import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
+import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -11,14 +14,21 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
 
+import static mods.flammpfeil.slashblade.SlashBladeConfig.REFINE_DAMAGE_MULTIPLIER;
+import static mods.flammpfeil.slashblade.SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER;
+import static mods.flammpfeil.slashblade.util.AttackManager.getSlashBladeDamageScale;
+
 public class PlayerAttackHelper {
-    public static void attack(Player attacker, Entity target) {
+    // 该方法伤害公式=(面板攻击力 + 横扫之刃附魔加成 + 评分等级加成 + 杀手类附魔加成) * 连招伤害系数 * 拔刀伤害系数 * 拔刀剑伤害调整比例 * 暴击倍率
+    public static void attack(Player attacker, Entity target, float comboRatio) {
         // 触发Forge事件，以兼容其他模组
         if (!net.minecraftforge.common.ForgeHooks.onPlayerAttackTarget(attacker, target)) return;
         // 判断攻击目标是否可以被攻击
@@ -26,6 +36,35 @@ public class PlayerAttackHelper {
             if (!target.skipAttackInteraction(attacker)) {
                 // 获取攻击者的攻击伤害属性
                 float baseDamage = (float) attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
+
+                //横扫之刃附魔加成(三级加成3.25攻击力)
+                baseDamage += 10 * (EnchantmentHelper.getSweepingDamageRatio(attacker) * 0.5f);
+
+                //评分等级加成
+                IConcentrationRank.ConcentrationRanks rankBonus = attacker
+                        .getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
+                        .map(rp -> rp.getRank(attacker.getCommandSenderWorld().getGameTime()))
+                        .orElse(IConcentrationRank.ConcentrationRanks.NONE);
+                float rankDamageBonus = rankBonus.level / 2.0f;
+                if (IConcentrationRank.ConcentrationRanks.S.level <= rankBonus.level) {
+                    int refine = attacker.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).map(rp -> rp.getRefine()).orElse(0);
+                    int level = attacker.experienceLevel;
+                    rankDamageBonus = (float) Math.max(rankDamageBonus, Math.min(level, refine) * REFINE_DAMAGE_MULTIPLIER.get());
+                }
+                baseDamage += rankDamageBonus;
+
+                //杀手类附魔加成(杀死类附魔攻击对应的生物加成2.5 * 附魔等级)
+                float enchantmentDamageBonus;
+                if (target instanceof LivingEntity) {
+                    enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity)target).getMobType());
+                } else {
+                    enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), MobType.UNDEFINED);
+                }
+                baseDamage += enchantmentDamageBonus;
+
+
+                //连招伤害系数 * 拔刀伤害系数(饰品单独给拔刀剑增伤用) * 拔刀剑伤害调整比例(用于提供配置文件使整合包方便调整整体拔刀伤害)
+                baseDamage *= comboRatio * getSlashBladeDamageScale(attacker) * SLASHBLADE_DAMAGE_MULTIPLIER.get();
 
                 //伤害>0时不造成伤害
                 if (baseDamage > 0.0F) {
@@ -85,11 +124,9 @@ public class PlayerAttackHelper {
                         }
 
                         //音效
+                        attacker.level().playSound(null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, attacker.getSoundSource(), 1.0F, 1.0F);
                         if (isCritical) {
-                            attacker.level().playSound(null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_CRIT, attacker.getSoundSource(), 1.0F, 1.0F);
                             attacker.crit(target);
-                        } else {
-                            attacker.level().playSound(null, attacker.getX(), attacker.getY(), attacker.getZ(), SoundEvents.PLAYER_ATTACK_WEAK, attacker.getSoundSource(), 1.0F, 1.0F);
                         }
 
                         //触发攻击目标的附魔效果
