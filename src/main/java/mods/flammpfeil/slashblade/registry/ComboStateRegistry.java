@@ -55,7 +55,7 @@ public class ComboStateRegistry {
             .newInstance().startAndEnd(1, 10).priority(100).motionLoc(DefaultResources.ExMotionLocation)
             .next(ComboState.TimeoutNext.buildFromFrame(5, entity -> SlashBlade.prefix("combo_a2")))
             .nextOfTimeout(entity -> SlashBlade.prefix("combo_a1_end"))
-            .clickAction(entity -> AttackManager.doSlash(entity, -10, true))
+            .clickAction(entity -> AttackManager.doSlash(entity, -10, true,false,0.22))
             .addTickAction(entity -> UserPoseOverrider.resetRot(entity)).addHitEffect(StunManager::setStun)::build);
 
     public static final RegistryObject<ComboState> COMBO_A1_END = COMBO_STATE.register("combo_a1_end",
@@ -73,7 +73,7 @@ public class ComboStateRegistry {
             .newInstance().startAndEnd(100, 115).priority(100).motionLoc(DefaultResources.ExMotionLocation)
             .next(ComboState.TimeoutNext.buildFromFrame(5, entity -> SlashBlade.prefix("combo_a3")))
             .nextOfTimeout(entity -> SlashBlade.prefix("combo_a2_end"))
-            .clickAction((e) -> AttackManager.doSlash(e, 180 - 10, true)).addHitEffect(StunManager::setStun)::build);
+            .clickAction((e) -> AttackManager.doSlash(e, 180 - 10, true,false,0.22)).addHitEffect(StunManager::setStun)::build);
     public static final RegistryObject<ComboState> COMBO_A2_END = COMBO_STATE.register("combo_a2_end",
             ComboState.Builder.newInstance().startAndEnd(115, 132).priority(100)
                     .motionLoc(DefaultResources.ExMotionLocation).next(entity -> SlashBlade.prefix("combo_c"))
@@ -91,8 +91,8 @@ public class ComboStateRegistry {
                     .next(ComboState.TimeoutNext.buildFromFrame(15, entity -> SlashBlade.prefix("none")))
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_c_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                            .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -30))
-                            .put(3, (entityIn) -> AttackManager.doSlash(entityIn, -35, true)).build())
+                            .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -30,false,false,0.44))
+                            .put(3, (entityIn) -> AttackManager.doSlash(entityIn, -35, true,false,0.44)).build())
                     .addHitEffect(StunManager::setStun).clickAction(
                             a -> AdvancementHelper.grantCriterion(a, AdvancementHelper.ADVANCEMENT_COMBO_C))::build);
     public static final RegistryObject<ComboState> COMBO_C_END = COMBO_STATE.register("combo_c_end",
@@ -113,8 +113,8 @@ public class ComboStateRegistry {
                                     : SlashBlade.prefix("combo_a4")))
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_a3_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                            .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -61))
-                            .put(6, (entityIn) -> AttackManager.doSlash(entityIn, 180 - 42)).build())
+                            .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -61,false,false,0.22))
+                            .put(6, (entityIn) -> AttackManager.doSlash(entityIn, 180 - 42,false,false,0.22)).build())
                     .addHitEffect(StunManager::setStun)::build);
 
     public static final RegistryObject<ComboState> COMBO_A3_END = COMBO_STATE.register("combo_a3_end",
@@ -141,8 +141,8 @@ public class ComboStateRegistry {
                     .next(ComboState.TimeoutNext.buildFromFrame(21, entity -> SlashBlade.prefix("none")))
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_a4_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                            .put(8, (entityIn) -> AttackManager.doSlash(entityIn, 45))
-                            .put(9, (entityIn) -> AttackManager.doSlash(entityIn, 50, true)).build())
+                            .put(8, (entityIn) -> AttackManager.doSlash(entityIn, 45,false,false,0.22))
+                            .put(9, (entityIn) -> AttackManager.doSlash(entityIn, 50, true,false,0.22)).build())
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put(8 + 0, (entityIn) -> UserPoseOverrider.setRot(entityIn, 72, true))
                             .put(8 + 1, (entityIn) -> UserPoseOverrider.setRot(entityIn, 72, true))
@@ -166,8 +166,8 @@ public class ComboStateRegistry {
                     .next(ComboState.TimeoutNext.buildFromFrame(22, entity -> SlashBlade.prefix("combo_a5ex")))
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_a4_ex_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                            .put(7, (entityIn) -> AttackManager.doSlash(entityIn, 70))
-                            .put(14, (entityIn) -> AttackManager.doSlash(entityIn, 180 + 75)).build())
+                            .put(7, (entityIn) -> AttackManager.doSlash(entityIn, 70,false,false,0.5))
+                            .put(14, (entityIn) -> AttackManager.doSlash(entityIn, 180 + 75,false,false,0.5)).build())
 
                     .addHitEffect(StunManager::setStun)::build);
     public static final RegistryObject<ComboState> COMBO_A4_EX_END = COMBO_STATE.register("combo_a4_ex_end",
@@ -188,9 +188,9 @@ public class ComboStateRegistry {
                     .next(ComboState.TimeoutNext.buildFromFrame(33, entity -> SlashBlade.prefix("none")))
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_a5ex_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
-                            .put(15, (entityIn) -> AttackManager.doSlash(entityIn, 35, false, true))
-                            .put(17, (entityIn) -> AttackManager.doSlash(entityIn, 40, true, true))
-                            .put(19, (entityIn) -> AttackManager.doSlash(entityIn, 30, true, true)).build())
+                            .put(15, (entityIn) -> AttackManager.doSlash(entityIn, 35, false, true,0.5))
+                            .put(17, (entityIn) -> AttackManager.doSlash(entityIn, 40, true, true,0.5))
+                            .put(19, (entityIn) -> AttackManager.doSlash(entityIn, 30, true, true,0.5)).build())
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put(13 + 0, (entityIn) -> UserPoseOverrider.setRot(entityIn, 72, true))
                             .put(13 + 1, (entityIn) -> UserPoseOverrider.setRot(entityIn, 72, true))
@@ -208,46 +208,45 @@ public class ComboStateRegistry {
                             .put(0, AttackManager::playQuickSheathSoundAction).build())
                     .releaseAction(ComboState::releaseActionQuickCharge)::build);
 
-    private final static float rushDamageBase = 0.1f;
     public static final RegistryObject<ComboState> COMBO_B1 = COMBO_STATE.register("combo_b1",
             ComboState.Builder.newInstance().startAndEnd(700, 720).priority(100)
                     .motionLoc(DefaultResources.ExMotionLocation)
                     .next(ComboState.TimeoutNext.buildFromFrame(13, entity -> SlashBlade.prefix("combo_b2")))
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_b1_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(6, (entityIn) -> {
-                        AttackManager.doSlash(entityIn, -30, false, false, 0.25f);
-                        AttackManager.doSlash(entityIn, 180 - 35, true, false, 0.25f);
+                        AttackManager.doSlash(entityIn, -30, false, false, 0.122f);
+                        AttackManager.doSlash(entityIn, 180 - 35, true, false, 0.122f);
                     }).put(7 + 0,
                             (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                                    AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                                    AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                             .put(7 + 1,
                                     (entityIn) -> AttackManager.doSlash(entityIn,
                                             +90 + 180 * entityIn.getRandom().nextFloat(),
-                                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                             .put(7 + 2,
                                     (entityIn) -> AttackManager.doSlash(entityIn,
                                             -90 + 180 * entityIn.getRandom().nextFloat(),
-                                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                             .put(7 + 3,
                                     (entityIn) -> AttackManager.doSlash(entityIn,
                                             +90 + 180 * entityIn.getRandom().nextFloat(),
-                                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                             .put(7 + 4,
                                     (entityIn) -> AttackManager.doSlash(entityIn,
                                             -90 + 180 * entityIn.getRandom().nextFloat(),
-                                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                             .put(7 + 5,
                                     (entityIn) -> AttackManager.doSlash(entityIn,
                                             +90 + 180 * entityIn.getRandom().nextFloat(),
-                                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                             .put(7 + 6,
                                     (entityIn) -> AttackManager.doSlash(entityIn,
                                             -90 + 180 * entityIn.getRandom().nextFloat(),
-                                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                             .put(7 + 7,
                                     (entityIn) -> AttackManager.doSlash(entityIn,
                                             +90 + 180 * entityIn.getRandom().nextFloat(),
-                                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
 
                             .build())
                     .clickAction(a -> AdvancementHelper.grantCriterion(a, AdvancementHelper.ADVANCEMENT_COMBO_B))
@@ -287,19 +286,19 @@ public class ComboStateRegistry {
             .nextOfTimeout(entity -> SlashBlade.prefix("combo_b_end"))
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                     .put(0, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(1, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(3, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(4, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(5, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(6, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .build())
             .addHitEffect(StunManager::setStun)::build);
 
@@ -309,19 +308,19 @@ public class ComboStateRegistry {
             .nextOfTimeout(entity -> SlashBlade.prefix("combo_b_end"))
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                     .put(0, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(1, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(3, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(4, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(5, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(6, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .build())
             .addHitEffect(StunManager::setStun)::build);
 
@@ -331,19 +330,19 @@ public class ComboStateRegistry {
             .nextOfTimeout(entity -> SlashBlade.prefix("combo_b_end"))
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                     .put(0, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(1, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(3, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(4, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(5, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(6, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .build())
             .addHitEffect(StunManager::setStun)::build);
     public static final RegistryObject<ComboState> COMBO_B5 = COMBO_STATE.register("combo_b5", ComboState.Builder
@@ -352,19 +351,19 @@ public class ComboStateRegistry {
             .nextOfTimeout(entity -> SlashBlade.prefix("combo_b_end"))
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                     .put(0, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(1, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(3, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(4, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(5, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(6, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .build())
             .addHitEffect(StunManager::setStun)::build);
 
@@ -374,19 +373,19 @@ public class ComboStateRegistry {
             .nextOfTimeout(entity -> SlashBlade.prefix("combo_b_end"))
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                     .put(0, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(1, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(3, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(4, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(5, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(6, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .build())
             .addHitEffect(StunManager::setStun)::build);
 
@@ -396,26 +395,26 @@ public class ComboStateRegistry {
             .nextOfTimeout(entity -> SlashBlade.prefix("combo_b7_end"))
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                     .put(0, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(1, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(2, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(3, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(4, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(5, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
                     .put(6, (entityIn) -> AttackManager.doSlash(entityIn, -90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), false, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), false, false, 0.122f))
                     .put(7, (entityIn) -> AttackManager.doSlash(entityIn, +90 + 180 * entityIn.getRandom().nextFloat(),
-                            AttackManager.genRushOffset(entityIn), true, false, rushDamageBase))
+                            AttackManager.genRushOffset(entityIn), true, false, 0.122f))
 
                     .put(12, (entityIn) -> AttackManager.doSlash(entityIn, 0,
-                            new Vec3(entityIn.getRandom().nextFloat() - 0.5f, 0.8f, 0), false, true, 1.0))
+                            new Vec3(entityIn.getRandom().nextFloat() - 0.5f, 0.8f, 0), false, true, 0.122f))
                     .put(13, (entityIn) -> AttackManager.doSlash(entityIn, 5,
-                            new Vec3(entityIn.getRandom().nextFloat() - 0.5f, 0.8f, 0), true, false, 1.0))
+                            new Vec3(entityIn.getRandom().nextFloat() - 0.5f, 0.8f, 0), true, false, 0.122f))
                     .build())
             .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                     .put(12 + 0, (entityIn) -> UserPoseOverrider.setRot(entityIn, 72, true))
@@ -438,9 +437,9 @@ public class ComboStateRegistry {
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_b_end2"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(12 - 3,
                             (entityIn) -> AttackManager.doSlash(entityIn, 0,
-                                    new Vec3(entityIn.getRandom().nextFloat() - 0.5f, 0.8f, 0), false, true, 1.0))
+                                    new Vec3(entityIn.getRandom().nextFloat() - 0.5f, 0.8f, 0), false, true, 0.122f))
                             .put(13 - 3, (entityIn) -> AttackManager.doSlash(entityIn, 5,
-                                    new Vec3(entityIn.getRandom().nextFloat() - 0.5f, 0.8f, 0), true, false, 1.0))
+                                    new Vec3(entityIn.getRandom().nextFloat() - 0.5f, 0.8f, 0), true, false, 0.122f))
                             .build())
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put(12 - 3 + 0, (entityIn) -> UserPoseOverrider.setRot(entityIn, 72, true))
@@ -467,7 +466,7 @@ public class ComboStateRegistry {
                     .nextOfTimeout(entity -> SlashBlade.prefix("aerial_rave_a1_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put((int) TimeValueHelper.getTicksFromFrames(3) + 0,
-                                    (entityIn) -> AttackManager.doSlash(entityIn, -20))
+                                    (entityIn) -> AttackManager.doSlash(entityIn, -20,false,false,0.14f))
                             .build().andThen(FallHandler::fallDecrease))
                     .addHitEffect(StunManager::setStun)
                     .addTickAction((entityIn) -> UserPoseOverrider.resetRot(entityIn))::build);
@@ -485,7 +484,7 @@ public class ComboStateRegistry {
                     .nextOfTimeout(entity -> SlashBlade.prefix("aerial_rave_a2_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put((int) TimeValueHelper.getTicksFromFrames(3) + 0,
-                                    (entityIn) -> AttackManager.doSlash(entityIn, 180 - 30))
+                                    (entityIn) -> AttackManager.doSlash(entityIn, 180 - 30,false,false,0.14f))
                             .build())
                     .addHitEffect(StunManager::setStun).addTickAction(FallHandler::fallDecrease)::build);
     public static final RegistryObject<ComboState> AERIAL_RAVE_A2_END = COMBO_STATE.register("aerial_rave_a2_end",
@@ -507,10 +506,10 @@ public class ComboStateRegistry {
                     .nextOfTimeout(entity -> SlashBlade.prefix("aerial_rave_a3_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put((int) TimeValueHelper.getTicksFromFrames(4) + 0,
-                                    (entityIn) -> AttackManager.doSlash(entityIn, 0, Vec3.ZERO, false, false, 1.0,
+                                    (entityIn) -> AttackManager.doSlash(entityIn, 0, Vec3.ZERO, false, false, 0.14,
                                             KnockBacks.smash))
                             .put((int) TimeValueHelper.getTicksFromFrames(4) + 1,
-                                    (entityIn) -> AttackManager.doSlash(entityIn, -3, Vec3.ZERO, true, true, 1.0,
+                                    (entityIn) -> AttackManager.doSlash(entityIn, -3, Vec3.ZERO, true, true, 0.14,
                                             KnockBacks.smash))
                             .build())
                     .addTickAction(FallHandler::fallDecrease).addHitEffect(StunManager::setStun)
@@ -534,10 +533,10 @@ public class ComboStateRegistry {
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put((int) TimeValueHelper.getTicksFromFrames(5),
                                     (entityIn) -> AttackManager.doSlash(entityIn, 180 + 57, Vec3.ZERO, false, false,
-                                            1.0, KnockBacks.toss))
+                                            0.17, KnockBacks.toss))
                             .put((int) TimeValueHelper.getTicksFromFrames(10),
                                     (entityIn) -> AttackManager.doSlash(entityIn, 180 + 57, Vec3.ZERO, false, false,
-                                            1.0, KnockBacks.toss))
+                                            0.17, KnockBacks.toss))
                             .build())
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put(0, (entityIn) -> UserPoseOverrider.setRot(entityIn, -90, true))
@@ -563,10 +562,10 @@ public class ComboStateRegistry {
                     .nextOfTimeout(entity -> SlashBlade.prefix("aerial_rave_b4_end"))
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put((int) TimeValueHelper.getTicksFromFrames(10) + 0,
-                                    (entityIn) -> AttackManager.doSlash(entityIn, 45, Vec3.ZERO, false, false, 1.0,
+                                    (entityIn) -> AttackManager.doSlash(entityIn, 45, Vec3.ZERO, false, false, 0.17,
                                             KnockBacks.meteor))
                             .put((int) TimeValueHelper.getTicksFromFrames(10) + 1,
-                                    (entityIn) -> AttackManager.doSlash(entityIn, 50, Vec3.ZERO, true, true, 1.0,
+                                    (entityIn) -> AttackManager.doSlash(entityIn, 50, Vec3.ZERO, true, true, 0.17,
                                             KnockBacks.meteor))
                             .build())
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
@@ -611,7 +610,7 @@ public class ComboStateRegistry {
                     })
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put((int) TimeValueHelper.getTicksFromFrames(7),
-                                    (entityIn) -> AttackManager.doSlash(entityIn, -80, Vec3.ZERO, false, false, 1.0,
+                                    (entityIn) -> AttackManager.doSlash(entityIn, -80, Vec3.ZERO, false, false, 0.25,
                                             KnockBacks.toss))
                             .build())
                     .addHitEffect((t, a) -> StunManager.setStun(t, 15)).clickAction(
@@ -673,10 +672,10 @@ public class ComboStateRegistry {
                         }
 
                         if (elapsed % 2 == 0)
-                            AttackManager.areaAttack(e, KnockBacks.meteor.action, 0.1f, true, false, true);
+                            AttackManager.areaAttack(e, KnockBacks.meteor.action, 0.22f, true, false, true);
 
                         if (e.onGround()) {
-                            AttackManager.doSlash(e, 55, Vec3.ZERO, true, true, 1.0, KnockBacks.meteor);
+                            AttackManager.doSlash(e, 55, Vec3.ZERO, true, true, 0.22f, KnockBacks.meteor);
                             e.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
                                 state.updateComboSeq(e, SlashBlade.prefix("aerial_cleave_landing"));
                                 FallHandler.spawnLandingParticle(e, 20);
@@ -709,10 +708,10 @@ public class ComboStateRegistry {
                         long elapsed = ComboState.getElapsed(e);
 
                         if (elapsed % 2 == 0)
-                            AttackManager.areaAttack(e, KnockBacks.meteor.action, 0.1f, true, false, true);
+                            AttackManager.areaAttack(e, KnockBacks.meteor.action, 0.22f, true, false, true);
 
                         if (e.onGround()) {
-                            AttackManager.doSlash(e, 55, Vec3.ZERO, true, true, 1.0, KnockBacks.meteor);
+                            AttackManager.doSlash(e, 55, Vec3.ZERO, true, true, 0.22f, KnockBacks.meteor);
                             e.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
                                 state.updateComboSeq(e, SlashBlade.prefix("aerial_cleave_landing"));
                                 FallHandler.spawnLandingParticle(e, 20);
@@ -724,7 +723,7 @@ public class ComboStateRegistry {
             ComboState.Builder.newInstance().startAndEnd(1816, 1859).priority(70)
                     .next(ComboState.TimeoutNext.buildFromFrame(6, (a) -> SlashBlade.prefix("none")))
                     .nextOfTimeout(entity -> SlashBlade.prefix("aerial_cleave_end"))
-                    .clickAction((entityIn) -> AttackManager.doSlash(entityIn, 60, Vec3.ZERO, false, false, 1.0,
+                    .clickAction((entityIn) -> AttackManager.doSlash(entityIn, 60, Vec3.ZERO, false, false, 0.22f,
                             KnockBacks.meteor))
                     .addTickAction((entityIn) -> UserPoseOverrider.resetRot(entityIn))::build);
 
@@ -745,10 +744,16 @@ public class ComboStateRegistry {
                     .clickAction((entityIn) -> AdvancementHelper.grantCriterion(entityIn,
                             AdvancementHelper.ADVANCEMENT_RAPID_SLASH))
                     .addHoldAction((e) -> {
-                        AttributeModifier am = new AttributeModifier("SweepingDamageRatio", -3,
+                        int elapsed = e.getTicksUsingItem();
+
+                        if (elapsed < 2)
+                            return;
+
+                        //疾走居合减少3的攻击距离
+                        AttributeModifier rsr = new AttributeModifier("RapidSlashReach", -3,
                                 AttributeModifier.Operation.ADDITION);
                         AttributeInstance mai = e.getAttribute(ForgeMod.ENTITY_REACH.get());
-                        mai.addTransientModifier(am);
+                        mai.addTransientModifier(rsr);
                         AttackManager.areaAttack(e, (t) -> {
                             boolean isRightDown = e.getCapability(CapabilityInputState.INPUT_STATE)
                                     .map((state) -> state.getCommands().contains(InputCommand.R_DOWN)).orElse(false);
@@ -756,7 +761,7 @@ public class ComboStateRegistry {
                             if (isRightDown) {
                                 e.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
                                     if (state.getComboSeq().equals(SlashBlade.prefix("rapid_slash"))) {
-                                        List<Entity> hits = AttackManager.areaAttack(e, KnockBacks.toss.action, 0.01f,
+                                        List<Entity> hits = AttackManager.areaAttack(e, KnockBacks.toss.action, 0.22f,
                                                 true, true, true);
 
                                         if (!hits.isEmpty()) {
@@ -767,8 +772,8 @@ public class ComboStateRegistry {
                                     }
                                 });
                             }
-                        }, 0.001f, true, false, true);
-                        mai.removeModifier(am);
+                        }, 0.22f, true, false, true);
+                        mai.removeModifier(rsr);
                     }).addTickAction((e) -> {
                         long elapsed = ComboState.getElapsed(e);
 
@@ -789,11 +794,11 @@ public class ComboStateRegistry {
                             boolean critical = e.hasEffect(MobEffects.DAMAGE_BOOST);
 
                             AttackManager.doSlash(e, roll, AttackManager.genRushOffset(e), false, critical,
-                                    rushDamageBase);
+                                    0.22f);
                         }
 
                         if (elapsed == 7) {
-                            AttackManager.doSlash(e, -30, AttackManager.genRushOffset(e), false, true, rushDamageBase);
+                            AttackManager.doSlash(e, -30, AttackManager.genRushOffset(e), false, true, 0.22f);
                         }
 
                         if (7 <= elapsed && elapsed <= 10) {
@@ -831,11 +836,11 @@ public class ComboStateRegistry {
                         entityIn.setDeltaMovement(0, 0.6, 0);
                         entityIn.setOnGround(false);
                         entityIn.hasImpulse = true;
-                        AttackManager.doSlash(entityIn, -57, Vec3.ZERO, false, false, 1.0, KnockBacks.toss);
+                        AttackManager.doSlash(entityIn, -57, Vec3.ZERO, false, false, 0.3f, KnockBacks.toss);
                     })
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()
                             .put((int) TimeValueHelper.getTicksFromFrames(9),
-                                    (entityIn) -> AttackManager.doSlash(entityIn, -57, Vec3.ZERO, false, false, 1.0,
+                                    (entityIn) -> AttackManager.doSlash(entityIn, -57, Vec3.ZERO, false, false, 0.3f,
                                             KnockBacks.toss))
                             .build())
                     .addTickAction(ComboState.TimeLineTickAction.getBuilder()

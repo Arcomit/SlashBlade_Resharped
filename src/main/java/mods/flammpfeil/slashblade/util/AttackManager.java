@@ -12,6 +12,7 @@ import mods.flammpfeil.slashblade.entity.IShootable;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.ModAttributes;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -53,26 +54,26 @@ public class AttackManager {
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, boolean mute, boolean critical,
-            double damage) {
-        return doSlash(playerIn, roll, Vec3.ZERO, mute, critical, damage);
+            double comboRatio) {
+        return doSlash(playerIn, roll, Vec3.ZERO, mute, critical, comboRatio);
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, Vec3 centerOffset, boolean mute,
-            boolean critical, double damage) {
-        return doSlash(playerIn, roll, centerOffset, mute, critical, damage, KnockBacks.cancel);
+            boolean critical, double comboRatio) {
+        return doSlash(playerIn, roll, centerOffset, mute, critical, comboRatio, KnockBacks.cancel);
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, Vec3 centerOffset, boolean mute,
-            boolean critical, double damage, KnockBacks knockback) {
+            boolean critical, double comboRatio, KnockBacks knockback) {
 
         int colorCode = playerIn.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(state -> state.getColorCode()).orElseGet(() -> 0xFFFFFF);
 
-        return doSlash(playerIn, roll, colorCode, centerOffset, mute, critical, damage, knockback);
+        return doSlash(playerIn, roll, colorCode, centerOffset, mute, critical, comboRatio, knockback);
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, int colorCode, Vec3 centerOffset,
-            boolean mute, boolean critical, double damage, KnockBacks knockback) {
+            boolean mute, boolean critical, double comboRatio, KnockBacks knockback) {
 
         if (playerIn.level().isClientSide())
             return null;
@@ -81,7 +82,7 @@ public class AttackManager {
         	return null;
         if (MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.DoSlashEvent(blade, 
         		blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new),
-        		playerIn, roll, critical, damage, knockback)))
+        		playerIn, roll, critical, comboRatio, knockback)))
 			return null;
         Vec3 pos = playerIn.position().add(0.0D, (double) playerIn.getEyeHeight() * 0.75D, 0.0D)
                 .add(playerIn.getLookAngle().scale(0.3f));
@@ -102,7 +103,7 @@ public class AttackManager {
         jc.setMute(mute);
         jc.setIsCritical(critical);
 
-        jc.setDamage(damage);
+        jc.setDamage(comboRatio);
         
         jc.setKnockBack(knockback);
 
@@ -196,21 +197,26 @@ public class AttackManager {
         living.level().addFreshEntity(jc);
     }
 
-    static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float ratio,
+    static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float comboRatio,
             boolean forceHit, boolean resetHit, boolean mute) {
-        return areaAttack(playerIn, beforeHit, ratio, forceHit, resetHit, mute, null);
+        return areaAttack(playerIn, beforeHit, comboRatio, forceHit, resetHit, mute, null);
     }
 
-    static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float ratio,
+    static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float comboRatio,
             boolean forceHit, boolean resetHit, boolean mute, List<Entity> exclude) {
         List<Entity> founds = Lists.newArrayList();
-        float modifiedRatio = (EnchantmentHelper.getSweepingDamageRatio(playerIn) * 0.5f) * ratio;
-        AttributeModifier am = new AttributeModifier("SweepingDamageRatio", modifiedRatio,
-                AttributeModifier.Operation.MULTIPLY_BASE);
+        //横扫之刃附魔加成(三级加成3.25攻击力)
+        AttributeModifier sdb = new AttributeModifier("SweepingDamageBonus",
+                10 * (EnchantmentHelper.getSweepingDamageRatio(playerIn) * 0.5f), AttributeModifier.Operation.ADDITION);
+        //连招伤害系数(用于调整招式中单个剑气的伤害，以控制DPS)
+        AttributeModifier cdr = new AttributeModifier("ComboDamageRatio",
+                comboRatio - 1.0,AttributeModifier.Operation.MULTIPLY_TOTAL);
+
 
         if (!playerIn.level().isClientSide()) {
             try {
-                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(am);
+                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(sdb);
+                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(cdr);
 
                 founds = TargetSelector.getTargettableEntitiesWithinAABB(playerIn.level(), playerIn);
 
@@ -225,7 +231,8 @@ public class AttackManager {
                 }
 
             } finally {
-                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(am);
+                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(sdb);
+                playerIn.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(cdr);
             }
         }
 
@@ -302,33 +309,51 @@ public class AttackManager {
             doManagedAttack((t) -> {
                 attacker.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
 
+                    //评分等级加成
                     IConcentrationRank.ConcentrationRanks rankBonus = attacker
                             .getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
                             .map(rp -> rp.getRank(attacker.getCommandSenderWorld().getGameTime()))
                             .orElse(IConcentrationRank.ConcentrationRanks.NONE);
-
-                    float modifiedRatio = rankBonus.level / 2.0f;
+                    float rankDamageBonus = rankBonus.level / 2.0f;
                     if (attacker instanceof Player
                             && IConcentrationRank.ConcentrationRanks.S.level <= rankBonus.level) {
                         int level = ((Player) attacker).experienceLevel;
-                        modifiedRatio = (float) Math.max(modifiedRatio, Math.min(level, state.getRefine()) * REFINE_DAMAGE_MULTIPLIER.get());
+                        rankDamageBonus = (float) Math.max(rankDamageBonus, Math.min(level, state.getRefine()) * REFINE_DAMAGE_MULTIPLIER.get());
                     }
-
-                    AttributeModifier am = new AttributeModifier("RankDamageBonus", modifiedRatio,
+                    AttributeModifier rdb = new AttributeModifier("RankDamageBonus", rankDamageBonus,
                             AttributeModifier.Operation.ADDITION);
 
-                    AttributeModifier scale = new AttributeModifier("SlashBladeDamageScale", getSlashBladeDamageScale(attacker) * SLASHBLADE_DAMAGE_MULTIPLIER.get() - 1.0,
+                    //杀手类附魔加成(杀死类附魔攻击对应的生物加成2.5*附魔等级)
+                    float enchantmentDamageBonus;
+                    if (target instanceof LivingEntity) {
+                        enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity)target).getMobType());
+                    } else {
+                        enchantmentDamageBonus  = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), MobType.UNDEFINED);
+                    }
+                    AttributeModifier edb = new AttributeModifier("EnchantmentDamageBonus", enchantmentDamageBonus,
+                            AttributeModifier.Operation.ADDITION);
+
+                    //拔刀伤害系数(饰品单独给拔刀剑增伤用)
+                    AttributeModifier sdr = new AttributeModifier("SlashBladeDamageRatio", getSlashBladeDamageScale(attacker) - 1.0,
+                            AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+                    //拔刀剑伤害调整比例(用于提供配置文件使整合包方便调整整体拔刀伤害)
+                    AttributeModifier sdm = new AttributeModifier("SlashBladeDamageMultiplier", SLASHBLADE_DAMAGE_MULTIPLIER.get() - 1.0,
                             AttributeModifier.Operation.MULTIPLY_TOTAL);
 
                     try {
                         state.setOnClick(true);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(am);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(scale);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(rdb);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(edb);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(sdr);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(sdm);
                         PlayerAttackHelper.attack(((Player) attacker),t);
 
                     } finally {
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(am);
-                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(scale);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(rdb);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(edb);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(sdr);
+                        attacker.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(sdm);
                         state.setOnClick(false);
                     }
                 });

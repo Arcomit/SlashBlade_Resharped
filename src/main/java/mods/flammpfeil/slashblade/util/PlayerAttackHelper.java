@@ -11,7 +11,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,18 +26,9 @@ public class PlayerAttackHelper {
             if (!target.skipAttackInteraction(attacker)) {
                 // 获取攻击者的攻击伤害属性
                 float baseDamage = (float) attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
-                // 获取附魔伤害加成（针对生物类型），
-                float enchantmentDamageBonus;// ps:杀死类附魔攻击对应的生物加成2.5n。(n为附魔等级)
-                if (target instanceof LivingEntity) {
-                    enchantmentDamageBonus = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), ((LivingEntity) target).getMobType());
-                } else {
-                    enchantmentDamageBonus = EnchantmentHelper.getDamageBonus(attacker.getMainHandItem(), MobType.UNDEFINED);
-                }
 
-                // 补正伤害DPS至修改公式前水平
-                baseDamage *= 0.25f;
-                //伤害或附魔伤害>0时
-                if (baseDamage > 0.0F || enchantmentDamageBonus > 0.0F) {
+                //伤害>0时不造成伤害
+                if (baseDamage > 0.0F) {
 
                     // 获取攻击者的击退属性
                     float knockback = (float) attacker.getAttributeValue(Attributes.ATTACK_KNOCKBACK); // Forge: Initialize attacker value to the attack knockback attribute of the player, which is by default 0
@@ -60,8 +50,6 @@ public class PlayerAttackHelper {
                         baseDamage *= hitResult.getDamageModifier();
                     }
 
-                    // 加上附魔伤害加成
-                    baseDamage += enchantmentDamageBonus;
 
                     //火焰附加
                     float preAttackHealth = 0.0F;
