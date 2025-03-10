@@ -631,13 +631,21 @@ public class ItemSlashBlade extends SwordItem {
 		return true;
 	}
 
-	@Nullable
+	/**
+	 * 原来的方法替换掉落实体时无法Copy假物品实体相关的NBT，因为获取物品指令是先生成的物品实体再设置的假物品
+	 */
 	@Override
-	public Entity createEntity(Level world, Entity location, ItemStack itemstack) {
-		BladeItemEntity e = new BladeItemEntity(SlashBlade.RegistryEvents.BladeItem, world);
-		e.restoreFrom(location);
-		e.init();
-		return e;
+	public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)
+	{
+		if (!(entity instanceof BladeItemEntity)){
+			Level world = entity.level();
+			BladeItemEntity e = new BladeItemEntity(SlashBlade.RegistryEvents.BladeItem, world);
+			e.restoreFrom(entity);
+			e.init();
+			entity.discard();
+			world.addFreshEntity(e);
+		}
+		return false;
 	}
 
 	@Override
