@@ -1224,8 +1224,7 @@ public class ComboStateRegistry {
                 long elapsed = ComboState.getElapsed(entity);
 
                 if (elapsed < 3) {
-                    if (entity.onGround())
-                    	entity.moveRelative(entity.isInWater() ? 0.35f : 0.8f, new Vec3(0, 0, 1));
+                    entity.moveRelative(entity.isInWater() ? 0.35f : 0.8f, new Vec3(0, 0, 1));
                     AttackManager.areaAttack(entity, KnockBacks.toss.action, 1.1f, true, false, true);
                 } 
                 if(elapsed == 1)
@@ -1243,8 +1242,7 @@ public class ComboStateRegistry {
                 long elapsed = ComboState.getElapsed(entity);
 
                 if (elapsed < 3) {
-                    if (entity.onGround())
-                        entity.moveRelative(entity.isInWater() ? 0.35f : 0.8f, new Vec3(0, 0, 1));
+                    entity.moveRelative(entity.isInWater() ? 0.35f : 0.8f, new Vec3(0, 0, 1));
                     AttackManager.areaAttack(entity, KnockBacks.toss.action, 1.1f, true, false, true);
                 } 
                 if(elapsed == 1)
