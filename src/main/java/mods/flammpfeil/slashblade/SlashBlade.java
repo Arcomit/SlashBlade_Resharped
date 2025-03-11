@@ -17,6 +17,7 @@ import mods.flammpfeil.slashblade.item.ItemTierSlashBlade;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.recipe.RecipeSerializerRegistry;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.ModAttributes;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
@@ -45,6 +46,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -60,6 +62,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static mods.flammpfeil.slashblade.SlashBladeConfig.TRAPEZOHEDRON_MAX_REFINE;
+
 @Mod(SlashBlade.MODID)
 public class SlashBlade {
     public static final String MODID = "slashblade";
@@ -74,10 +78,13 @@ public class SlashBlade {
     public SlashBlade() {
         // Register the setup method for modloading
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		modEventBus.addListener(this::setup);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SlashBladeConfig.COMMON_CONFIG);
+
+        modEventBus.addListener(this::setup);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
+        ModAttributes.ATTRIBUTES.register(modEventBus);
         NetworkManager.register();
 
         ComboStateRegistry.COMBO_STATE.register(modEventBus);
@@ -85,8 +92,7 @@ public class SlashBlade {
         SlashBladeCreativeGroup.CREATIVE_MODE_TABS.register(modEventBus);
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register(modEventBus);
         SpecialEffectsRegistry.SPECIAL_EFFECT.register(modEventBus);
-        
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SlashBladeConfig.COMMON_CONFIG);
+
 
     }
 
@@ -325,7 +331,7 @@ public class SlashBlade {
 
                             @Override
                             public int getEnchantmentValue(ItemStack stack) {
-                                return Integer.MAX_VALUE;
+                                return TRAPEZOHEDRON_MAX_REFINE.get();
                             }
                         });
 
@@ -459,6 +465,11 @@ public class SlashBlade {
             CapabilityMobEffect.register(event);
             CapabilityInputState.register(event);
             CapabilityConcentrationRank.register(event);
+        }
+
+        @SubscribeEvent
+        public static void onEntityAttributeModificationEvent(final EntityAttributeModificationEvent event) {
+            event.add(EntityType.PLAYER, ModAttributes.SLASHBLADE_DAMAGE.get());
         }
 
         public static ResourceLocation SWORD_SUMMONED;

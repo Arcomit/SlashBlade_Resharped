@@ -135,6 +135,7 @@ public class SummonedSwordArts {
                                 state.setProudSoulCount(
                                         state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
 
+                                //圆环幻影剑
                                 AdvancementHelper.grantCriterion(entity, ADVANCEMENT_SPIRAL_SWORDS);
 
                                 Level worldIn = entity.level();
@@ -151,9 +152,7 @@ public class SummonedSwordArts {
                                 for (int i = 0; i < count; i++) {
                                     EntitySpiralSwords ss = new EntitySpiralSwords(
                                             SlashBlade.RegistryEvents.SpiralSwords, worldIn);
-                                    
-                                    worldIn.addFreshEntity(ss);
-
+                                    ss.setPos(entity.position());
                                     ss.setOwner(entity);
                                     ss.setColor(state.getColorCode());
                                     ss.setRoll(0);
@@ -162,6 +161,8 @@ public class SummonedSwordArts {
                                     ss.startRiding(entity, true);
 
                                     ss.setDelay(360 / count * i);
+
+                                    worldIn.addFreshEntity(ss);
 
                                     entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
                                             1.45F);
@@ -197,11 +198,12 @@ public class SummonedSwordArts {
                             Level worldIn = entity.level();
                             Entity target = state.getTargetEntity(worldIn);
 
+                            if (target == null || !target.isAlive() || target.isRemoved()) return;
                             if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
                                 return;
                             state.setProudSoulCount(
                                     state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
-
+                            //烈风环影剑
                             AdvancementHelper.grantCriterion(entity, ADVANCEMENT_STORM_SWORDS);
 
                             int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
@@ -217,16 +219,15 @@ public class SummonedSwordArts {
                                 EntityStormSwords ss = new EntityStormSwords(SlashBlade.RegistryEvents.StormSwords,
                                         worldIn);
 
-                                worldIn.addFreshEntity(ss);
-
+                                ss.setPos(entity.position());
                                 ss.setOwner(entity);
                                 ss.setColor(state.getColorCode());
                                 ss.setRoll(0);
                                 ss.setDamage(powerLevel);
                                 // force riding
                                 ss.startRiding(target, true);
-
                                 ss.setDelay(360 / count * i);
+                                worldIn.addFreshEntity(ss);
 
                                 entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
                                         1.45F);
@@ -264,7 +265,7 @@ public class SummonedSwordArts {
                                 return;
                             state.setProudSoulCount(
                                     state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
-
+                            //急袭幻影剑
                             AdvancementHelper.grantCriterion(entity, ADVANCEMENT_BLISTERING_SWORDS);
 
                             int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
@@ -280,8 +281,7 @@ public class SummonedSwordArts {
                                 EntityBlisteringSwords ss = new EntityBlisteringSwords(
                                         SlashBlade.RegistryEvents.BlisteringSwords, worldIn);
 
-                                worldIn.addFreshEntity(ss);
-
+                                ss.setPos(entity.position());
                                 ss.setOwner(entity);
                                 ss.setColor(state.getColorCode());
                                 ss.setRoll(0);
@@ -290,6 +290,8 @@ public class SummonedSwordArts {
                                 ss.startRiding(entity, true);
 
                                 ss.setDelay(i);
+
+                                worldIn.addFreshEntity(ss);
 
                                 entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
                                         1.45F);
@@ -328,6 +330,7 @@ public class SummonedSwordArts {
                             state.setProudSoulCount(
                                     state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
 
+                            //五月雨
                             AdvancementHelper.grantCriterion(entity, ADVANCEMENT_HEAVY_RAIN_SWORDS);
 
                             int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
@@ -349,8 +352,6 @@ public class SummonedSwordArts {
                                 EntityHeavyRainSwords ss = new EntityHeavyRainSwords(
                                         SlashBlade.RegistryEvents.HeavyRainSwords, worldIn);
 
-                                worldIn.addFreshEntity(ss);
-
                                 ss.setOwner(entity);
                                 ss.setColor(state.getColorCode());
                                 ss.setRoll(0);
@@ -363,6 +364,8 @@ public class SummonedSwordArts {
                                 ss.setPos(basePos);
 
                                 ss.setXRot(-90);
+
+                                worldIn.addFreshEntity(ss);
                             }
 
                             int count = 9 + Math.min(rank - 1, 0);
@@ -371,8 +374,6 @@ public class SummonedSwordArts {
                                 for (int l = 0; l < multiplier; l++) {
                                     EntityHeavyRainSwords ss = new EntityHeavyRainSwords(
                                             SlashBlade.RegistryEvents.HeavyRainSwords, worldIn);
-
-                                    worldIn.addFreshEntity(ss);
 
                                     ss.setOwner(entity);
                                     ss.setColor(state.getColorCode());
@@ -386,6 +387,8 @@ public class SummonedSwordArts {
                                     ss.setSpread(basePos);
 
                                     ss.setXRot(-90);
+
+                                    worldIn.addFreshEntity(ss);
 
                                     entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
                                             1.45F);
@@ -401,7 +404,7 @@ public class SummonedSwordArts {
                 if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_COST.get())
                     return;
                 state.setProudSoulCount(state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_COST.get());
-
+                //幻影剑
                 AdvancementHelper.grantCriterion(sender, ADVANCEMENT_SUMMONEDSWORDS);
 
                 Optional<Entity> foundTarget = findTarget(sender, state.getTargetEntity(sender.level()));
@@ -422,8 +425,6 @@ public class SummonedSwordArts {
                 EntityAbstractSummonedSword ss = new EntityAbstractSummonedSword(
                         SlashBlade.RegistryEvents.SummonedSword, worldIn);
 
-                worldIn.addFreshEntity(ss);
-
                 Vec3 pos = sender.getEyePosition(1.0f)
                         .add(VectorHelper.getVectorForRotation(0.0f, sender.getViewYRot(0) + 90).scale(sided ? 1 : -1));
                 ss.setPos(pos.x, pos.y, pos.z);
@@ -434,6 +435,7 @@ public class SummonedSwordArts {
                 ss.setOwner(sender);
                 ss.setColor(state.getColorCode());
                 ss.setRoll(sender.getRandom().nextFloat() * 360.0f);
+                worldIn.addFreshEntity(ss);
 
                 sender.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F, 1.45F);
             });

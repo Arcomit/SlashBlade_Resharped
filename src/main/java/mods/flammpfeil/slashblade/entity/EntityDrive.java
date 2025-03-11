@@ -42,6 +42,8 @@ import net.minecraftforge.network.PlayMessages;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import static mods.flammpfeil.slashblade.SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER;
+
 public class EntityDrive extends EntityAbstractSummonedSword {
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData.<Integer>defineId(EntityDrive.class,
             EntityDataSerializers.INT);
@@ -290,8 +292,8 @@ public class EntityDrive extends EntityAbstractSummonedSword {
         return this.damage;
     }
 
-    protected void onHitEntity(EntityHitResult p_213868_1_) {
-        Entity targetEntity = p_213868_1_.getEntity();
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        Entity targetEntity = entityHitResult.getEntity();
         int i = Mth.ceil(this.getDamage());
 
         if (this.getIsCritical()) {
@@ -320,9 +322,9 @@ public class EntityDrive extends EntityAbstractSummonedSword {
 
         // todo: attack manager
         targetEntity.invulnerableTime = 0;
-        float damageValue = (float) i;
+        float damageValue = i;
         if(this.getOwner() instanceof LivingEntity living) {
-        	damageValue *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
+        	damageValue *= living.getAttributeValue(Attributes.ATTACK_DAMAGE) * AttackManager.getSlashBladeDamageScale(living) * SLASHBLADE_DAMAGE_MULTIPLIER.get();
         }
 
 		if (targetEntity.hurt(damagesource, damageValue)) {

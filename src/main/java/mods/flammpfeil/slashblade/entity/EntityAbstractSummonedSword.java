@@ -3,6 +3,7 @@ package mods.flammpfeil.slashblade.entity;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
+import mods.flammpfeil.slashblade.util.AttackManager;
 import mods.flammpfeil.slashblade.util.EnumSetConverter;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import mods.flammpfeil.slashblade.util.TargetSelector;
@@ -51,6 +52,8 @@ import javax.annotation.Nullable;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+
+import static mods.flammpfeil.slashblade.SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER;
 
 public class EntityAbstractSummonedSword extends Projectile implements IShootable {
     private static final EntityDataAccessor<Integer> COLOR = SynchedEntityData
@@ -474,8 +477,8 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
         onHitEntity(new EntityHitResult(target));
     }
 
-    protected void onHitEntity(EntityHitResult p_213868_1_) {
-        Entity targetEntity = p_213868_1_.getEntity();
+    protected void onHitEntity(EntityHitResult entityHitResult) {
+        Entity targetEntity = entityHitResult.getEntity();
         int i = Mth.ceil(this.getDamage());
         if (this.getPierce() > 0) {
             if (this.alreadyHits == null) {
@@ -516,7 +519,12 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
         // todo: attack manager
         targetEntity.invulnerableTime = 0;
-        if (targetEntity.hurt(damagesource, (float) i)) {
+        float scale = 1f;
+        if (shooter instanceof LivingEntity living) {
+            scale = (float) (AttackManager.getSlashBladeDamageScale(living) * SLASHBLADE_DAMAGE_MULTIPLIER.get());
+        }
+        float damageValue = i * scale;
+        if (targetEntity.hurt(damagesource, damageValue)) {
             Entity hits = targetEntity;
             if (targetEntity instanceof PartEntity) {
                 hits = ((PartEntity<?>) targetEntity).getParent();

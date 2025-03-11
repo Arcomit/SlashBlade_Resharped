@@ -162,7 +162,11 @@ repositories {
 	maven {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/"
-	}    
+	}
+
+    maven {
+        url "https://cursemaven.com"
+    }
 
 }
 
@@ -193,7 +197,10 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim}")
-    
+
+    //假人(含前置)
+    runtimeOnly fg.deobf("curse.maven:selene-499980:6023899")
+    runtimeOnly fg.deobf("curse.maven:mmmmmmmmmmmm-225738:5737040")
         // compile against the JEI API but do not include it at runtime
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"))
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))

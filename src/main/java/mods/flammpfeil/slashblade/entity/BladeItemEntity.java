@@ -62,7 +62,9 @@ public class BladeItemEntity extends ItemEntity {
         CompoundTag compoundnbt = this.saveWithoutId(new CompoundTag());
         compoundnbt.remove("Dimension");
         compoundnbt.putShort("Health", (short) 100);
-        compoundnbt.putShort("Age", Short.MIN_VALUE);
+        if (compoundnbt.getShort("PickupDelay") != (short) 32767){
+            compoundnbt.putShort("Age", Short.MIN_VALUE);
+        }
         this.load(compoundnbt);
     }
 
