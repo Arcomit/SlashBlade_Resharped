@@ -59,7 +59,7 @@ public class SlashBladeConfig {
                 .defineInRange("refine_damage_multiplier", 1.0D, 0.0D, 1024.0D);
 
         TRAPEZOHEDRON_MAX_REFINE = COMMON_BUILDER.comment("The maximum number of refine of Trapezohedron.[Default: 2147483647(infinity)]")
-                .defineInRange("max_proud_soul_got", Integer.MAX_VALUE, 200, Integer.MAX_VALUE);
+                .defineInRange("trapezohedron_max_refine", Integer.MAX_VALUE, 200, Integer.MAX_VALUE);
 
         COMMON_BUILDER.pop();
         COMMON_CONFIG = COMMON_BUILDER.build();
