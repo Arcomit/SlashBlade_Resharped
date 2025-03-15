@@ -58,8 +58,6 @@ public class ArrowReflector {
 
             ((Projectile) arrow).shoot(dir.x, dir.y, dir.z, 3.5f, 0.2f);
 
-            arrow.setNoGravity(false);
-
             if (arrow instanceof AbstractArrow)
                 ((AbstractArrow) arrow).setCritArrow(true);
 
