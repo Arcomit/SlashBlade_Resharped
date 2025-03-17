@@ -11,6 +11,7 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id "com.hypherionmc.modutils.modpublisher" version "2.1.6"
 }
 
 // Mixin
@@ -274,4 +275,85 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+publisher {
+    // Setup the required API keys. You only need to define the keys for 
+    // the platforms you plan on uploading to
+    apiKeys {
+        // Modrinth Token
+        modrinth System.getenv("MODRINTH_TOKEN")
+        // Curseforge Token
+        curseforge System.getenv("CURSE_TOKEN")
+    }
+
+    // Enable Debug mode. When enabled, no files will actually be uploaded
+    // setDebug(true)
+
+    // Curseforge Project ID
+    setCurseID("1022428")
+
+    // Modrinth Project ID
+    setModrinthID("slashblade-resharped")
+
+    // Type of release. beta, alpha or release
+    setVersionType("release")
+
+    // Changelog. This can be a file, string, OR, gist/github url
+    // For example: markdown.md, or "This is my changelog"
+    // Or: https://raw.githubusercontent.com/hypherionmc/changelogs/changelog.md
+    // Or https://gist.githubusercontent.com/hypherionmc/92f825d3c9337964cc77c9c8c9bf65e6/raw/ceeaaee5b98c688a23398864fe480b84796a1651/test_gist.md
+    setChangelog(file('./changelog.md'))
+
+    // Required for Modrinth/GitHub
+    setVersion("${project.version}")
+
+    // Fancy display name for the upload.
+    // Will default to the project version if not set
+    setDisplayName("[1.20.1] SlashBlade:Resharped - ${project.version}")
+
+    // The supported game versions
+    setGameVersions("1.20.1")
+
+    // The modloaders your upload supports.
+    // This can also be an Enum from ModLoader,
+    // like setLoaders(ModLoader.FABRIC, ModLoader.FORGE)
+    setLoaders("forge", "neoforge")
+
+    // The new Curseforge Environment tag. Optional
+    // Valid values are "server", "client" or "both"
+    // You can also use CurseEnvironment.BOTH, or CurseEnvironment.SERVER or CurseEnvironment.CLIENT
+    setCurseEnvironment("both")
+
+    // The file to be uploaded. This can be a file, task, or string.
+    // setArtifact("build/libs/mymod.jar")
+    // setArtifact(jar.getArchiveFile().get())
+    // If this is a task, the task specified will be executed before publishing
+    setArtifact(jar)
+
+    // Add supported java versions. Currently only used by CurseForge
+    setJavaVersions("Java 17", "Java 18", "Java 21", "Java 20", "Java 21")
+
+    // Safety check to check if the artifact contains a valid mod metadata entry,
+    // which could possibly mean that the jar is empty
+    setDisableEmptyJarCheck(true)
+
+	// Curse Dependencies
+	curseDepends {
+	    // Optional dependency
+	    optional 'playeranimator'
+
+	    // Optional dependency
+	    optional 'jei'
+	    
+	    // Optional dependency
+	    optional 'the-twilight-forest'
+	}
+	
+	modrinthDepends {
+	    // Optional dependency
+	    optional 'playeranimator'
+	    optional 'jei'
+	}
+
 }
