@@ -87,8 +87,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Mixin
-            args "-mixin.config=slashblade.mixins.json,slashblade.twilightforest.mixins.json"
-            
+            args "-mixin.config=slashblade.mixins.json"
+            args "-mixin.config=slashblade.thetwilightforest.mixins.json"
+
+
             mods {
                 "${mod_id}" {
                     source sourceSets.main
@@ -132,7 +134,7 @@ minecraft {
 mixin {
     add sourceSets.main, "slashblade.refmap.json"
     config 'slashblade.mixins.json'
-    config 'slashblade.twilightforest.mixins.json'
+    config 'slashblade.thetwilightforest.mixins.json'
 
     debug.verbose = true
     debug.export = true

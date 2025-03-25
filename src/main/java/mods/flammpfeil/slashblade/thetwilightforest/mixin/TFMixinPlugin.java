@@ -1,6 +1,7 @@
 package mods.flammpfeil.slashblade.thetwilightforest.mixin;
 
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -21,7 +22,7 @@ public class TFMixinPlugin implements IMixinConfigPlugin {
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
         //判断是否有安装暮色森林
-        return ModList.get().isLoaded("twilightforest");
+        return LoadingModList.get().getModFileById("twilightforest") != null;
     }
 
     @Override
