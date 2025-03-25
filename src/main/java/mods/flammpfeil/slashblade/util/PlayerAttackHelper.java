@@ -15,7 +15,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -143,7 +142,7 @@ public class PlayerAttackHelper {
                         }
 
                         // 减少耐久
-                        if (!attacker.level().isClientSide && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
+                        if (!attacker.level().isClientSide() && !itemstack1.isEmpty() && entity instanceof LivingEntity) {
                             ItemStack copy = itemstack1.copy();
                             itemstack1.hurtEnemy((LivingEntity) entity, attacker);
                             if (itemstack1.isEmpty()) {

@@ -5,7 +5,7 @@
     },
     "description": {
       "translate": "adv.slashblade.trick_dodge.desc",
-      "with":[{"keybind":"key.sprint"}]
+      "with":[{"keybind":"key.slashblade.special_move"}]
     },
     "icon": {
       "item": "minecraft:feather"

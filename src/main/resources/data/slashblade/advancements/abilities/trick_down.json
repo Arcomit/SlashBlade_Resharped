@@ -5,7 +5,7 @@
     },
     "description": {
       "translate": "adv.slashblade.trick_down.desc",
-      "with":[{"keybind":"key.sprint"},{"keybind":"key.back"},{"keybind":"key.sneak"}]
+      "with":[{"keybind":"key.slashblade.special_move"},{"keybind":"key.back"},{"keybind":"key.sneak"}]
     },
     "icon": {
       "item": "minecraft:anvil"

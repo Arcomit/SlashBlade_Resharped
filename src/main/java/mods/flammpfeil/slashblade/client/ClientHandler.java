@@ -151,7 +151,7 @@ public class ClientHandler {
     }
 
     @SuppressWarnings({ "unchecked" })
-    private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, String skin) {
+    public static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, String skin) {
         EntityRenderer<? extends Player> renderer = evt.getSkin(skin);
 
         if (renderer instanceof LivingEntityRenderer livingRenderer) {
