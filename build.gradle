@@ -206,7 +206,9 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-    
+
+    //暮色森林
+    implementation fg.deobf("curse.maven:the-twilight-forest-227639:5468648")
     //compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
 	//runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}") 
 }
