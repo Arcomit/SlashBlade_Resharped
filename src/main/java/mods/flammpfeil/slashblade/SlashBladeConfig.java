@@ -1,6 +1,9 @@
 package mods.flammpfeil.slashblade;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraftforge.common.ForgeConfigSpec;
+
+import java.util.List;
 
 public class SlashBladeConfig {
     public static ForgeConfigSpec COMMON_CONFIG;
@@ -19,6 +22,7 @@ public class SlashBladeConfig {
     public static ForgeConfigSpec.DoubleValue REFINE_DAMAGE_MULTIPLIER;
     public static ForgeConfigSpec.IntValue TRAPEZOHEDRON_MAX_REFINE;
 
+    public static ForgeConfigSpec.ConfigValue<List<? extends String>> NON_DROPPABLE_ENCHANTMENT;
     
     static {
         ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
@@ -60,6 +64,9 @@ public class SlashBladeConfig {
 
         TRAPEZOHEDRON_MAX_REFINE = COMMON_BUILDER.comment("The maximum number of refine of Trapezohedron.[Default: 2147483647(infinity)]")
                 .defineInRange("trapezohedron_max_refine", Integer.MAX_VALUE, 200, Integer.MAX_VALUE);
+
+        NON_DROPPABLE_ENCHANTMENT = COMMON_BUILDER.comment("Example: 'minecraft:sharpness', That will prevent the enchantment from dropping the corresponding proudsoul tiny.")
+                .defineList("non-droppable_enchantments", new ObjectArrayList<>(), o -> o instanceof String);
 
         COMMON_BUILDER.pop();
         COMMON_CONFIG = COMMON_BUILDER.build();

@@ -251,14 +251,20 @@ public class ItemSlashBlade extends SwordItem {
 			if (stack.isEnchanted()) {
 				int count = Math.max(1, state.getProudSoulCount() / 1000);
 				List<Enchantment> enchantments = ForgeRegistries.ENCHANTMENTS.getValues().stream()
-						.filter(enchantment -> stack.canApplyAtEnchantingTable(enchantment)).toList();
+						.filter(enchantment -> stack.canApplyAtEnchantingTable(enchantment))
+						.filter(enchantment ->
+								!SlashBladeConfig.NON_DROPPABLE_ENCHANTMENT.get().contains(ForgeRegistries.ENCHANTMENTS.getKey(enchantment).toString()))
+						.toList();
 				for (int i = 0; i < count; i += 1) {
 					ItemStack enchanted_soul = new ItemStack(SBItems.proudsoul_tiny);
-					enchanted_soul.enchant(enchantments.get(user.getRandom().nextInt(0, enchantments.size())), 1);
-					ItemEntity itemEntity = new ItemEntity(user.level(), user.getX(), user.getY(), user.getZ(),
-							enchanted_soul);
-					itemEntity.setDefaultPickUpDelay();
-					user.level().addFreshEntity(itemEntity);
+					Enchantment enchant = enchantments.get(user.getRandom().nextInt(0, enchantments.size()));
+					if (enchant != null){
+						enchanted_soul.enchant(enchant, 1);
+						ItemEntity itemEntity = new ItemEntity(user.level(), user.getX(), user.getY(), user.getZ(),
+								enchanted_soul);
+						itemEntity.setDefaultPickUpDelay();
+						user.level().addFreshEntity(itemEntity);
+					}
 				}
 			}
 			ItemStack soul = new ItemStack(SBItems.proudsoul_tiny);
