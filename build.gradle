@@ -87,8 +87,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Mixin
-            arg "-mixin.config=slashblade.mixins.json"
-            
+            args "-mixin.config=slashblade.mixins.json"
+            args "-mixin.config=slashblade.thetwilightforest.mixins.json"
+
+
             mods {
                 "${mod_id}" {
                     source sourceSets.main
@@ -132,6 +134,7 @@ minecraft {
 mixin {
     add sourceSets.main, "slashblade.refmap.json"
     config 'slashblade.mixins.json'
+    config 'slashblade.thetwilightforest.mixins.json'
 
     debug.verbose = true
     debug.export = true
@@ -207,7 +210,9 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
-    
+
+    //暮色森林
+    implementation fg.deobf("curse.maven:the-twilight-forest-227639:5468648")
     //compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
 	//runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}") 
 }
