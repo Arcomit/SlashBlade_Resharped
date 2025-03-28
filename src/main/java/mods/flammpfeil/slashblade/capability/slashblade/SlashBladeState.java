@@ -99,6 +99,8 @@ public class SlashBladeState implements ISlashBladeState {
 
     protected int proudSoul = 0;
 
+    protected boolean isEmpty = true;
+    
     public SlashBladeState(ItemStack blade) {
     	if(!blade.isEmpty()) {
     		if(blade.getOrCreateTag().contains("bladeState"))
@@ -440,6 +442,16 @@ public class SlashBladeState implements ISlashBladeState {
 		}
 		this.specialEffects.remove(se);
 		return true;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return this.isEmpty;
+	}
+
+	@Override
+	public void setNonEmpty() {
+		this.isEmpty = false;
 	}
 	
 }

@@ -117,7 +117,7 @@ public class RequestDefinition {
 
     public void initItemStack(ItemStack blade) {
         var state = blade.getCapability(ItemSlashBlade.BLADESTATE).orElse(new SlashBladeState(blade));
-        
+        state.setNonEmpty();
         if (!this.name.equals(SlashBlade.prefix("none")))
             state.setTranslationKey(getTranslationKey());
         state.setProudSoulCount(getProudSoulCount());

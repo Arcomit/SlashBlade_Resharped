@@ -83,9 +83,7 @@ public class ItemSlashBlade extends SwordItem {
 	});
 
 	public static final List<Enchantment> exEnchantment = List.of(Enchantments.SOUL_SPEED, Enchantments.POWER_ARROWS,
-			Enchantments.FALL_PROTECTION,
-			Enchantments.FIRE_PROTECTION,
-			Enchantments.THORNS);
+			Enchantments.FALL_PROTECTION, Enchantments.FIRE_PROTECTION, Enchantments.THORNS);
 
 	public ItemSlashBlade(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
 		super(tier, attackDamageIn, attackSpeedIn, builder);
@@ -109,20 +107,20 @@ public class ItemSlashBlade extends SwordItem {
 		if (slot == EquipmentSlot.MAINHAND) {
 			LazyOptional<ISlashBladeState> state = stack.getCapability(BLADESTATE);
 			state.ifPresent(s -> {
-				//刀的状态
+				// 刀的状态
 				var swordType = SwordType.from(stack);
-				//获得基础攻击力
+				// 获得基础攻击力
 				float baseAttackModifier = s.getBaseAttackModifier();
-				//锻造数
+				// 锻造数
 				int refine = s.getRefine();
 
 				float attackAmplifier = s.getAttackAmplifier();
-				if (s.isBroken()){
-					//断刀-0.5伤害
+				if (s.isBroken()) {
+					// 断刀-0.5伤害
 					attackAmplifier = -0.5F - baseAttackModifier;
-				}else{
+				} else {
 					float refineFactor = swordType.contains(SwordType.FIERCEREDGE) ? 0.1F : 0.05F;
-					//锻造伤害面板增加计算，非线性，收益递减。(理论最大值为额外100%基础攻击)
+					// 锻造伤害面板增加计算，非线性，收益递减。(理论最大值为额外100%基础攻击)
 					attackAmplifier = (1.0F - (1.0F / (1.0F + (refineFactor * refine)))) * baseAttackModifier;
 				}
 
@@ -252,13 +250,13 @@ public class ItemSlashBlade extends SwordItem {
 				int count = Math.max(1, state.getProudSoulCount() / 1000);
 				List<Enchantment> enchantments = ForgeRegistries.ENCHANTMENTS.getValues().stream()
 						.filter(enchantment -> stack.canApplyAtEnchantingTable(enchantment))
-						.filter(enchantment ->
-								!SlashBladeConfig.NON_DROPPABLE_ENCHANTMENT.get().contains(ForgeRegistries.ENCHANTMENTS.getKey(enchantment).toString()))
+						.filter(enchantment -> !SlashBladeConfig.NON_DROPPABLE_ENCHANTMENT.get()
+								.contains(ForgeRegistries.ENCHANTMENTS.getKey(enchantment).toString()))
 						.toList();
 				for (int i = 0; i < count; i += 1) {
 					ItemStack enchanted_soul = new ItemStack(SBItems.proudsoul_tiny);
 					Enchantment enchant = enchantments.get(user.getRandom().nextInt(0, enchantments.size()));
-					if (enchant != null){
+					if (enchant != null) {
 						enchanted_soul.enchant(enchant, 1);
 						ItemEntity itemEntity = new ItemEntity(user.level(), user.getX(), user.getY(), user.getZ(),
 								enchanted_soul);
@@ -367,13 +365,13 @@ public class ItemSlashBlade extends SwordItem {
 
 				// sa.tickAction(entityLiving);
 				if (!sa.equals(ComboStateRegistry.NONE.getId())) {
-					
+
 					var cost = state.getSlashArts().getProudSoulCost();
-					if(state.getProudSoulCount() >= cost) 
-						state.setProudSoulCount(state.getProudSoulCount()-cost);
-					else 
+					if (state.getProudSoulCount() >= cost)
+						state.setProudSoulCount(state.getProudSoulCount() - cost);
+					else
 						stack.hurtAndBreak(1, entityLiving, ItemSlashBlade.getOnBroken(stack));
-					
+
 					entityLiving.swing(InteractionHand.MAIN_HAND);
 				}
 			});
@@ -446,9 +444,9 @@ public class ItemSlashBlade extends SwordItem {
 				ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(loc) != null
 						? ComboStateRegistry.REGISTRY.get().getValue(loc)
 						: ComboStateRegistry.NONE.get();
-				if(isSelected)
+				if (isSelected)
 					cs.tickAction(living);
-					state.sendChanges(living);
+				state.sendChanges(living);
 			}
 		});
 	}
@@ -457,14 +455,17 @@ public class ItemSlashBlade extends SwordItem {
 	@Override
 	public CompoundTag getShareTag(ItemStack stack) {
 		var tag = stack.getOrCreateTag();
-		stack.getCapability(BLADESTATE).ifPresent(state -> tag.put("bladeState", state.serializeNBT()));
+		stack.getCapability(BLADESTATE).ifPresent(state -> {
+			if (!state.isEmpty())
+				tag.put("bladeState", state.serializeNBT());
+		});
 		return tag;
 	}
 
 	@Override
 	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt) {
-		if (nbt != null){
-			if (nbt.contains("bladeState")) 
+		if (nbt != null) {
+			if (nbt.contains("bladeState"))
 				stack.getCapability(BLADESTATE).ifPresent(state -> state.deserializeNBT(nbt.getCompound("bladeState")));
 		}
 		super.readShareTag(stack, nbt);
@@ -532,12 +533,12 @@ public class ItemSlashBlade extends SwordItem {
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
-			this.appendSwordType(stack, worldIn, tooltip, flagIn); //√
+			this.appendSwordType(stack, worldIn, tooltip, flagIn); // √
 			this.appendProudSoulCount(tooltip, stack);
 			this.appendKillCount(tooltip, stack);
-			this.appendSlashArt(stack, tooltip, s); //√
+			this.appendSlashArt(stack, tooltip, s); // √
 			this.appendRefineCount(tooltip, stack);
-			this.appendSpecialEffects(tooltip, s); //√
+			this.appendSpecialEffects(tooltip, s); // √
 		});
 
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
@@ -565,8 +566,7 @@ public class ItemSlashBlade extends SwordItem {
 	public void appendProudSoulCount(List<Component> tooltip, @NotNull ItemStack stack) {
 		int proudsoul = stack.getOrCreateTagElement("bladeState").getInt("proudSoul");
 		if (proudsoul > 0) {
-			MutableComponent countComponent = Component
-					.translatable("slashblade.tooltip.proud_soul", proudsoul)
+			MutableComponent countComponent = Component.translatable("slashblade.tooltip.proud_soul", proudsoul)
 					.withStyle(ChatFormatting.GRAY);
 			if (proudsoul > 1000)
 				countComponent = countComponent.withStyle(ChatFormatting.DARK_PURPLE);
@@ -576,10 +576,10 @@ public class ItemSlashBlade extends SwordItem {
 
 	@OnlyIn(Dist.CLIENT)
 	public void appendKillCount(List<Component> tooltip, @NotNull ItemStack stack) {
-		int killCount =  stack.getOrCreateTagElement("bladeState").getInt("killCount");
+		int killCount = stack.getOrCreateTagElement("bladeState").getInt("killCount");
 		if (killCount > 0) {
-			MutableComponent killCountComponent = Component
-					.translatable("slashblade.tooltip.killcount", killCount).withStyle(ChatFormatting.GRAY);
+			MutableComponent killCountComponent = Component.translatable("slashblade.tooltip.killcount", killCount)
+					.withStyle(ChatFormatting.GRAY);
 			if (killCount > 1000)
 				killCountComponent = killCountComponent.withStyle(ChatFormatting.DARK_PURPLE);
 			tooltip.add(killCountComponent);
@@ -641,9 +641,8 @@ public class ItemSlashBlade extends SwordItem {
 	 * 原来的方法替换掉落实体时无法Copy假物品实体相关的NBT，因为获取物品指令是先生成的物品实体再设置的假物品
 	 */
 	@Override
-	public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity)
-	{
-		if (!(entity instanceof BladeItemEntity)){
+	public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+		if (!(entity instanceof BladeItemEntity)) {
 			Level world = entity.level();
 			BladeItemEntity e = new BladeItemEntity(SlashBlade.RegistryEvents.BladeItem, world);
 			e.restoreFrom(entity);

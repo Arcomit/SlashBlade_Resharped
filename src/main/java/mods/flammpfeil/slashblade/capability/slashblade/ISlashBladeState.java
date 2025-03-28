@@ -102,7 +102,7 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
     default void deserializeNBT(CompoundTag tag)
     {
         if (tag == null) return;
-
+        this.setNonEmpty();
         // action state
         this.setLastActionTime(tag.getLong("lastActionTime"));
         this.setTargetEntityId(tag.getInt("TargetEntity"));
@@ -488,4 +488,7 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
 
         this.setHasChangedActiveState(false);
     }
+    
+    boolean isEmpty();
+    void setNonEmpty();
 }

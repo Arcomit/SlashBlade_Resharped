@@ -74,7 +74,7 @@ public class SlashBladeDefinition {
     public ItemStack getBlade(Item bladeItem) {
         ItemStack result = new ItemStack(bladeItem);
         var state = result.getCapability(ItemSlashBlade.BLADESTATE).orElse(new SlashBladeState(result));
-        
+        state.setNonEmpty();
         state.setBaseAttackModifier(this.stateDefinition.getBaseAttackModifier());
         state.setMaxDamage(this.stateDefinition.getMaxDamage());
         state.setComboRoot(this.stateDefinition.getComboRoot());
