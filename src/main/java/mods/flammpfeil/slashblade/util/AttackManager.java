@@ -30,6 +30,7 @@ import net.minecraftforge.common.MinecraftForge;
 import java.util.List;
 import java.util.function.Consumer;
 
+import static mods.flammpfeil.slashblade.SlashBladeConfig.REFINE_DAMAGE_MULTIPLIER;
 import static mods.flammpfeil.slashblade.SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER;
 import static mods.flammpfeil.slashblade.SlashBladeConfig.REFINE_DAMAGE_MULTIPLIER;;
 
@@ -51,17 +52,17 @@ public class AttackManager {
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, boolean mute, boolean critical,
-            double comboRatio) {
+                                            double comboRatio) {
         return doSlash(playerIn, roll, Vec3.ZERO, mute, critical, comboRatio);
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, Vec3 centerOffset, boolean mute,
-            boolean critical, double comboRatio) {
+                                            boolean critical, double comboRatio) {
         return doSlash(playerIn, roll, centerOffset, mute, critical, comboRatio, KnockBacks.cancel);
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, Vec3 centerOffset, boolean mute,
-            boolean critical, double comboRatio, KnockBacks knockback) {
+                                            boolean critical, double comboRatio, KnockBacks knockback) {
 
         int colorCode = playerIn.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                 .map(state -> state.getColorCode()).orElseGet(() -> 0xFFFFFF);
@@ -70,17 +71,17 @@ public class AttackManager {
     }
 
     static public EntitySlashEffect doSlash(LivingEntity playerIn, float roll, int colorCode, Vec3 centerOffset,
-            boolean mute, boolean critical, double comboRatio, KnockBacks knockback) {
+                                            boolean mute, boolean critical, double comboRatio, KnockBacks knockback) {
 
         if (playerIn.level().isClientSide())
             return null;
         ItemStack blade = playerIn.getMainHandItem();
-		if(!blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
-        	return null;
-        if (MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.DoSlashEvent(blade, 
-        		blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new),
-        		playerIn, roll, critical, comboRatio, knockback)))
-			return null;
+        if(!blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+            return null;
+        if (MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.DoSlashEvent(blade,
+                blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new),
+                playerIn, roll, critical, comboRatio, knockback)))
+            return null;
         Vec3 pos = playerIn.position().add(0.0D, (double) playerIn.getEyeHeight() * 0.75D, 0.0D)
                 .add(playerIn.getLookAngle().scale(0.3f));
 
@@ -101,7 +102,7 @@ public class AttackManager {
         jc.setIsCritical(critical);
 
         jc.setDamage(comboRatio);
-        
+
         jc.setKnockBack(knockback);
 
         if (playerIn != null)
@@ -149,7 +150,7 @@ public class AttackManager {
 
                             if (entity.isAlive()) {
                                 float yRot = this.getOwner() != null ? this.getOwner().getYRot() : 0;
-								entity.addDeltaMovement(new Vec3(
+                                entity.addDeltaMovement(new Vec3(
                                         (double) (-Math.sin(yRot * (float) Math.PI / 180.0F) * 0.5),
                                         0.05D,
                                         (double) (Math.cos(yRot * (float) Math.PI / 180.0F) * 0.5)));
@@ -211,25 +212,25 @@ public class AttackManager {
     }
 
     static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float comboRatio,
-            boolean forceHit, boolean resetHit, boolean mute) {
+                                          boolean forceHit, boolean resetHit, boolean mute) {
         return areaAttack(playerIn, beforeHit, comboRatio, forceHit, resetHit, mute, null);
     }
 
     static public List<Entity> areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit, float comboRatio,
-            boolean forceHit, boolean resetHit, boolean mute, List<Entity> exclude) {
+                                          boolean forceHit, boolean resetHit, boolean mute, List<Entity> exclude) {
         List<Entity> founds = Lists.newArrayList();
 
         if (!playerIn.level().isClientSide()) {
-                founds = TargetSelector.getTargettableEntitiesWithinAABB(playerIn.level(), playerIn);
+            founds = TargetSelector.getTargettableEntitiesWithinAABB(playerIn.level(), playerIn);
 
-                if (exclude != null)
-                    founds.removeAll(exclude);
+            if (exclude != null)
+                founds.removeAll(exclude);
 
-                for (Entity entity : founds) {
-                    if (entity instanceof LivingEntity living)
-                        beforeHit.accept(living);
-                    doMeleeAttack(playerIn, entity, forceHit, resetHit, comboRatio);
-                }
+            for (Entity entity : founds) {
+                if (entity instanceof LivingEntity living)
+                    beforeHit.accept(living);
+                doMeleeAttack(playerIn, entity, forceHit, resetHit, comboRatio);
+            }
         }
 
         if (!mute)
@@ -241,7 +242,7 @@ public class AttackManager {
     }
 
     static public <E extends Entity & IShootable> List<Entity> areaAttack(E owner, Consumer<LivingEntity> beforeHit,
-            double reach, boolean forceHit, boolean resetHit) {
+                                                                          double reach, boolean forceHit, boolean resetHit) {
         return areaAttack(owner, beforeHit, reach, forceHit, resetHit, null);
     }
 
@@ -252,7 +253,7 @@ public class AttackManager {
     }
 
     static public <E extends Entity & IShootable> List<Entity> areaAttack(E owner, Consumer<LivingEntity> beforeHit,
-            double reach, boolean forceHit, boolean resetHit, float comboRatio, List<Entity> exclude) {
+                                                                          double reach, boolean forceHit, boolean resetHit, float comboRatio, List<Entity> exclude) {
         List<Entity> founds = Lists.newArrayList();
 
         // AABB bb = owner.getBoundingBox();
@@ -271,10 +272,10 @@ public class AttackManager {
 
                 float baseAmount = (float) owner.getDamage();
                 if(owner.getShooter() instanceof LivingEntity living) {
-                	if(!(owner instanceof EntitySlashEffect)) {
-	                	int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
-	                	baseAmount += ((float) powerLevel * 0.1F);
-                	}
+                    if(!(owner instanceof EntitySlashEffect)) {
+                        int powerLevel = living.getMainHandItem().getEnchantmentLevel(Enchantments.POWER_ARROWS);
+                        baseAmount += ((float) powerLevel * 0.1F);
+                    }
                     baseAmount *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
                     //评分等级加成
                     if (owner instanceof Player player){
@@ -291,7 +292,7 @@ public class AttackManager {
                         baseAmount += rankDamageBonus;
                     }
 
-                	baseAmount *= comboRatio * getSlashBladeDamageScale(living) * SLASHBLADE_DAMAGE_MULTIPLIER.get();
+                    baseAmount *= comboRatio * getSlashBladeDamageScale(living) * SLASHBLADE_DAMAGE_MULTIPLIER.get();
 
                 }
 
@@ -349,17 +350,17 @@ public class AttackManager {
     }
 
     public static void playQuickSheathSoundAction(LivingEntity entity) {
-    	if(entity.level().isClientSide())
-    		return ;
-    	entity.level().playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), 
-    			SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 1.0F, 1.0F);
+        if(entity.level().isClientSide())
+            return ;
+        entity.level().playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(),
+                SoundEvents.CHAIN_HIT, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
-    
+
     public static void playPiercingSoundAction(LivingEntity entity) {
-    	if(entity.level().isClientSide())
-    		return ;
-    	entity.level().playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(), 
-    			SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
+        if(entity.level().isClientSide())
+            return ;
+        entity.level().playSound((Player)null, entity.getX(), entity.getY(), entity.getZ(),
+                SoundEvents.TRIDENT_THROW, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
     public static Vec3 genRushOffset(LivingEntity entityIn) {
