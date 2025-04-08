@@ -124,8 +124,13 @@ public class ItemSlashBlade extends SwordItem {
 					attackAmplifier = (1.0F - (1.0F / (1.0F + (refineFactor * refine)))) * baseAttackModifier;
 				}
 
+				double damage = (double) baseAttackModifier + attackAmplifier - 1F;
+				
+				var event = new SlashBladeEvent.UpdateAttackEvent(stack, s, damage);
+				MinecraftForge.EVENT_BUS.post(event);
+				
 				AttributeModifier attack = new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier",
-						(double) baseAttackModifier + attackAmplifier - 1F, AttributeModifier.Operation.ADDITION);
+						event.getNewDamage(), AttributeModifier.Operation.ADDITION);
 
 				result.remove(Attributes.ATTACK_DAMAGE, attack);
 				result.put(Attributes.ATTACK_DAMAGE, attack);
@@ -595,8 +600,11 @@ public class ItemSlashBlade extends SwordItem {
 		Player player = mcinstance.player;
 
 		s.getSpecialEffects().forEach(se -> {
+
+			boolean showingLevel = SpecialEffect.getRequestLevel(se) > 0;
+
 			tooltip.add(Component.translatable("slashblade.tooltip.special_effect", SpecialEffect.getDescription(se),
-					Component.literal(String.valueOf(SpecialEffect.getRequestLevel(se)))
+					Component.literal(showingLevel ? String.valueOf(SpecialEffect.getRequestLevel(se)) : "")
 							.withStyle(SpecialEffect.isEffective(se, player.experienceLevel) ? ChatFormatting.RED
 									: ChatFormatting.DARK_GRAY))
 					.withStyle(ChatFormatting.GRAY));

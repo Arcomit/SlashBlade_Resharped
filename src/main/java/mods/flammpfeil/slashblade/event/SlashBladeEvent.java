@@ -27,6 +27,50 @@ public abstract class SlashBladeEvent extends Event {
 		return state;
 	}
 	
+	public static class PowerBladeEvent extends SlashBladeEvent {
+		private final LivingEntity user;
+		private boolean isPowered;
+		public PowerBladeEvent(ItemStack blade, ISlashBladeState state, LivingEntity user, boolean isPowered) {
+			super(blade, state);
+			this.user = user;
+			this.setPowered(isPowered);
+		}
+		
+		public boolean isPowered() {
+			return isPowered;
+		}
+		
+		public void setPowered(boolean isPowered) {
+			this.isPowered = isPowered;
+		}
+		
+		public LivingEntity getUser() {
+			return user;
+		}
+		
+	}
+	
+	public static class UpdateAttackEvent extends SlashBladeEvent {
+		private final double originDamage;
+		private double newDamage;
+		public UpdateAttackEvent(ItemStack blade, ISlashBladeState state, double damage) {
+			super(blade, state);
+			this.originDamage = damage;
+			this.newDamage = damage;
+		}
+		public double getNewDamage() {
+			return newDamage;
+		}
+		
+		public void setNewDamage(double newDamage) {
+			this.newDamage = newDamage;
+		}
+		
+		public double getOriginDamage() {
+			return originDamage;
+		}		
+	}
+	
 	@Cancelable
 	public static class BladeStandAttackEvent extends SlashBladeEvent {
 		private final BladeStandEntity bladeStand;

@@ -19,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -32,9 +33,22 @@ import java.util.function.Consumer;
 
 import static mods.flammpfeil.slashblade.SlashBladeConfig.REFINE_DAMAGE_MULTIPLIER;
 import static mods.flammpfeil.slashblade.SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER;
-import static mods.flammpfeil.slashblade.SlashBladeConfig.REFINE_DAMAGE_MULTIPLIER;;
 
 public class AttackManager {
+	
+	public static boolean isPowered(LivingEntity entity) {
+		ItemStack blade = entity.getMainHandItem();
+		boolean result = entity.hasEffect(MobEffects.DAMAGE_BOOST) || entity.hasEffect(MobEffects.HUNGER);
+		if(blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent()) {
+			var state = blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
+			var event = new SlashBladeEvent.PowerBladeEvent(blade, state, entity, result);
+			MinecraftForge.EVENT_BUS.post(event);
+			result = event.isPowered();
+		}
+		
+		return result;
+	}
+	
     static public void areaAttack(LivingEntity playerIn, Consumer<LivingEntity> beforeHit) {
         areaAttack(playerIn, beforeHit, 1.0f, true, true, false);
     }

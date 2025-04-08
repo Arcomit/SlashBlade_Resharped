@@ -10,9 +10,6 @@ import javax.annotation.Nullable;
 
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 
-/**
- * Created by Furia on 2017/01/10.
- */
 public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
 
     protected LazyOptional<ISlashBladeState> state;

@@ -21,7 +21,6 @@ import mods.flammpfeil.slashblade.util.KnockBacks;
 import mods.flammpfeil.slashblade.util.TimeValueHelper;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -108,7 +107,7 @@ public class ComboStateRegistry {
 
                     .priority(100)
                     .next(ComboState.TimeoutNext.buildFromFrame(9,
-                            entity -> (entity.hasEffect(MobEffects.DAMAGE_BOOST) || entity.hasEffect(MobEffects.HUNGER))
+                            entity -> AttackManager.isPowered(entity)
                                     ? SlashBlade.prefix("combo_a4_ex")
                                     : SlashBlade.prefix("combo_a4")))
                     .nextOfTimeout(entity -> SlashBlade.prefix("combo_a3_end"))
@@ -737,7 +736,7 @@ public class ComboStateRegistry {
 
     public static final RegistryObject<ComboState> RAPID_SLASH = COMBO_STATE.register("rapid_slash",
             ComboState.Builder.newInstance().startAndEnd(2000, 2019).priority(70)
-                    .next((a) -> (a.hasEffect(MobEffects.DAMAGE_BOOST) || a.hasEffect(MobEffects.HUNGER))
+                    .next((a) -> AttackManager.isPowered(a)
                             ? SlashBlade.prefix("rapid_slash_quick")
                             : SlashBlade.prefix("rapid_slash"))
                     .nextOfTimeout(entity -> SlashBlade.prefix("rapid_slash_end"))
@@ -791,7 +790,7 @@ public class ComboStateRegistry {
                             if (elapsed % 2 == 0)
                                 roll += 180;
 
-                            boolean critical = e.hasEffect(MobEffects.DAMAGE_BOOST);
+                            boolean critical = AttackManager.isPowered(e);
 
                             AttackManager.doSlash(e, roll, AttackManager.genRushOffset(e), false, critical,
                                     0.22f);

@@ -39,11 +39,11 @@ public class SpecialEffect {
 	}
 	
 	public static boolean isEffective(SpecialEffect se, int level) {
-		return se.requestLevel < level;
+		return se.requestLevel <= level;
 	}
 	
 	public static boolean isEffective(ResourceLocation id, int level){
-		return SpecialEffectsRegistry.REGISTRY.get().getValue(id).getRequestLevel() < level;
+		return SpecialEffectsRegistry.REGISTRY.get().getValue(id).getRequestLevel() <= level;
 	}
 	
 	public static Component getDescription(ResourceLocation id){

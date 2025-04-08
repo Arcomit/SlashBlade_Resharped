@@ -39,6 +39,8 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         state.ifPresent(instance -> {
+        	
+        	
             // action state
             tag.putLong("lastActionTime", instance.getLastActionTime());
             tag.putInt("TargetEntity", instance.getTargetEntityId());
@@ -81,6 +83,8 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
     public void deserializeNBT(CompoundTag tag) {
 
         state.ifPresent(instance -> {
+            if (tag == null) return;
+            instance.setNonEmpty();
             // action state
             instance.setLastActionTime(tag.getLong("lastActionTime"));
             instance.setTargetEntityId(tag.getInt("TargetEntity"));

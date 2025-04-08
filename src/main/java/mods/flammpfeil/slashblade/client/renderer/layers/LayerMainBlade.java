@@ -125,12 +125,13 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
             // mmd model neckPoint height = 12.0f
             matrixStack.translate(0, 1.5f, 0);
 	        var carrytype = s.getCarryType();
-	        switch(carrytype) {
+	        final Minecraft mcinstance = Minecraft.getInstance();
+			switch(carrytype) {
 			case PSO2:
 				matrixStack.translate(1F,-1.125f, 0.20f);
 				matrixStack.mulPose(new Quaternionf().rotateZYX(-0.122173F, 0, 0));
-                if(Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON
-                && entity == Minecraft.getInstance().player) return;
+                if(mcinstance.options.getCameraType() == CameraType.FIRST_PERSON
+                && entity == mcinstance.player) return;
                 break;
 				
 			case KATANA:
@@ -146,15 +147,15 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 			case NINJA:
 				matrixStack.translate(-0.5F,-2f, 0.20f);
 				matrixStack.mulPose(new Quaternionf().rotateZYX(-2.094395F, 0f, 3.1415927F));
-                if(Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON
-                        && entity == Minecraft.getInstance().player) return;
+                if(mcinstance.options.getCameraType() == CameraType.FIRST_PERSON
+                        && entity == mcinstance.player) return;
 				break;
 				
 			case RNINJA:
 				matrixStack.translate(0.5F,-2f, 0.20f);
 				matrixStack.mulPose(new Quaternionf().rotateZYX(-1.047198F, 0, 0));
-                if(Minecraft.getInstance().options.getCameraType() == CameraType.FIRST_PERSON
-                        && entity == Minecraft.getInstance().player) return;
+                if(mcinstance.options.getCameraType() == CameraType.FIRST_PERSON
+                        && entity == mcinstance.player) return;
 				break;
 				
 			default:
