@@ -137,7 +137,7 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 				int newIndex = (current.ordinal() + 1) % Pose.values().length;
 				this.setPose(Pose.values()[newIndex]);
 				result = InteractionResult.SUCCESS;
-			} else if ((!itemstack.isEmpty() && itemstack.getItem() instanceof ItemSlashBlade)
+			} else if ((!itemstack.isEmpty() && itemstack.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
 					|| (itemstack.isEmpty() && !this.getItem().isEmpty())) {
 
 				if (this.getItem().isEmpty()) {
