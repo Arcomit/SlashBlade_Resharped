@@ -1213,14 +1213,14 @@ public class ComboStateRegistry {
     );
     
     public static final RegistryObject<ComboState> PIERCING = COMBO_STATE.register("piercing", ComboState.Builder
-            .newInstance().startAndEnd(1, 31).priority(50).motionLoc(DefaultResources.testLocation)
+            .newInstance().startAndEnd(1, 33).priority(50).motionLoc(DefaultResources.testLocation)
             .next(entity -> SlashBlade.prefix("piercing"))
             .nextOfTimeout(entity -> SlashBlade.prefix("piercing_2"))
             .addTickAction(entity -> UserPoseOverrider.resetRot(entity))
             ::build);
     
     public static final RegistryObject<ComboState> PIERCING_2 = COMBO_STATE.register("piercing_2", ComboState.Builder
-            .newInstance().startAndEnd(31, 55).priority(50).motionLoc(DefaultResources.testLocation)
+            .newInstance().startAndEnd(33, 55).priority(50).motionLoc(DefaultResources.testLocation)
             .next(ComboState.TimeoutNext.buildFromFrame(10, entity -> SlashBlade.prefix("none")))
             .nextOfTimeout(entity -> SlashBlade.prefix("piercing_end"))
             .addTickAction((entity) -> {
@@ -1238,7 +1238,7 @@ public class ComboStateRegistry {
             .addHitEffect(StunManager::setStun)::build);
     
     public static final RegistryObject<ComboState> PIERCING_JUST = COMBO_STATE.register("piercing_just", ComboState.Builder
-            .newInstance().startAndEnd(32, 55).priority(50).motionLoc(DefaultResources.testLocation)
+            .newInstance().startAndEnd(34, 55).priority(50).motionLoc(DefaultResources.testLocation)
             .next(ComboState.TimeoutNext.buildFromFrame(10, entity -> SlashBlade.prefix("none")))
             .nextOfTimeout(entity -> SlashBlade.prefix("piercing_end"))
             .addTickAction((entity) -> {
@@ -1263,7 +1263,7 @@ public class ComboStateRegistry {
                     ::build);
     
     public static final RegistryObject<ComboState> PIERCING_END2 = COMBO_STATE.register("piercing_end2",
-            ComboState.Builder.newInstance().startAndEnd(65, 92).priority(50)
+            ComboState.Builder.newInstance().startAndEnd(65, 90).priority(50)
                     .motionLoc(DefaultResources.testLocation)
                     .next(entity -> SlashBlade.prefix("none"))
                     .nextOfTimeout(entity -> SlashBlade.prefix("none"))
