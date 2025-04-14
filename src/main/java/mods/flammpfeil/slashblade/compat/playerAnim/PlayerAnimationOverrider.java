@@ -60,8 +60,8 @@ public class PlayerAnimationOverrider {
     private Map<ResourceLocation, VmdAnimation> initAnimations() {
         Map<ResourceLocation, VmdAnimation> map = Maps.newHashMap();
 
-        map.put(ComboStateRegistry.PIERCING.getId(), new VmdAnimation(DefaultResources.testPLLocation, 6, 92, false));
-        map.put(ComboStateRegistry.PIERCING_JUST.getId(), new VmdAnimation(DefaultResources.testPLLocation, 37, 92, false));
+        map.put(ComboStateRegistry.PIERCING.getId(), new VmdAnimation(DefaultResources.testPLLocation, 1, 90, false));
+        map.put(ComboStateRegistry.PIERCING_JUST.getId(), new VmdAnimation(DefaultResources.testPLLocation, 34, 90, false));
         
         // guard
         map.put(ComboStateRegistry.COMBO_A1_END2.getId(), new VmdAnimation(MotionLocation, 21, 41, false));
