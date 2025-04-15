@@ -614,6 +614,7 @@ public class ItemSlashBlade extends SwordItem {
 	@OnlyIn(Dist.CLIENT)
 	public void appendSwordType(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
 		var swordType = SwordType.from(stack);
+		if (swordType.contains(SwordType.SEALED))return ;
 		if (swordType.contains(SwordType.BEWITCHED)) {
 			tooltip.add(
 					Component.translatable("slashblade.sword_type.bewitched").withStyle(ChatFormatting.DARK_PURPLE));

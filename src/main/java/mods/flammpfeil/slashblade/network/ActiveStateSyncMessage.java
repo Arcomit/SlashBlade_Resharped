@@ -49,8 +49,7 @@ public class ActiveStateSyncMessage {
                 ItemStack stack = ((LivingEntity) target).getItemInHand(InteractionHand.MAIN_HAND);
                 if (stack.isEmpty())
                     return;
-                if (!(stack.getItem() instanceof ItemSlashBlade))
-                    return;
+
                 var tag = stack.getOrCreateTag();
                 stack.getCapability(ItemSlashBlade.BLADESTATE)
                         .filter((state) -> state.getUniqueId().equals(msg.activeTag.getUUID("BladeUniqueId")))

@@ -11,6 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class SlashBladeCreativeGroup {
@@ -34,6 +35,7 @@ public class SlashBladeCreativeGroup {
 
 				output.accept(SBItems.proudsoul_crystal);
 				output.accept(SBItems.proudsoul_trapezohedron);
+				fillEnchantmentsSouls(output);
 				fillSASpheres(output);
 				output.accept(SBItems.bladestand_1);
 				output.accept(SBItems.bladestand_1w);
@@ -59,6 +61,28 @@ public class SlashBladeCreativeGroup {
 				.sorted(SlashBladeDefinition.COMPARATOR).forEach(entry -> {
 					output.accept(entry.value().getBlade());
 				});
+	}
+	
+	private static void fillEnchantmentsSouls(CreativeModeTab.Output output) {
+//		SlashArtsRegistry.REGISTRY.get().forEach(slashArts -> {
+//			ResourceLocation key = SlashArtsRegistry.REGISTRY.get().getKey(slashArts);
+//			if (slashArts.equals(SlashArtsRegistry.NONE.get()) || key == null)
+//				return;
+//			ItemStack sphere = new ItemStack(SBItems.proudsoul_tiny);
+//			CompoundTag tag = new CompoundTag();
+//			tag.putString("SpecialAttackType", key.toString());
+//			sphere.setTag(tag);
+//			output.accept(sphere);
+//		});
+		ForgeRegistries.ENCHANTMENTS.forEach(enchantment->{
+			ItemStack blade = new ItemStack(SBItems.slashblade);
+			if(blade.canApplyAtEnchantingTable(enchantment)) {
+				ItemStack soul = new ItemStack(SBItems.proudsoul_tiny);
+				soul.enchant(enchantment, 1);
+				output.accept(soul);
+			}
+				
+		});
 	}
 
 	private static void fillSASpheres(CreativeModeTab.Output output) {

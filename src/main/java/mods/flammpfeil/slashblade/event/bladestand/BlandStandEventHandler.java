@@ -156,6 +156,11 @@ public class BlandStandEventHandler {
 			return;
 		if (!stack.is(SBItems.proudsoul_crystal))
 			return;
+		
+		CompoundTag crystalTag = stack.getTag();
+		if (crystalTag != null && crystalTag.contains("SpecialEffectType"))
+			return;
+		
 		var world = player.level();
 		var state = event.getSlashBladeState();
 		var bladeStand = event.getBladeStand();

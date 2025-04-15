@@ -35,7 +35,6 @@ public class PropertiesDefinition {
     private final List<SwordType> defaultType;
     private final List<ResourceLocation> specialEffects;
 
-
 	private PropertiesDefinition(ResourceLocation comboRoot, ResourceLocation specialAttackType,
             float baseAttackModifier, int damage, List<SwordType> defaultType, List<ResourceLocation> specialEffects) {
         this.comboRoot = comboRoot;
