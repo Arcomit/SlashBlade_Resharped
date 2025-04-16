@@ -11,7 +11,13 @@ public class SlashBladeConfig {
     public static ForgeConfigSpec.IntValue MAX_PROUD_SOUL_GOT;
     public static ForgeConfigSpec.IntValue SUMMON_SWORD_COST;
     public static ForgeConfigSpec.IntValue SUMMON_SWORD_ART_COST;
+    
+    public static ForgeConfigSpec.BooleanValue SELF_REPAIR_ENABLE;
+    public static ForgeConfigSpec.BooleanValue SELF_REPAIR_COST_EXP;
+    
     public static ForgeConfigSpec.DoubleValue BEWITCHED_HUNGER_EXHAUSTION;
+    public static ForgeConfigSpec.IntValue BEWITCHED_EXP_COST;
+
     public static ForgeConfigSpec.BooleanValue PVP_ENABLE;
     public static ForgeConfigSpec.BooleanValue FRIENDLY_ENABLE;
     public static ForgeConfigSpec.DoubleValue SABIGATANA_SPAWN_CHANCE;
@@ -52,10 +58,20 @@ public class SlashBladeConfig {
 
         MAX_PROUD_SOUL_GOT = COMMON_BUILDER.comment("Determining the max proud soul count for single mobs kill.")
                 .defineInRange("max_proud_soul_got", 100, 1, Integer.MAX_VALUE);
+
+        SELF_REPAIR_ENABLE = COMMON_BUILDER.comment("Determines whether to enable slashblade's self-repair.",
+                "If enable, bewitched slashblade will try repair itself, cost hunger & exp.").define("self_repair", true);
+
         BEWITCHED_HUNGER_EXHAUSTION = COMMON_BUILDER
                 .comment("Determining the base exhaustion for slashblade's self-repair.")
                 .defineInRange("bewitched_hunger_exhaustion", 0.05D, 0.0001D, Double.MAX_VALUE);
-
+        
+        SELF_REPAIR_COST_EXP = COMMON_BUILDER.comment("Determines whether slashblade's self-repair cost experiences.",
+                "If enable, self repair will cost player's experiences.").define("self_repair_cost_exp", true);
+        
+        BEWITCHED_EXP_COST = COMMON_BUILDER.comment("Determining the base exp cost for slashblade's self-repair.")
+                .defineInRange("bewitched_exp_cost", 1, 1, Integer.MAX_VALUE);
+        
         SLASHBLADE_DAMAGE_MULTIPLIER = COMMON_BUILDER.comment("Blade Damage: Base Damage × Multiplier.[Default: 1.0D]")
                 .defineInRange("slashblade_damage_multiplier", 1.0D, 0.0D, 1024.0D);
 

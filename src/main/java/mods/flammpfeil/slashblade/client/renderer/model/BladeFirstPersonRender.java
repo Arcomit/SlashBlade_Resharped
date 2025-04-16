@@ -53,7 +53,7 @@ public class BladeFirstPersonRender {
         ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
         if (stack.isEmpty())
             return;
-        if (!(stack.getItem() instanceof ItemSlashBlade))
+        if (!(stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent()))
             return;
 
         try (MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)) {

@@ -416,7 +416,7 @@ public class ItemSlashBlade extends SwordItem {
 			return;
 		if (entityIn == null)
 			return;
-
+		
 		stack.getCapability(BLADESTATE).ifPresent((state) -> {
 			if (MinecraftForge.EVENT_BUS
 					.post(new SlashBladeEvent.UpdateEvent(stack, state, worldIn, entityIn, itemSlot, isSelected)))
@@ -425,11 +425,20 @@ public class ItemSlashBlade extends SwordItem {
 			if (!isSelected) {
 				var swordType = SwordType.from(stack);
 				if (entityIn instanceof Player player) {
+					if(!SlashBladeConfig.SELF_REPAIR_ENABLE.get())
+						return;
 					boolean hasHunger = player.hasEffect(MobEffects.HUNGER) && SlashBladeConfig.HUNGER_CAN_REPAIR.get();
 					if (swordType.contains(SwordType.BEWITCHED) || hasHunger) {
 						if (stack.getDamageValue() > 0 && player.getFoodData().getFoodLevel() > 0) {
 							int hungerAmplifier = hasHunger ? player.getEffect(MobEffects.HUNGER).getAmplifier() : 0;
-							int level = 1 + Math.abs(hungerAmplifier);
+							int level = 1 + hungerAmplifier;
+							Boolean expCostFlag = SlashBladeConfig.SELF_REPAIR_COST_EXP.get();
+							int expCost = SlashBladeConfig.BEWITCHED_EXP_COST.get() * level;
+							
+							if(expCostFlag && player.experienceLevel < expCost)
+								return;
+							
+							player.giveExperiencePoints(expCostFlag?-expCost:0);
 							player.causeFoodExhaustion(
 									SlashBladeConfig.BEWITCHED_HUNGER_EXHAUSTION.get().floatValue() * level);
 							stack.setDamageValue(stack.getDamageValue() - level);

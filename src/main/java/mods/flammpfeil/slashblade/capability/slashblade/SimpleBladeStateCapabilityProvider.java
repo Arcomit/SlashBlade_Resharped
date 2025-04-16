@@ -26,7 +26,12 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
 
     public SimpleBladeStateCapabilityProvider(ItemStack blade, ResourceLocation model, ResourceLocation texture, float attack,
             int damage) {
-        state = LazyOptional.of(() -> new SimpleSlashBladeState(blade, model, texture, attack, damage));
+    	if(!blade.isEmpty()) {
+    		state = LazyOptional.of(() -> new SimpleSlashBladeState(blade, model, texture, attack, damage));
+    	}else {
+	    	state = LazyOptional.empty();
+    	}
+        
     }
 
     @Nonnull
