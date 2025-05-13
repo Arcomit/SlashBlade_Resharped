@@ -15,6 +15,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -34,17 +35,17 @@ public class MoveInputHandler {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
-    public static void onPlayerPostTick(TickEvent.PlayerTickEvent event) {
-        if (!event.player.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).isPresent())
-            return;
-    	
+    public static void onPlayerPostTick(ClientTickEvent event) {
+
         if (event.phase != TickEvent.Phase.END)
             return;
 
-        if (!(event.player instanceof LocalPlayer))
+        LocalPlayer player = Minecraft.getInstance().player;
+        if(player ==null)
+        	return;
+        
+        if (player.getMainHandItem().isEmpty() || !player.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).isPresent())
             return;
-
-        LocalPlayer player = (LocalPlayer) event.player;
 
         EnumSet<InputCommand> commands = EnumSet.noneOf(InputCommand.class);
 

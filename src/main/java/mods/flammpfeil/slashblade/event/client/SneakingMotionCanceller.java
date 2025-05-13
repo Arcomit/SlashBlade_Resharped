@@ -32,7 +32,7 @@ public class SneakingMotionCanceller {
 
         if (stack.isEmpty())
             return;
-        if (!(stack.getItem() instanceof ItemSlashBlade))
+        if (!(stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent()))
             return;
 
         if (!event.getRenderer().getModel().crouching)
