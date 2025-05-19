@@ -15,7 +15,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  * Created by Furia on 2017/01/10.
@@ -63,9 +62,6 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             tag.putInt("killCount", instance.getKillCount());
             tag.putInt("RepairCounter", instance.getRefine());
 
-            UUID bladeId = instance.getUniqueId();
-            tag.putUUID("BladeUniqueId", bladeId);
-
             // performance setting
 
             tag.putString("SpecialAttackType", Optional.ofNullable(instance.getSlashArtsKey())
@@ -101,13 +97,11 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             instance.setProudSoulCount(tag.getInt("proudSoul"));
 
             instance.setBroken(tag.getBoolean("isBroken"));
-            instance.setHasChangedActiveState(true);
 
             // passive state
             instance.setSealed(tag.getBoolean("isSealed"));
             instance.setKillCount(tag.getInt("killCount"));
             instance.setRefine(tag.getInt("RepairCounter"));
-            instance.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
 
             // render info
             instance.setCarryType(EnumSetConverter.fromOrdinal(CarryType.values(), tag.getByte("StandbyRenderType"),

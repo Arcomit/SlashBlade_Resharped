@@ -33,7 +33,8 @@ public class MoveInputHandler {
         return (data & flags) == flags;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @SuppressWarnings("resource")
+	@OnlyIn(Dist.CLIENT)
     @SubscribeEvent()
     public static void onPlayerPostTick(ClientTickEvent event) {
 
@@ -41,7 +42,7 @@ public class MoveInputHandler {
             return;
 
         LocalPlayer player = Minecraft.getInstance().player;
-        if(player ==null)
+        if(player == null)
         	return;
         
         if (player.getMainHandItem().isEmpty() || !player.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).isPresent())
