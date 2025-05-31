@@ -15,8 +15,13 @@ public class NamedBladeStateCapabilityProvider implements ICapabilityProvider, I
     protected LazyOptional<ISlashBladeState> state;
     private ItemStack blade;
     public NamedBladeStateCapabilityProvider(ItemStack blade) {
-    	state = LazyOptional.of( () -> new SlashBladeState(blade));
-    	this.blade = blade;
+    	if(!blade.isEmpty()) {
+	    	state = LazyOptional.of( () -> new SlashBladeState(blade));
+	    	this.blade = blade;
+    	}else {
+	    	state = LazyOptional.empty();
+	    	this.blade = ItemStack.EMPTY;
+    	}
     }
 
     @Nonnull

@@ -8,8 +8,6 @@ import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.item.SwordType;
-import mods.flammpfeil.slashblade.network.ActiveStateSyncMessage;
-import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
@@ -29,8 +27,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.network.PacketDistributor;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -39,7 +35,6 @@ import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ISlashBladeState extends INBTSerializable<CompoundTag>
 {
@@ -66,9 +61,6 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
 
         tag.putInt("killCount", this.getKillCount());
         tag.putInt("RepairCounter", this.getRefine());
-
-        UUID bladeId = this.getUniqueId();
-        tag.putUUID("BladeUniqueId", bladeId);
 
         // performance setting
 
@@ -115,8 +107,6 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
         this.setProudSoulCount(tag.getInt("proudSoul"));
         this.setBroken(tag.getBoolean("isBroken"));
 
-        this.setHasChangedActiveState(true);
-
         // passive state
         this.setSealed(tag.getBoolean("isSealed"));
 
@@ -124,8 +114,6 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
 
         this.setKillCount(tag.getInt("killCount"));
         this.setRefine(tag.getInt("RepairCounter"));
-
-        this.setUniqueId(tag.hasUUID("BladeUniqueId") ? tag.getUUID("BladeUniqueId") : UUID.randomUUID());
 
         // performance setting
 
@@ -211,10 +199,6 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
     int getRefine();
 
     void setRefine(int refine);
-
-    UUID getUniqueId();
-
-    void setUniqueId(UUID id);
 
     @Nonnull
     default SlashArts getSlashArts() {
@@ -443,57 +427,6 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
     boolean removeSpecialEffect(ResourceLocation se);
     
     boolean hasSpecialEffect(ResourceLocation se);
-    
-    boolean hasChangedActiveState();
-
-    void setHasChangedActiveState(boolean isChanged);
-
-    default void sendChanges(Entity entityIn) {
-        if (!entityIn.level().isClientSide() && this.hasChangedActiveState()) {
-            ActiveStateSyncMessage msg = new ActiveStateSyncMessage();
-            msg.activeTag = this.getActiveState();
-            msg.id = entityIn.getId();
-            NetworkManager.INSTANCE.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entityIn), msg);
-
-            this.setHasChangedActiveState(false);
-        }
-    }
-
-    default CompoundTag getActiveState() {
-        CompoundTag tag = new CompoundTag();
-
-        NBTHelper.getNBTCoupler(tag)
-                .put("BladeUniqueId", this.getUniqueId())
-                .put("lastActionTime", this.getLastActionTime())
-                .put("TargetEntity", this.getTargetEntityId())
-                .put("_onClick", this.onClick())
-                .put("fallDecreaseRate", this.getFallDecreaseRate())
-                .put("AttackAmplifier", this.getAttackAmplifier())
-                .put("currentCombo", this.getComboSeq().toString())
-                .put("proudSoul", this.getProudSoulCount())
-                .put("killCount", this.getKillCount())
-                .put("Damage", this.getDamage())
-                .put("isBroken", this.isBroken());
-
-        return tag;
-    }
-
-    default void setActiveState(CompoundTag tag) {
-        NBTHelper.getNBTCoupler(tag)
-                .get("BladeUniqueId", this::setUniqueId)
-                .get("lastActionTime", this::setLastActionTime)
-                .get("TargetEntity", ((Integer id) -> this.setTargetEntityId(id)))
-                .get("_onClick", this::setOnClick)
-                .get("fallDecreaseRate", this::setFallDecreaseRate)
-                .get("AttackAmplifier", this::setAttackAmplifier)
-                .get("currentCombo", ((String s) -> this.setComboSeq(ResourceLocation.tryParse(s))))
-                .get("proudSoul", this::setProudSoulCount)
-                .get("killCount", this::setKillCount)
-                .get("Damage", this::setDamage)
-                .get("isBroken", this::setBroken);
-
-        this.setHasChangedActiveState(false);
-    }
     
     boolean isEmpty();
     void setNonEmpty();

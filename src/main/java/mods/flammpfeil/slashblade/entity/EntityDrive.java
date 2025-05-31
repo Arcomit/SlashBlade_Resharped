@@ -1,6 +1,5 @@
 package mods.flammpfeil.slashblade.entity;
 
-import com.google.common.collect.Lists;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.StunManager;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;

@@ -118,8 +118,6 @@ public class LockOnManager {
         ItemStack stack = player.getMainHandItem();
         if (stack.isEmpty())
             return;
-        if (!(stack.getItem() instanceof ItemSlashBlade))
-            return;
 
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
 

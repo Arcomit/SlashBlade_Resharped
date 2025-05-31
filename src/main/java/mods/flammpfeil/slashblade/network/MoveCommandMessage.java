@@ -38,7 +38,7 @@ public class MoveCommandMessage {
             ItemStack stack = sender.getItemInHand(InteractionHand.MAIN_HAND);
             if (stack.isEmpty())
                 return;
-            if (!(stack.getItem() instanceof ItemSlashBlade))
+            if (!(stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent()))
                 return;
 
             sender.getCapability(CapabilityInputState.INPUT_STATE).ifPresent((state) -> {

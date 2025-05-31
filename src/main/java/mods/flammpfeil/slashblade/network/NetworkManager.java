@@ -18,9 +18,6 @@ public class NetworkManager {
         INSTANCE.registerMessage(id++, MoveCommandMessage.class, MoveCommandMessage::encode, MoveCommandMessage::decode,
                 MoveCommandMessage::handle);
 
-        INSTANCE.registerMessage(id++, ActiveStateSyncMessage.class, ActiveStateSyncMessage::encode,
-                ActiveStateSyncMessage::decode, ActiveStateSyncMessage::handle);
-
         INSTANCE.registerMessage(id++, RankSyncMessage.class, RankSyncMessage::encode, RankSyncMessage::decode,
                 RankSyncMessage::handle);
 

@@ -40,7 +40,7 @@ public class KillCounter {
         ItemStack stack = ((LivingEntity) trueSource).getMainHandItem();
         if (stack.isEmpty())
             return;
-        if (!(stack.getItem() instanceof ItemSlashBlade))
+        if (!(stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent()))
             return;
 
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
@@ -57,7 +57,7 @@ public class KillCounter {
         ItemStack stack = player.getMainHandItem();
         if (stack.isEmpty())
             return;
-        if (!(stack.getItem() instanceof ItemSlashBlade))
+        if (!(stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent()))
             return;
 
         IConcentrationRank.ConcentrationRanks rankBonus = player

@@ -117,7 +117,6 @@ public class SlashBladeState implements ISlashBladeState {
     public void setLastActionTime(long lastActionTime) {
         this.lastActionTime = lastActionTime;
 
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -129,7 +128,6 @@ public class SlashBladeState implements ISlashBladeState {
     public void setOnClick(boolean onClick) {
         this._onClick = onClick;
 
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -141,7 +139,6 @@ public class SlashBladeState implements ISlashBladeState {
     public void setFallDecreaseRate(float fallDecreaseRate) {
         this.fallDecreaseRate = fallDecreaseRate;
 
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -152,7 +149,6 @@ public class SlashBladeState implements ISlashBladeState {
     @Override
     public void setAttackAmplifier(float attackAmplifier) {
         this.attackAmplifier = attackAmplifier;
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -165,7 +161,6 @@ public class SlashBladeState implements ISlashBladeState {
     public void setComboSeq(ResourceLocation comboSeq) {
         this.comboSeq = comboSeq;
 
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -176,7 +171,6 @@ public class SlashBladeState implements ISlashBladeState {
     @Override
     public void setBroken(boolean broken) {
         isBroken = broken;
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -208,7 +202,6 @@ public class SlashBladeState implements ISlashBladeState {
     public void setKillCount(int killCount) {
         this.killCount = killCount;
 
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -219,7 +212,6 @@ public class SlashBladeState implements ISlashBladeState {
     @Override
     public void setRefine(int refine) {
         this.refine = refine;
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -321,8 +313,6 @@ public class SlashBladeState implements ISlashBladeState {
     @Override
     public void setTargetEntityId(int id) {
         targetEntityId = id;
-
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -349,28 +339,6 @@ public class SlashBladeState implements ISlashBladeState {
         });
     }
 
-    protected boolean isChangedActiveState = false;
-
-    @Override
-    public boolean hasChangedActiveState() {
-        return this.isChangedActiveState;
-    }
-
-    @Override
-    public void setHasChangedActiveState(boolean isChanged) {
-        this.isChangedActiveState = isChanged;
-    }
-
-    @Override
-    public UUID getUniqueId() {
-        return uniqueId;
-    }
-
-    @Override
-    public void setUniqueId(UUID uniqueId) {
-        this.uniqueId = uniqueId;
-    }
-
     @Override
     public int getMaxDamage() {
         return this.maxDamage;
@@ -389,7 +357,6 @@ public class SlashBladeState implements ISlashBladeState {
     @Override
     public void setDamage(int damage) {
         this.damage = Math.max(0, damage);
-        setHasChangedActiveState(true);
     }
 
     @Override
@@ -400,7 +367,6 @@ public class SlashBladeState implements ISlashBladeState {
     @Override
     public void setProudSoulCount(int psCount) {
         this.proudSoul = Math.max(0, psCount);
-        setHasChangedActiveState(true);
     }
     
     protected List<ResourceLocation> specialEffects = new ArrayList<>();

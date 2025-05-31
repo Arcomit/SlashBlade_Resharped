@@ -50,7 +50,7 @@ public class AdvancementHelper {
     static final ResourceLocation EXEFFECT_ENCHANTMENT = SlashBlade.prefix("enchantment/");
 
     static public void grantedIf(Enchantment enchantment, LivingEntity owner) {
-        int level = EnchantmentHelper.getEnchantmentLevel(enchantment, owner);
+        int level = owner.getMainHandItem().getEnchantmentLevel(enchantment);
         if (0 < level) {
             grantCriterion(owner, EXEFFECT_ENCHANTMENT.withSuffix("root"));
             grantCriterion(owner,
