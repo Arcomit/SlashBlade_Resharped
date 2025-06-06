@@ -271,11 +271,7 @@ public class EntityDrive extends EntityAbstractSummonedSword {
 
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity targetEntity = entityHitResult.getEntity();
-        int i = Mth.ceil(this.getDamage());
-
-        if (this.getIsCritical()) {
-            i += this.random.nextInt(i / 2 + 2);
-        }
+        float damageValue = (float) this.getDamage();
 
         Entity shooter = this.getShooter();
         DamageSource damagesource;
@@ -299,11 +295,8 @@ public class EntityDrive extends EntityAbstractSummonedSword {
 
         // todo: attack manager
         targetEntity.invulnerableTime = 0;
-        float damageValue = i;
         if(this.getOwner() instanceof LivingEntity living) {
             damageValue *= living.getAttributeValue(Attributes.ATTACK_DAMAGE);
-            System.out.println(living.getAttributeValue(Attributes.ATTACK_DAMAGE));
-            System.out.println("man" + i);
             //评分等级加成
             if (living instanceof Player player){
                 IConcentrationRank.ConcentrationRanks rankBonus = player
@@ -319,6 +312,9 @@ public class EntityDrive extends EntityAbstractSummonedSword {
                 damageValue += rankDamageBonus;
             }
             damageValue *= AttackManager.getSlashBladeDamageScale(living) * SLASHBLADE_DAMAGE_MULTIPLIER.get();
+            if (this.getIsCritical()) {
+                damageValue += this.random.nextInt((Mth.ceil(damageValue) / 2 + 2));
+            }
         }
 
         if (targetEntity.hurt(damagesource, damageValue)) {
