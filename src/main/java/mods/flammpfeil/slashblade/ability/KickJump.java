@@ -73,6 +73,9 @@ public class KickJump {
         if (!list.iterator().hasNext())
             return;
 
+        // 保存当前疾跑状态
+        boolean wasSprinting = sender.isSprinting();
+
         // execute
         Untouchable.setUntouchable(sender, Untouchable.JUMP_TICKS);
 
@@ -84,7 +87,17 @@ public class KickJump {
 
         sender.move(MoverType.SELF, motion);
 
-        sender.connection.send(new ClientboundSetEntityMotionPacket(sender.getId(), motion.scale(0.75f)));
+        //疾跑时保持水平动量，非疾跑时保持原缩放
+        Vec3 adjustedMotion = wasSprinting
+                ? new Vec3(motion.x, motion.y * 0.75f, motion.z) // 只缩放垂直分量
+                : motion.scale(0.75f);                           // 整体缩放
+
+        sender.connection.send(new ClientboundSetEntityMotionPacket(sender.getId(), adjustedMotion));
+
+        //强制恢复疾跑状态
+        if (wasSprinting) {
+            sender.setSprinting(true);
+        }
 
         AdvancementHelper.grantCriterion(sender, ADVANCEMENT_KICK_JUMP);
         sender.playNotifySound(SoundEvents.PLAYER_SMALL_FALL, SoundSource.PLAYERS, 0.5f, 1.2f);
@@ -98,7 +111,6 @@ public class KickJump {
                     new BlockParticleOption(ParticleTypes.BLOCK, Blocks.GLASS.defaultBlockState()), sender.getX(),
                     sender.getY(), sender.getZ(), 20, 0.0D, 0.0D, 0.0D, (double) 0.15F);
         }
-
     }
 
     @SubscribeEvent
