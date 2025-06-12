@@ -47,4 +47,9 @@ public abstract class Projectile extends net.minecraft.world.entity.projectile.P
 
         super.setOwner(p_37263_);
     }
+
+    @Override
+    public boolean fireImmune() {
+        return true;//防火
+    }
 }
