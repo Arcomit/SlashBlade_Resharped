@@ -8,7 +8,7 @@
     },
     "icon": {
       "item": "slashblade:proudsoul_trapezohedron",
-      "nbt": "{Crafting:\"slashblade:material/trapezohedron_smoking\"}"
+      "nbt": "{Crafting:\"slashblade:material/trapezohedron_blasting\"}"
     },
     "frame": "task"
   },
