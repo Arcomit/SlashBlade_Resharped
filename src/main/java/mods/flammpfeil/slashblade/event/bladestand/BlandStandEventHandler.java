@@ -37,14 +37,14 @@ public class BlandStandEventHandler {
 	@SubscribeEvent
 	public static void eventKoseki(SlashBladeEvent.BladeStandAttackEvent event) {
 		var slashBladeDefinitionRegistry = SlashBlade.getSlashBladeDefinitionRegistry(event.getBladeStand().level());
-		if(!slashBladeDefinitionRegistry.containsKey(SlashBladeBuiltInRegistry.KOSEKI.location()))
+		if (!slashBladeDefinitionRegistry.containsKey(SlashBladeBuiltInRegistry.KOSEKI.location()))
 			return;
 		if (!(event.getDamageSource().getEntity() instanceof WitherBoss))
 			return;
-		if(!event.getDamageSource().is(DamageTypeTags.IS_EXPLOSION))
+		if (!event.getDamageSource().is(DamageTypeTags.IS_EXPLOSION))
 			return;
 		var in = SlashBladeIngredient.of(RequestDefinition.Builder.newInstance().build());
-		if(!in.test(event.getBlade()))
+		if (!in.test(event.getBlade()))
 			return;
 		event.getBladeStand().setItem(slashBladeDefinitionRegistry.get(SlashBladeBuiltInRegistry.KOSEKI).getBlade());
 		event.setCanceled(true);
@@ -63,7 +63,7 @@ public class BlandStandEventHandler {
 			return;
 		var world = player.level();
 		var state = event.getSlashBladeState();
-		
+
 		if (stack.getTag() == null)
 			return;
 
@@ -77,10 +77,9 @@ public class BlandStandEventHandler {
 				return;
 			state.addSpecialEffect(SEKey);
 			RandomSource random = player.getRandom();
-			world.playSound(bladeStand, bladeStand.getPos(),
-					SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
-			for(int i = 0; i < 32; ++i) {
-				if(player.level().isClientSide())
+			world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+			for (int i = 0; i < 32; ++i) {
+				if (player.level().isClientSide())
 					break;
 				double xDist = (random.nextFloat() * 2.0F - 1.0F);
 				double yDist = (random.nextFloat() * 2.0F - 1.0F);
@@ -89,7 +88,8 @@ public class BlandStandEventHandler {
 					double x = bladeStand.getX(xDist / 4.0D);
 					double y = bladeStand.getY(0.5D + yDist / 4.0D);
 					double z = bladeStand.getZ(zDist / 4.0D);
-					((ServerLevel)world).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
+					((ServerLevel) world).sendParticles(ParticleTypes.PORTAL, x, y, z, 0, xDist, yDist + 0.2D, zDist,
+							1);
 				}
 			}
 			if (!player.isCreative())
@@ -100,7 +100,7 @@ public class BlandStandEventHandler {
 
 	@SubscribeEvent
 	public static void eventChangeSA(SlashBladeEvent.BladeStandAttackEvent event) {
-		if(!(event.getDamageSource().getEntity() instanceof ServerPlayer))
+		if (!(event.getDamageSource().getEntity() instanceof ServerPlayer))
 			return;
 		Player player = (Player) event.getDamageSource().getEntity();
 		ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
@@ -121,10 +121,10 @@ public class BlandStandEventHandler {
 
 				RandomSource random = player.getRandom();
 				BladeStandEntity bladeStand = event.getBladeStand();
-				player.level().playSound(bladeStand, bladeStand.getPos(),
-						SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
-				for(int i = 0; i < 32; ++i) {
-					if(player.level().isClientSide())
+				player.level().playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS,
+						1f, 1f);
+				for (int i = 0; i < 32; ++i) {
+					if (player.level().isClientSide())
 						break;
 					double xDist = (random.nextFloat() * 2.0F - 1.0F);
 					double yDist = (random.nextFloat() * 2.0F - 1.0F);
@@ -133,21 +133,22 @@ public class BlandStandEventHandler {
 						double x = bladeStand.getX(xDist / 4.0D);
 						double y = bladeStand.getY(0.5D + yDist / 4.0D);
 						double z = bladeStand.getZ(zDist / 4.0D);
-						((ServerLevel)player.level()).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
+						((ServerLevel) player.level()).sendParticles(ParticleTypes.PORTAL, x, y, z, 0, xDist,
+								yDist + 0.2D, zDist, 1);
 					}
 				}
 
-				if (!player.isCreative()){
+				if (!player.isCreative()) {
 					stack.shrink(1);
 				}
 			}
 		});
-		event.setCanceled(true);//防止掉落拔刀
+		event.setCanceled(true);// 防止掉落拔刀
 	}
 
 	@SubscribeEvent
 	public static void eventCopySE(SlashBladeEvent.BladeStandAttackEvent event) {
-		if(!(event.getDamageSource().getEntity() instanceof ServerPlayer))
+		if (!(event.getDamageSource().getEntity() instanceof ServerPlayer))
 			return;
 		Player player = (Player) event.getDamageSource().getEntity();
 		ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
@@ -156,11 +157,11 @@ public class BlandStandEventHandler {
 			return;
 		if (!stack.is(SBItems.proudsoul_crystal))
 			return;
-		
+
 		CompoundTag crystalTag = stack.getTag();
 		if (crystalTag != null && crystalTag.contains("SpecialEffectType"))
 			return;
-		
+
 		var world = player.level();
 		var state = event.getSlashBladeState();
 		var bladeStand = event.getBladeStand();
@@ -178,10 +179,9 @@ public class BlandStandEventHandler {
 			if (!player.isCreative())
 				stack.shrink(1);
 			RandomSource random = player.getRandom();
-			world.playSound(bladeStand, bladeStand.getPos(),
-					SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
-			for(int i = 0; i < 32; ++i) {
-				if(world.isClientSide())
+			world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
+			for (int i = 0; i < 32; ++i) {
+				if (world.isClientSide())
 					break;
 				double xDist = (random.nextFloat() * 2.0F - 1.0F);
 				double yDist = (random.nextFloat() * 2.0F - 1.0F);
@@ -190,11 +190,12 @@ public class BlandStandEventHandler {
 					double x = bladeStand.getX(xDist / 4.0D);
 					double y = bladeStand.getY(0.5D + yDist / 4.0D);
 					double z = bladeStand.getZ(zDist / 4.0D);
-					((ServerLevel)world).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
+					((ServerLevel) world).sendParticles(ParticleTypes.PORTAL, x, y, z, 0, xDist, yDist + 0.2D, zDist,
+							1);
 				}
 			}
 			player.drop(orb, true);
-			if(SpecialEffectsRegistry.REGISTRY.get().getValue(se).isRemovable())
+			if (SpecialEffectsRegistry.REGISTRY.get().getValue(se).isRemovable())
 				state.removeSpecialEffect(se);
 			event.setCanceled(true);
 			return;
@@ -216,14 +217,14 @@ public class BlandStandEventHandler {
 		var state = event.getSlashBladeState();
 		var bladeStand = event.getBladeStand();
 		var enchantments = EnchantmentHelper.getEnchantments(stack).keySet();
+		for (Enchantment e : enchantments) {
+			if (EnchantmentHelper.getTagEnchantmentLevel(e, blade) < e.getMaxLevel())
+				return;
+		}
+		
 		ResourceLocation SA = state.getSlashArtsKey();
 		if (SA != null && !SA.equals(SlashArtsRegistry.NONE.getId())) {
 			ItemStack orb = new ItemStack(SBItems.proudsoul_sphere);
-			for (Enchantment e : enchantments)
-            {
-			if (EnchantmentHelper.getTagEnchantmentLevel(e, blade) < e.getMaxLevel())
-				return;
-            }
 			CompoundTag tag = new CompoundTag();
 			tag.putString("SpecialAttackType", state.getSlashArtsKey().toString());
 			orb.setTag(tag);
@@ -232,8 +233,8 @@ public class BlandStandEventHandler {
 				stack.shrink(1);
 			world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
 			RandomSource random = player.getRandom();
-			for(int i = 0; i < 32; ++i) {
-				if(world.isClientSide())
+			for (int i = 0; i < 32; ++i) {
+				if (world.isClientSide())
 					break;
 				double xDist = (random.nextFloat() * 2.0F - 1.0F);
 				double yDist = (random.nextFloat() * 2.0F - 1.0F);
@@ -242,13 +243,14 @@ public class BlandStandEventHandler {
 					double x = bladeStand.getX(xDist / 4.0D);
 					double y = bladeStand.getY(0.5D + yDist / 4.0D);
 					double z = bladeStand.getZ(zDist / 4.0D);
-					((ServerLevel)world).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
+					((ServerLevel) world).sendParticles(ParticleTypes.PORTAL, x, y, z, 0, xDist, yDist + 0.2D, zDist,
+							1);
 				}
 			}
 			player.drop(orb, true);
 			event.setCanceled(true);
 		}
-	
+
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -264,16 +266,16 @@ public class BlandStandEventHandler {
 
 		if (!stack.is(SlashBladeItemTags.PROUD_SOULS))
 			return;
-		
+
 		if (!stack.isEnchanted())
 			return;
-		
+
 		var world = player.level();
 		var random = world.getRandom();
 		var bladeStand = event.getBladeStand();
 		Map<Enchantment, Integer> currentBladeEnchantments = blade.getAllEnchantments();
 		stack.getAllEnchantments().forEach((enchantment, level) -> {
-			if(event.isCanceled()) 
+			if (event.isCanceled())
 				return;
 			if (!blade.canApplyAtEnchantingTable(enchantment))
 				return;
@@ -286,12 +288,13 @@ public class BlandStandEventHandler {
 			if (stack.is(SBItems.proudsoul_ingot))
 				probability = 0.75F;
 			if (random.nextFloat() <= probability) {
-				int enchantLevel = Math.min(enchantment.getMaxLevel(), EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade) + 1);
+				int enchantLevel = Math.min(enchantment.getMaxLevel(),
+						EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade) + 1);
 				currentBladeEnchantments.put(enchantment, enchantLevel);
 				EnchantmentHelper.setEnchantments(currentBladeEnchantments, blade);
 				world.playSound(bladeStand, bladeStand.getPos(), SoundEvents.WITHER_SPAWN, SoundSource.BLOCKS, 1f, 1f);
-				for(int i = 0; i < 32; ++i) {
-					if(player.level().isClientSide())
+				for (int i = 0; i < 32; ++i) {
+					if (player.level().isClientSide())
 						break;
 					double xDist = (random.nextFloat() * 2.0F - 1.0F);
 					double yDist = (random.nextFloat() * 2.0F - 1.0F);
@@ -300,7 +303,8 @@ public class BlandStandEventHandler {
 						double x = bladeStand.getX(xDist / 4.0D);
 						double y = bladeStand.getY(0.5D + yDist / 4.0D);
 						double z = bladeStand.getZ(zDist / 4.0D);
-						((ServerLevel)world).sendParticles(ParticleTypes.PORTAL, x, y, z,0, xDist, yDist + 0.2D, zDist,1);
+						((ServerLevel) world).sendParticles(ParticleTypes.PORTAL, x, y, z, 0, xDist, yDist + 0.2D,
+								zDist, 1);
 					}
 				}
 			}
