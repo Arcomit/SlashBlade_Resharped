@@ -104,7 +104,7 @@ public class SlashBladeState implements ISlashBladeState {
     public SlashBladeState(ItemStack blade) {
     	if(!blade.isEmpty()) {
     		if(blade.getOrCreateTag().contains("bladeState"))
-    			this.deserializeNBT(blade.getTagElement("bladeState"));
+    			this.deserializeNBT(blade.getOrCreateTag().getCompound("bladeState"));
     	}
     }
 
