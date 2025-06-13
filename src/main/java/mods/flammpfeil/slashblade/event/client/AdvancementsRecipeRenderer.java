@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.netty.buffer.Unpooled;
+import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.gui.GuiGraphics;
@@ -67,7 +68,6 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    static public ItemStack target = null;
 
     static public GhostRecipe gr = new GhostRecipe();
 
@@ -191,7 +191,7 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         }
 
         public RecipeView(RecipeType<?> recipeType, ResourceLocation background, List<Vec3i> slots,
-                boolean isWideOutputSlot) {
+                          boolean isWideOutputSlot) {
             this.recipeType = recipeType;
             this.background = background;
             this.slots = slots;
@@ -288,48 +288,44 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
     }
 
     static void clearGhostRecipe() {
-        target = null;
         gr.clear();
         currentRecipe = null;
         currentView = null;
     }
 
     static void setGhostRecipe(ItemStack icon) {
-        if (icon != null) {
-            if (icon.hasTag() && icon.getTag().contains("Crafting")) {
-                getInstance().setGhostRecipe(new ResourceLocation(icon.getTag().getString("Crafting")));
-            }
+        if (icon == null || !(icon.hasTag() && icon.getTag().contains("Crafting"))){
+            clearGhostRecipe();
+            return;
         }
-
-        target = icon;
+        getInstance().setGhostRecipe(new ResourceLocation(icon.getTag().getString("Crafting")));
     }
 
     void setGhostRecipe(ResourceLocation loc) {
-
-        if (!Objects.equals(loc, currentRecipe)) {
-            currentRecipe = loc;
-
-            Optional<? extends Recipe<?>> recipe = MCINSTANCE.level.getRecipeManager().byKey(loc);
-            if (recipe.isPresent()) {
-                gr.clear();
-
-                Recipe<?> iRecipe = recipe.get();
-                iRecipe = overrideDummyRecipe(iRecipe);
-
-                gr.setRecipe(iRecipe);
-
-                currentView = typeRecipeViewMap.get(iRecipe.getType());
-
-                if (currentView != null && 0 < currentView.slots.size()) {
-                    final int outputslotIndex = 0;
-                    Vec3i outputSlot = currentView.slots.get(outputslotIndex);
-                    gr.addIngredient(Ingredient.of(iRecipe.getResultItem(null)), outputSlot.getX(), outputSlot.getY());
-
-                    this.placeRecipe(3, 3, outputslotIndex, iRecipe, iRecipe.getIngredients().iterator(), 1);
-                }
-            } else
-                gr.clear();
+        if (Objects.equals(loc, currentRecipe)) return;
+        currentRecipe = loc;//减少性能消耗
+        Optional<? extends Recipe<?>> recipe = MCINSTANCE.level.getRecipeManager().byKey(loc);
+        if (!recipe.isPresent()){
+            SlashBlade.LOGGER.warn("[Achievement Recipe Render] Recipe does not exist: {}", loc);
+            clearGhostRecipe();
+            return;
         }
+
+        gr.clear();
+        Recipe<?> iRecipe = recipe.get();
+        iRecipe = overrideDummyRecipe(iRecipe);
+        gr.setRecipe(iRecipe);
+        currentView = typeRecipeViewMap.get(iRecipe.getType());
+        if (currentView == null || currentView.slots.size() <= 0){
+            SlashBlade.LOGGER.warn("[Achievement Recipe Render] The GUI display of the current recipe type is not supported: {}", iRecipe.getType());
+            clearGhostRecipe();
+            return;
+        }
+
+        final int outputslotIndex = 0;
+        Vec3i outputSlot = currentView.slots.get(outputslotIndex);
+        gr.addIngredient(Ingredient.of(iRecipe.getResultItem(null)), outputSlot.getX(), outputSlot.getY());
+        this.placeRecipe(3, 3, outputslotIndex, iRecipe, iRecipe.getIngredients().iterator(), 1);
     }
 
     void drawBackGround(GuiGraphics gg, int xCorner, int yCorner, int zOffset, int xSize, int ySize, int yClip) {
@@ -346,7 +342,7 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
 
             /*
              * ItemRenderer ir = Minecraft.getInstance().getItemRenderer();
-             * 
+             *
              * float tmp = ir.blitOffset; ir.blitOffset = zOffset - 125;
              */
             int padding = 5;
