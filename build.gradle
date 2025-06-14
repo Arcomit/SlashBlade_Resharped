@@ -128,6 +128,11 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:configured-457570:5180900")
     runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:5984630")
 
+    //神化
+    runtimeOnly fg.deobf("curse.maven:apothic-attributes-898963:5634071")
+    runtimeOnly fg.deobf("curse.maven:placebo-283644:6274231")
+    runtimeOnly fg.deobf("curse.maven:apotheosis-313970:6461960")
+
     //暮色森林
     implementation fg.deobf("curse.maven:the-twilight-forest-227639:5468648")
     //compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
