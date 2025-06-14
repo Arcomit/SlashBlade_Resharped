@@ -124,6 +124,9 @@ dependencies {
     compileOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"))
     // at runtime, use the full JEI jar for Forge
     runtimeOnly(fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}"))
+    //Configured
+    runtimeOnly fg.deobf("curse.maven:configured-457570:5180900")
+    runtimeOnly fg.deobf("curse.maven:nbtedit-reborn-678133:5984630")
 
     //暮色森林
     implementation fg.deobf("curse.maven:the-twilight-forest-227639:5468648")
@@ -131,7 +134,7 @@ dependencies {
     //runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
 
     //FTB Quests
-    implementation fg.deobf("curse.maven:architectury-api-419699:5137938")
+    runtimeOnly fg.deobf("curse.maven:architectury-api-419699:5137938")
     implementation fg.deobf("curse.maven:ftb-quests-forge-289412:6167056")
     implementation fg.deobf("curse.maven:ftb-library-forge-404465:6164053")
     implementation fg.deobf("curse.maven:ftb-teams-forge-404468:6130786")
