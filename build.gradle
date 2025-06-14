@@ -7,7 +7,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
     id "com.hypherionmc.modutils.modpublisher" version "2.1.6"
 }
 
@@ -132,6 +132,9 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:apothic-attributes-898963:5634071")
     runtimeOnly fg.deobf("curse.maven:placebo-283644:6274231")
     runtimeOnly fg.deobf("curse.maven:apotheosis-313970:6461960")
+
+    //史诗战斗
+    runtimeOnly fg.deobf("curse.maven:epic-fight-mod-405076:6640098")
 
     //暮色森林
     implementation fg.deobf("curse.maven:the-twilight-forest-227639:5468648")
