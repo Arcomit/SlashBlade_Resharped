@@ -51,7 +51,9 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                 .define('G', Tags.Items.INGOTS_GOLD)
                 .unlockedBy(getHasName(SBItems.slashblade_wood), has(SBItems.slashblade_wood)).save(consumer);
 
-        SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.YAMATO.location()).pattern("PPP").pattern("PBP")
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.YAMATO.location())
+        .pattern("PPP")
+        .pattern("PBP")
                 .pattern("PPP")
                 .define('B',
                         SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
