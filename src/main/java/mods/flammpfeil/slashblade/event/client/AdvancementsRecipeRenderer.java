@@ -422,7 +422,8 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @SuppressWarnings("unchecked")
+	@OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onInitGuiPost(ScreenEvent.Init.Post event) {
         if (!(event.getScreen() instanceof AdvancementsScreen))

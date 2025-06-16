@@ -7,6 +7,10 @@ import java.util.List;
 
 public class SlashBladeConfig {
     public static ForgeConfigSpec COMMON_CONFIG;
+    
+    public static ForgeConfigSpec.IntValue MAX_PROUDSOUL_DROP;
+    public static ForgeConfigSpec.IntValue MAX_ENCHANTED_PROUDSOUL_DROP;
+    
     public static ForgeConfigSpec.BooleanValue HUNGER_CAN_REPAIR;
     public static ForgeConfigSpec.IntValue MAX_PROUD_SOUL_GOT;
     public static ForgeConfigSpec.IntValue SUMMON_SWORD_COST;
@@ -33,6 +37,11 @@ public class SlashBladeConfig {
     static {
         ForgeConfigSpec.Builder COMMON_BUILDER = new ForgeConfigSpec.Builder();
         COMMON_BUILDER.comment("General settings").push("general");
+        
+        MAX_PROUDSOUL_DROP = COMMON_BUILDER.comment("Determining the count for proud soul when blade be broken.")
+                .defineInRange("max_proudsoul_drop", 10, 1, 64);
+        MAX_ENCHANTED_PROUDSOUL_DROP = COMMON_BUILDER.comment("Determining the count for enchanted proud soul when blade be broken.")
+                .defineInRange("max_enchanted_proudsoul_drop", 10, 1, 64);
 
         SABIGATANA_SPAWN_CHANCE = COMMON_BUILDER.comment("Determining the spawn chance of sabigatana.")
                 .defineInRange("sabigatana_spawn_chance", 0.05D, 0.0D, 1.0D);

@@ -252,7 +252,8 @@ public class ItemSlashBlade extends SwordItem {
 
 			var state = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
 			if (stack.isEnchanted()) {
-				int count = state.getProudSoulCount() >= 500 ? 5 : Math.max(1, state.getProudSoulCount() / 100);
+				int count = state.getProudSoulCount() >= SlashBladeConfig.MAX_ENCHANTED_PROUDSOUL_DROP.get() * 100 ? 
+						SlashBladeConfig.MAX_ENCHANTED_PROUDSOUL_DROP.get() : Math.max(1, state.getProudSoulCount() / 100);
 				List<Enchantment> enchantments = ForgeRegistries.ENCHANTMENTS.getValues().stream()
 						.filter(enchantment -> stack.canApplyAtEnchantingTable(enchantment))
 						.filter(enchantment -> !SlashBladeConfig.NON_DROPPABLE_ENCHANTMENT.get()
@@ -273,7 +274,8 @@ public class ItemSlashBlade extends SwordItem {
 			}
 			ItemStack soul = new ItemStack(SBItems.proudsoul_tiny);
 
-			int count = state.getProudSoulCount() >= 1000 ? 10 : Math.max(1, state.getProudSoulCount() / 100);
+			int count = state.getProudSoulCount() >= SlashBladeConfig.MAX_PROUDSOUL_DROP.get() * 100 ? 
+					SlashBladeConfig.MAX_PROUDSOUL_DROP.get() : Math.max(1, state.getProudSoulCount() / 100);
 
 			soul.setCount(count);
 			state.setProudSoulCount(state.getProudSoulCount() - (count * 100));

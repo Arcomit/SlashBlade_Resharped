@@ -1,10 +1,5 @@
 package mods.flammpfeil.slashblade.event.bladestand;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.data.builtin.SlashBladeBuiltInRegistry;
 import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
