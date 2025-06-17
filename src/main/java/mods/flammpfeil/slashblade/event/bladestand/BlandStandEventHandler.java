@@ -333,7 +333,7 @@ public class BlandStandEventHandler {
 			int currentLevel = EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade);
 			if (currentLevel >= enchantment.getMaxLevel()) return;
 			ResourceLocation enchantmentID = getEnchantmentId(enchantment);
-			upgradeEnchantmentMap.put(enchantmentID, Math.min(enchantment.getMaxLevel()-currentLevel,level));
+			upgradeEnchantmentMap.put(enchantmentID, Math.min(enchantment.getMaxLevel() - currentLevel,level));
 		});
 
 		if (!upgradeEnchantmentMap.isEmpty()){
@@ -359,9 +359,8 @@ public class BlandStandEventHandler {
 						ResourceLocation enchantmentID = getEnchantmentId(enchantmentTag);
 
 						if (upgradeEnchantmentMap.containsKey(enchantmentID)) {
-							int existingLevel = getEnchantmentLevel(enchantmentTag);
 							int upgradeLevel = upgradeEnchantmentMap.get(enchantmentID);
-							EnchantmentHelper.setEnchantmentLevel(enchantmentTag,existingLevel + upgradeLevel);
+							EnchantmentHelper.setEnchantmentLevel(enchantmentTag,getEnchantmentLevel(enchantmentTag) + upgradeLevel);
 							upgradeEnchantmentMap.remove(enchantmentID);
 						}
 					}
