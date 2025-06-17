@@ -332,7 +332,7 @@ public class BlandStandEventHandler {
 
 			ResourceLocation enchantmentID = getEnchantmentId(enchantment);
 			if (currentLevel == 0){
-				blade.getEnchantmentTags().add(storeEnchantment(enchantmentID, level));
+				blade.getEnchantmentTags().add(storeEnchantment(enchantmentID, Math.min(enchantment.getMaxLevel(),level)));
 			}else {
 				upgradeEnchantmentMap.put(enchantmentID, Math.min(enchantment.getMaxLevel()-currentLevel,level));
 			}
