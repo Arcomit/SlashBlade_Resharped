@@ -31,8 +31,11 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-import static net.minecraft.world.item.enchantment.EnchantmentHelper.getEnchantmentId;
-import static net.minecraft.world.item.enchantment.EnchantmentHelper.storeEnchantment;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static net.minecraft.world.item.enchantment.EnchantmentHelper.*;
 
 @EventBusSubscriber()
 public class BlandStandEventHandler {
@@ -317,7 +320,9 @@ public class BlandStandEventHandler {
 		var random = world.getRandom();
 		var bladeStand = event.getBladeStand();
 
-		ListTag applyEnchantmentList = new ListTag();
+
+		Map<ResourceLocation, Integer> upgradeEnchantmentMap = new HashMap();
+		AtomicBoolean canEnchantment = new AtomicBoolean(false);
 		//遍历耀魂的所有附魔
 		stack.getAllEnchantments().forEach((enchantment, level) -> {
 			if (!blade.canApplyAtEnchantingTable(enchantment)) return;
@@ -325,9 +330,32 @@ public class BlandStandEventHandler {
 			int currentLevel = EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade);
 			if (currentLevel >= enchantment.getMaxLevel()) return;
 
-			applyEnchantmentList.add(storeEnchantment(getEnchantmentId(enchantment), currentLevel + level));
+			ResourceLocation enchantmentID = getEnchantmentId(enchantment);
+			if (currentLevel == 0){
+				blade.getEnchantmentTags().add(storeEnchantment(enchantmentID, Math.min(enchantment.getMaxLevel(),level)));
+			}else {
+				upgradeEnchantmentMap.put(enchantmentID, Math.min(enchantment.getMaxLevel()-currentLevel,level));
+			}
+			canEnchantment.set(true);
 		});
-		if (applyEnchantmentList.isEmpty()) return;
+
+		if (!upgradeEnchantmentMap.isEmpty()){
+			//获取当前拔刀的所有附魔
+			ListTag bladeTag = blade.getEnchantmentTags();
+			//遍历拔刀的所有附魔
+			for (int i = 0; i < bladeTag.size(); i++) {
+				CompoundTag enchantmentTag = bladeTag.getCompound(i);
+				ResourceLocation enchantmentID = getEnchantmentId(enchantmentTag);
+
+				if (upgradeEnchantmentMap.containsKey(enchantmentID)) {
+					int existingLevel = getEnchantmentLevel(enchantmentTag);
+					int upgradeLevel = upgradeEnchantmentMap.get(enchantmentID);
+					EnchantmentHelper.setEnchantmentLevel(enchantmentTag,existingLevel + upgradeLevel);
+				}
+			}
+		}
+
+		if (!canEnchantment.get()) return;
 
 		var probability = 1.0F;
 		if (stack.is(SBItems.proudsoul_tiny))
@@ -337,7 +365,6 @@ public class BlandStandEventHandler {
 		if (stack.is(SBItems.proudsoul_ingot))
 			probability = 0.75F;
 		if (random.nextFloat() <= probability) {
-			blade.getEnchantmentTags().addAll(applyEnchantmentList);
 			//音效和粒子效果
 			if (world instanceof ServerLevel serverLevel) {
 				serverLevel.playSound(
