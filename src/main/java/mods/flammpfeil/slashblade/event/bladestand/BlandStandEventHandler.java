@@ -30,18 +30,14 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static net.minecraft.world.item.enchantment.EnchantmentHelper.*;
 
 @EventBusSubscriber()
 public class BlandStandEventHandler {
-	private static final Logger log = LoggerFactory.getLogger(BlandStandEventHandler.class);
 
 	@SubscribeEvent
 	public static void eventKoseki(SlashBladeEvent.BladeStandAttackEvent event) {
