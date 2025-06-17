@@ -27,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -81,34 +82,8 @@ public class BlandStandEventHandler {
 				return;
 			state.addSpecialEffect(SEKey);
 			RandomSource random = player.getRandom();
-			//音效和粒子效果
-			if (world instanceof ServerLevel serverLevel) {
-				serverLevel.playSound(
-						bladeStand,
-						bladeStand.getPos(),
-						SoundEvents.WITHER_SPAWN,
-						SoundSource.BLOCKS,
-						0.5f,
-						0.8f
-				);
-
-				for (int i = 0; i < 32; ++i) {
-					double xDist = (random.nextFloat() * 2.0F - 1.0F);
-					double yDist = (random.nextFloat() * 2.0F - 1.0F);
-					double zDist = (random.nextFloat() * 2.0F - 1.0F);
-					if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-						double x = bladeStand.getX(xDist / 4.0D);
-						double y = bladeStand.getY(0.5D + yDist / 4.0D);
-						double z = bladeStand.getZ(zDist / 4.0D);
-						serverLevel.sendParticles(
-								ParticleTypes.PORTAL,
-								x, y, z,
-								0,
-								xDist, yDist + 0.2D, zDist,
-								1);
-					}
-				}
-			}
+			//播放成功效果
+			spawnSucceedEffects(world,bladeStand,random);
 			if (!player.isCreative())
 				stack.shrink(1);
 		}
@@ -138,34 +113,8 @@ public class BlandStandEventHandler {
 
 				RandomSource random = player.getRandom();
 				BladeStandEntity bladeStand = event.getBladeStand();
-				//音效和粒子效果
-				if (world instanceof ServerLevel serverLevel) {
-					serverLevel.playSound(
-							bladeStand,
-							bladeStand.getPos(),
-							SoundEvents.WITHER_SPAWN,
-							SoundSource.BLOCKS,
-							0.5f,
-							0.8f
-					);
-
-					for (int i = 0; i < 32; ++i) {
-						double xDist = (random.nextFloat() * 2.0F - 1.0F);
-						double yDist = (random.nextFloat() * 2.0F - 1.0F);
-						double zDist = (random.nextFloat() * 2.0F - 1.0F);
-						if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-							double x = bladeStand.getX(xDist / 4.0D);
-							double y = bladeStand.getY(0.5D + yDist / 4.0D);
-							double z = bladeStand.getZ(zDist / 4.0D);
-							serverLevel.sendParticles(
-									ParticleTypes.PORTAL,
-									x, y, z,
-									0,
-									xDist, yDist + 0.2D, zDist,
-									1);
-						}
-					}
-				}
+				//播放成功效果
+				spawnSucceedEffects(world,bladeStand,random);
 
 				if (!player.isCreative()) {
 					stack.shrink(1);
@@ -207,34 +156,8 @@ public class BlandStandEventHandler {
 			if (!player.isCreative())
 				stack.shrink(1);
 			RandomSource random = player.getRandom();
-			//音效和粒子效果
-			if (world instanceof ServerLevel serverLevel) {
-				serverLevel.playSound(
-						bladeStand,
-						bladeStand.getPos(),
-						SoundEvents.WITHER_SPAWN,
-						SoundSource.BLOCKS,
-						0.5f,
-						0.8f
-				);
-
-				for (int i = 0; i < 32; ++i) {
-					double xDist = (random.nextFloat() * 2.0F - 1.0F);
-					double yDist = (random.nextFloat() * 2.0F - 1.0F);
-					double zDist = (random.nextFloat() * 2.0F - 1.0F);
-					if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-						double x = bladeStand.getX(xDist / 4.0D);
-						double y = bladeStand.getY(0.5D + yDist / 4.0D);
-						double z = bladeStand.getZ(zDist / 4.0D);
-						serverLevel.sendParticles(
-								ParticleTypes.PORTAL,
-								x, y, z,
-								0,
-								xDist, yDist + 0.2D, zDist,
-								1);
-					}
-				}
-			}
+			//播放成功效果
+			spawnSucceedEffects(world,bladeStand,random);
 			player.drop(orb, true);
 			if (SpecialEffectsRegistry.REGISTRY.get().getValue(se).isRemovable())
 				state.removeSpecialEffect(se);
@@ -270,34 +193,8 @@ public class BlandStandEventHandler {
 			orb.setTag(tag);
 
 			RandomSource random = player.getRandom();
-			//音效和粒子效果
-			if (world instanceof ServerLevel serverLevel) {
-				serverLevel.playSound(
-						bladeStand,
-						bladeStand.getPos(),
-						SoundEvents.WITHER_SPAWN,
-						SoundSource.BLOCKS,
-						0.5f,
-						0.8f
-				);
-
-				for (int i = 0; i < 32; ++i) {
-					double xDist = (random.nextFloat() * 2.0F - 1.0F);
-					double yDist = (random.nextFloat() * 2.0F - 1.0F);
-					double zDist = (random.nextFloat() * 2.0F - 1.0F);
-					if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-						double x = bladeStand.getX(xDist / 4.0D);
-						double y = bladeStand.getY(0.5D + yDist / 4.0D);
-						double z = bladeStand.getZ(zDist / 4.0D);
-						serverLevel.sendParticles(
-								ParticleTypes.PORTAL,
-								x, y, z,
-								0,
-								xDist, yDist + 0.2D, zDist,
-								1);
-					}
-				}
-			}
+			//播放成功效果
+			spawnSucceedEffects(world,bladeStand,random);
 
 			if (!player.isCreative())
 				stack.shrink(1);
@@ -364,37 +261,42 @@ public class BlandStandEventHandler {
 						bladeTag.add(storeEnchantment(enchantmentID,level));
 					});
 				}
-				//音效和粒子效果
-				if (world instanceof ServerLevel serverLevel) {
-					serverLevel.playSound(
-							bladeStand,
-							bladeStand.getPos(),
-							SoundEvents.WITHER_SPAWN,
-							SoundSource.BLOCKS,
-							0.5f,
-							0.8f
-					);
-
-					for (int i = 0; i < 32; ++i) {
-						double xDist = (random.nextFloat() * 2.0F - 1.0F);
-						double yDist = (random.nextFloat() * 2.0F - 1.0F);
-						double zDist = (random.nextFloat() * 2.0F - 1.0F);
-						if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-							double x = bladeStand.getX(xDist / 4.0D);
-							double y = bladeStand.getY(0.5D + yDist / 4.0D);
-							double z = bladeStand.getZ(zDist / 4.0D);
-							serverLevel.sendParticles(
-									ParticleTypes.PORTAL,
-									x, y, z,
-									0,
-									xDist, yDist + 0.2D, zDist,
-									1);
-						}
-					}
-				}
+				//播放成功效果
+				spawnSucceedEffects(world,bladeStand,random);
 			}
 			if (!player.isCreative()){
 				stack.shrink(1);
+			}
+		}
+	}
+
+	private static void spawnSucceedEffects(Level world, BladeStandEntity bladeStand, RandomSource random) {
+		if (!(world instanceof ServerLevel serverLevel)) return;
+		// 音效
+		serverLevel.playSound(
+				bladeStand,
+				bladeStand.getPos(),
+				SoundEvents.WITHER_SPAWN,
+				SoundSource.BLOCKS,
+				0.5f,
+				0.8f
+		);
+
+		// 粒子效果
+		for (int i = 0; i < 32; ++i) {
+			double xDist = (random.nextFloat() * 2.0F - 1.0F);
+			double yDist = (random.nextFloat() * 2.0F - 1.0F);
+			double zDist = (random.nextFloat() * 2.0F - 1.0F);
+			if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
+				double x = bladeStand.getX(xDist / 4.0D);
+				double y = bladeStand.getY(0.5D + yDist / 4.0D);
+				double z = bladeStand.getZ(zDist / 4.0D);
+				serverLevel.sendParticles(
+						ParticleTypes.PORTAL,
+						x, y, z,
+						0,
+						xDist, yDist + 0.2D, zDist,
+						1);
 			}
 		}
 	}
