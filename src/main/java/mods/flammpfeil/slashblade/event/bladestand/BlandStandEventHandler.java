@@ -27,18 +27,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static net.minecraft.world.item.enchantment.EnchantmentHelper.*;
 
 @EventBusSubscriber()
 public class BlandStandEventHandler {
+
 	@SubscribeEvent
 	public static void eventKoseki(SlashBladeEvent.BladeStandAttackEvent event) {
 		var slashBladeDefinitionRegistry = SlashBlade.getSlashBladeDefinitionRegistry(event.getBladeStand().level());
@@ -81,34 +82,8 @@ public class BlandStandEventHandler {
 				return;
 			state.addSpecialEffect(SEKey);
 			RandomSource random = player.getRandom();
-			//音效和粒子效果
-			if (world instanceof ServerLevel serverLevel) {
-				serverLevel.playSound(
-						bladeStand,
-						bladeStand.getPos(),
-						SoundEvents.WITHER_SPAWN,
-						SoundSource.BLOCKS,
-						0.5f,
-						0.8f
-				);
-
-				for (int i = 0; i < 32; ++i) {
-					double xDist = (random.nextFloat() * 2.0F - 1.0F);
-					double yDist = (random.nextFloat() * 2.0F - 1.0F);
-					double zDist = (random.nextFloat() * 2.0F - 1.0F);
-					if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-						double x = bladeStand.getX(xDist / 4.0D);
-						double y = bladeStand.getY(0.5D + yDist / 4.0D);
-						double z = bladeStand.getZ(zDist / 4.0D);
-						serverLevel.sendParticles(
-								ParticleTypes.PORTAL,
-								x, y, z,
-								0,
-								xDist, yDist + 0.2D, zDist,
-								1);
-					}
-				}
-			}
+			//播放成功效果
+			spawnSucceedEffects(world,bladeStand,random);
 			if (!player.isCreative())
 				stack.shrink(1);
 		}
@@ -138,34 +113,8 @@ public class BlandStandEventHandler {
 
 				RandomSource random = player.getRandom();
 				BladeStandEntity bladeStand = event.getBladeStand();
-				//音效和粒子效果
-				if (world instanceof ServerLevel serverLevel) {
-					serverLevel.playSound(
-							bladeStand,
-							bladeStand.getPos(),
-							SoundEvents.WITHER_SPAWN,
-							SoundSource.BLOCKS,
-							0.5f,
-							0.8f
-					);
-
-					for (int i = 0; i < 32; ++i) {
-						double xDist = (random.nextFloat() * 2.0F - 1.0F);
-						double yDist = (random.nextFloat() * 2.0F - 1.0F);
-						double zDist = (random.nextFloat() * 2.0F - 1.0F);
-						if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-							double x = bladeStand.getX(xDist / 4.0D);
-							double y = bladeStand.getY(0.5D + yDist / 4.0D);
-							double z = bladeStand.getZ(zDist / 4.0D);
-							serverLevel.sendParticles(
-									ParticleTypes.PORTAL,
-									x, y, z,
-									0,
-									xDist, yDist + 0.2D, zDist,
-									1);
-						}
-					}
-				}
+				//播放成功效果
+				spawnSucceedEffects(world,bladeStand,random);
 
 				if (!player.isCreative()) {
 					stack.shrink(1);
@@ -207,34 +156,8 @@ public class BlandStandEventHandler {
 			if (!player.isCreative())
 				stack.shrink(1);
 			RandomSource random = player.getRandom();
-			//音效和粒子效果
-			if (world instanceof ServerLevel serverLevel) {
-				serverLevel.playSound(
-						bladeStand,
-						bladeStand.getPos(),
-						SoundEvents.WITHER_SPAWN,
-						SoundSource.BLOCKS,
-						0.5f,
-						0.8f
-				);
-
-				for (int i = 0; i < 32; ++i) {
-					double xDist = (random.nextFloat() * 2.0F - 1.0F);
-					double yDist = (random.nextFloat() * 2.0F - 1.0F);
-					double zDist = (random.nextFloat() * 2.0F - 1.0F);
-					if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-						double x = bladeStand.getX(xDist / 4.0D);
-						double y = bladeStand.getY(0.5D + yDist / 4.0D);
-						double z = bladeStand.getZ(zDist / 4.0D);
-						serverLevel.sendParticles(
-								ParticleTypes.PORTAL,
-								x, y, z,
-								0,
-								xDist, yDist + 0.2D, zDist,
-								1);
-					}
-				}
-			}
+			//播放成功效果
+			spawnSucceedEffects(world,bladeStand,random);
 			player.drop(orb, true);
 			if (SpecialEffectsRegistry.REGISTRY.get().getValue(se).isRemovable())
 				state.removeSpecialEffect(se);
@@ -261,7 +184,7 @@ public class BlandStandEventHandler {
 			if (EnchantmentHelper.getTagEnchantmentLevel(e, blade) < e.getMaxLevel())
 				return;
 		}
-		
+
 		ResourceLocation SA = state.getSlashArtsKey();
 		if (SA != null && !SA.equals(SlashArtsRegistry.NONE.getId())) {
 			ItemStack orb = new ItemStack(SBItems.proudsoul_sphere);
@@ -270,34 +193,8 @@ public class BlandStandEventHandler {
 			orb.setTag(tag);
 
 			RandomSource random = player.getRandom();
-			//音效和粒子效果
-			if (world instanceof ServerLevel serverLevel) {
-				serverLevel.playSound(
-						bladeStand,
-						bladeStand.getPos(),
-						SoundEvents.WITHER_SPAWN,
-						SoundSource.BLOCKS,
-						0.5f,
-						0.8f
-				);
-
-				for (int i = 0; i < 32; ++i) {
-					double xDist = (random.nextFloat() * 2.0F - 1.0F);
-					double yDist = (random.nextFloat() * 2.0F - 1.0F);
-					double zDist = (random.nextFloat() * 2.0F - 1.0F);
-					if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-						double x = bladeStand.getX(xDist / 4.0D);
-						double y = bladeStand.getY(0.5D + yDist / 4.0D);
-						double z = bladeStand.getZ(zDist / 4.0D);
-						serverLevel.sendParticles(
-								ParticleTypes.PORTAL,
-								x, y, z,
-								0,
-								xDist, yDist + 0.2D, zDist,
-								1);
-					}
-				}
-			}
+			//播放成功效果
+			spawnSucceedEffects(world,bladeStand,random);
 
 			if (!player.isCreative())
 				stack.shrink(1);
@@ -322,81 +219,85 @@ public class BlandStandEventHandler {
 
 
 		Map<ResourceLocation, Integer> upgradeEnchantmentMap = new HashMap();
-		AtomicBoolean canEnchantment = new AtomicBoolean(false);
 		//遍历耀魂的所有附魔
 		stack.getAllEnchantments().forEach((enchantment, level) -> {
 			if (!blade.canApplyAtEnchantingTable(enchantment)) return;
 			//获取当前拔刀该附魔的等级(没有则为0)
 			int currentLevel = EnchantmentHelper.getTagEnchantmentLevel(enchantment, blade);
 			if (currentLevel >= enchantment.getMaxLevel()) return;
-
 			ResourceLocation enchantmentID = getEnchantmentId(enchantment);
-			if (currentLevel == 0){
-				blade.getEnchantmentTags().add(storeEnchantment(enchantmentID, Math.min(enchantment.getMaxLevel(),level)));
-			}else {
-				upgradeEnchantmentMap.put(enchantmentID, Math.min(enchantment.getMaxLevel()-currentLevel,level));
-			}
-			canEnchantment.set(true);
+			upgradeEnchantmentMap.put(enchantmentID, Math.min(enchantment.getMaxLevel() - currentLevel,level));
 		});
 
 		if (!upgradeEnchantmentMap.isEmpty()){
-			//获取当前拔刀的所有附魔
-			ListTag bladeTag = blade.getEnchantmentTags();
-			//遍历拔刀的所有附魔
-			for (int i = 0; i < bladeTag.size(); i++) {
-				CompoundTag enchantmentTag = bladeTag.getCompound(i);
-				ResourceLocation enchantmentID = getEnchantmentId(enchantmentTag);
+			var probability = 1.0F;
+			if (stack.is(SBItems.proudsoul_tiny))
+				probability = 0.25F;
+			if (stack.is(SBItems.proudsoul))
+				probability = 0.5F;
+			if (stack.is(SBItems.proudsoul_ingot))
+				probability = 0.75F;
+			if (random.nextFloat() <= probability) {
+				//获取当前拔刀的所有附魔
+				ListTag bladeTag = blade.getEnchantmentTags();
+				if (bladeTag.isEmpty()){
+					upgradeEnchantmentMap.forEach((enchantmentID, level) -> {
+						bladeTag.add(storeEnchantment(enchantmentID,level));
+					});
+					blade.getOrCreateTag().put("Enchantments", bladeTag);
+				}else{
+					//遍历拔刀的所有附魔
+					for (int i = 0; i < bladeTag.size(); i++) {
+						CompoundTag enchantmentTag = bladeTag.getCompound(i);
+						ResourceLocation enchantmentID = getEnchantmentId(enchantmentTag);
 
-				if (upgradeEnchantmentMap.containsKey(enchantmentID)) {
-					int existingLevel = getEnchantmentLevel(enchantmentTag);
-					int upgradeLevel = upgradeEnchantmentMap.get(enchantmentID);
-					EnchantmentHelper.setEnchantmentLevel(enchantmentTag,existingLevel + upgradeLevel);
-				}
-			}
-		}
-
-		if (!canEnchantment.get()) return;
-
-		var probability = 1.0F;
-		if (stack.is(SBItems.proudsoul_tiny))
-			probability = 0.25F;
-		if (stack.is(SBItems.proudsoul))
-			probability = 0.5F;
-		if (stack.is(SBItems.proudsoul_ingot))
-			probability = 0.75F;
-		if (random.nextFloat() <= probability) {
-			//音效和粒子效果
-			if (world instanceof ServerLevel serverLevel) {
-				serverLevel.playSound(
-						bladeStand,
-						bladeStand.getPos(),
-						SoundEvents.WITHER_SPAWN,
-						SoundSource.BLOCKS,
-						0.5f,
-						0.8f
-				);
-
-				for (int i = 0; i < 32; ++i) {
-					double xDist = (random.nextFloat() * 2.0F - 1.0F);
-					double yDist = (random.nextFloat() * 2.0F - 1.0F);
-					double zDist = (random.nextFloat() * 2.0F - 1.0F);
-					if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
-						double x = bladeStand.getX(xDist / 4.0D);
-						double y = bladeStand.getY(0.5D + yDist / 4.0D);
-						double z = bladeStand.getZ(zDist / 4.0D);
-						serverLevel.sendParticles(
-								ParticleTypes.PORTAL,
-								x, y, z,
-								0,
-								xDist, yDist + 0.2D, zDist,
-								1);
+						if (upgradeEnchantmentMap.containsKey(enchantmentID)) {
+							int upgradeLevel = upgradeEnchantmentMap.get(enchantmentID);
+							EnchantmentHelper.setEnchantmentLevel(enchantmentTag,getEnchantmentLevel(enchantmentTag) + upgradeLevel);
+							upgradeEnchantmentMap.remove(enchantmentID);
+						}
 					}
+					upgradeEnchantmentMap.forEach((enchantmentID, level) -> {
+						bladeTag.add(storeEnchantment(enchantmentID,level));
+					});
 				}
+				//播放成功效果
+				spawnSucceedEffects(world,bladeStand,random);
 			}
-
+			if (!player.isCreative()){
+				stack.shrink(1);
+			}
 		}
-		if (!player.isCreative()){
-			stack.shrink(1);
+	}
+
+	private static void spawnSucceedEffects(Level world, BladeStandEntity bladeStand, RandomSource random) {
+		if (!(world instanceof ServerLevel serverLevel)) return;
+		// 音效
+		serverLevel.playSound(
+				bladeStand,
+				bladeStand.getPos(),
+				SoundEvents.WITHER_SPAWN,
+				SoundSource.BLOCKS,
+				0.5f,
+				0.8f
+		);
+
+		// 粒子效果
+		for (int i = 0; i < 32; ++i) {
+			double xDist = (random.nextFloat() * 2.0F - 1.0F);
+			double yDist = (random.nextFloat() * 2.0F - 1.0F);
+			double zDist = (random.nextFloat() * 2.0F - 1.0F);
+			if (!(xDist * xDist + yDist * yDist + zDist * zDist > 1.0D)) {
+				double x = bladeStand.getX(xDist / 4.0D);
+				double y = bladeStand.getY(0.5D + yDist / 4.0D);
+				double z = bladeStand.getZ(zDist / 4.0D);
+				serverLevel.sendParticles(
+						ParticleTypes.PORTAL,
+						x, y, z,
+						0,
+						xDist, yDist + 0.2D, zDist,
+						1);
+			}
 		}
 	}
 }
