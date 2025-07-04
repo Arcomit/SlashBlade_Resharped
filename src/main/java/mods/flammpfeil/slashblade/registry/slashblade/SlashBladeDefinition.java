@@ -2,12 +2,16 @@ package mods.flammpfeil.slashblade.registry.slashblade;
 
 import java.util.Comparator;
 import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
+
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
+import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.Util;
 import net.minecraft.core.Holder.Reference;
@@ -124,7 +128,11 @@ public class SlashBladeDefinition {
 	}
 
 	public Item getItem() {
-		return ForgeRegistries.ITEMS.getValue(this.item);
+		@Nullable
+		Item value = ForgeRegistries.ITEMS.getValue(this.item);
+		if(value == null)
+			return SBItems.slashblade;
+		return value;
 	}
 	
 	
