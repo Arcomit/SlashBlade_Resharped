@@ -11,6 +11,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
+import mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.Util;
@@ -20,6 +21,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SlashBladeDefinition {
@@ -86,6 +88,10 @@ public class SlashBladeDefinition {
 	}
 
 	public ItemStack getBlade(Item bladeItem) {
+		
+		if(MinecraftForge.EVENT_BUS.post(new SlashBladeRegistryEvent.Pre(this)))
+			return ItemStack.EMPTY;
+		
 		ItemStack result = new ItemStack(bladeItem);
 		var state = result.getCapability(ItemSlashBlade.BLADESTATE).orElse(new SlashBladeState(result));
 		state.setNonEmpty();
@@ -124,7 +130,9 @@ public class SlashBladeDefinition {
 			result.enchant(enchantment, instance.getEnchantmentLevel());
 
 		}
-		return result;
+		var postRegistry = new SlashBladeRegistryEvent.Post(this, result);
+		MinecraftForge.EVENT_BUS.post(postRegistry);
+		return postRegistry.getBlade();
 	}
 
 	public Item getItem() {

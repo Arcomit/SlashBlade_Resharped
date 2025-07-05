@@ -1,5 +1,6 @@
-package mods.flammpfeil.slashblade.event;
+package mods.flammpfeil.slashblade.event.handler;
 
+import mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -8,6 +9,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod.EventBusSubscriber
 public class SlashBladeEventHandler {
@@ -24,5 +26,10 @@ public class SlashBladeEventHandler {
 			return;
 
 		event.setCanceled(true);
+	}
+	@SubscribeEvent
+	public static void onLoadingBlade(SlashBladeRegistryEvent.Pre event){
+		if(!ForgeRegistries.ITEMS.containsKey(event.getSlashBladeDefinition().getItemName()))
+			event.setCanceled(true);
 	}
 }

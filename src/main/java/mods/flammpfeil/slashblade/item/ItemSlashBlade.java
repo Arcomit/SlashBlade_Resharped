@@ -226,9 +226,9 @@ public class ItemSlashBlade extends SwordItem {
 		if (stack.getDamageValue() + amount >= stack.getMaxDamage()) {
 			amount = 0;
 			stack.setDamageValue(stack.getMaxDamage() - 1);
-			cap.setBroken(true);
+			cap.setBroken(!MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.BreakEvent(stack, cap)));
 		}
-
+		
 		if (current != cap.isBroken()) {
 			onBroken.accept(entity);
 			if (entity instanceof ServerPlayer player) {

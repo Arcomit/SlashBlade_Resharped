@@ -6,6 +6,7 @@ import com.google.common.collect.RangeMap;
 
 import mods.flammpfeil.slashblade.client.renderer.CarryType;
 import mods.flammpfeil.slashblade.event.BladeMotionEvent;
+import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
@@ -361,7 +362,16 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag>
         }
 
         ResourceLocation csloc = this.getSlashArts().doArts(type, user);
+        
+        SlashBladeEvent.ChargeActionEvent event = new SlashBladeEvent.ChargeActionEvent(user, elapsed, this, csloc, type);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled()) {
+            return ComboStateRegistry.NONE.getId();
+        }
+
+        csloc = event.getComboState();
         ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(csloc);
+
         if (csloc != ComboStateRegistry.NONE.getId() && !currentloc.getValue().equals(csloc)) {
         	
             if (current.getPriority() > cs.getPriority()) {

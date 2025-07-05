@@ -2,7 +2,9 @@ package mods.flammpfeil.slashblade.event;
 
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
+import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import mods.flammpfeil.slashblade.util.KnockBacks;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,6 +27,13 @@ public abstract class SlashBladeEvent extends Event {
 
 	public ISlashBladeState getSlashBladeState() {
 		return state;
+	}
+	
+	@Cancelable
+	public static class BreakEvent extends SlashBladeEvent {
+		public BreakEvent(ItemStack blade, ISlashBladeState state) {
+			super(blade, state);
+		}
 	}
 	
 	public static class PowerBladeEvent extends SlashBladeEvent {
@@ -199,4 +208,46 @@ public abstract class SlashBladeEvent extends Event {
 		}
 		
 	}
+	
+
+    @Cancelable
+    public static class ChargeActionEvent extends Event {
+        private final LivingEntity entityLiving;
+        private final int elapsed;
+        private final ISlashBladeState state;
+        private ResourceLocation comboState;
+        private final SlashArts.ArtsType type;
+
+        public ChargeActionEvent(LivingEntity entityLiving, int elapsed, ISlashBladeState state, ResourceLocation comboState, SlashArts.ArtsType type) {
+            this.entityLiving = entityLiving;
+            this.elapsed = elapsed;
+            this.state = state;
+            this.comboState = comboState;
+            this.type = type;
+        }
+
+        public LivingEntity getEntityLiving() {
+            return entityLiving;
+        }
+
+        public int getElapsed() {
+            return elapsed;
+        }
+
+        public ISlashBladeState getSlashBladeState() {
+            return state;
+        }
+
+        public ResourceLocation getComboState() {
+            return comboState;
+        }
+
+        public void setComboState(ResourceLocation comboState) {
+            this.comboState = comboState;
+        }
+
+        public SlashArts.ArtsType getType() {
+            return type;
+        }
+    }
 }

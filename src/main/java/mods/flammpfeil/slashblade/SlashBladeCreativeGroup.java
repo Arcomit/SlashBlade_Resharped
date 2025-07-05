@@ -59,21 +59,12 @@ public class SlashBladeCreativeGroup {
 	private static void fillBlades(CreativeModeTab.ItemDisplayParameters features, CreativeModeTab.Output output) {
 		SlashBlade.getSlashBladeDefinitionRegistry(features.holders()).listElements()
 				.sorted(SlashBladeDefinition.COMPARATOR).forEach(entry -> {
-					output.accept(entry.value().getBlade());
+					if(!entry.value().getBlade().isEmpty())
+						output.accept(entry.value().getBlade());
 				});
 	}
 	
 	private static void fillEnchantmentsSouls(CreativeModeTab.Output output) {
-//		SlashArtsRegistry.REGISTRY.get().forEach(slashArts -> {
-//			ResourceLocation key = SlashArtsRegistry.REGISTRY.get().getKey(slashArts);
-//			if (slashArts.equals(SlashArtsRegistry.NONE.get()) || key == null)
-//				return;
-//			ItemStack sphere = new ItemStack(SBItems.proudsoul_tiny);
-//			CompoundTag tag = new CompoundTag();
-//			tag.putString("SpecialAttackType", key.toString());
-//			sphere.setTag(tag);
-//			output.accept(sphere);
-//		});
 		ForgeRegistries.ENCHANTMENTS.forEach(enchantment->{
 			ItemStack blade = new ItemStack(SBItems.slashblade);
 			if(blade.canApplyAtEnchantingTable(enchantment)) {
