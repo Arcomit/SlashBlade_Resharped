@@ -160,5 +160,16 @@ public class RefineHandler {
             AdvancementHelper.grantCriterion((ServerPlayer) event.getEntity(), REFINE);
 
     }
-
+    
+    @SubscribeEvent
+    public void refineLimitCheck(RefineProgressEvent event) {
+        AnvilUpdateEvent oriEvent = event.getOriginalEvent();
+        if (oriEvent == null) {
+            return;
+        }
+        int refineLimit = Math.max(10, oriEvent.getRight().getEnchantmentValue());
+        if (event.getRefineResult() <= refineLimit) {
+            event.setRefineResult(event.getRefineResult() + 1);
+        }
+    }
 }
