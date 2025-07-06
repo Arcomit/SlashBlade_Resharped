@@ -44,7 +44,7 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
 
         if (!ForgeRegistries.ITEMS.getKey(result.getItem()).equals(getOutputBlade())) {
             result = access.registryOrThrow(SlashBladeDefinition.REGISTRY_KEY).get(getOutputBlade())
-                    .getBlade(result.getItem());
+                    .getBlade();
         }
 
         return result;

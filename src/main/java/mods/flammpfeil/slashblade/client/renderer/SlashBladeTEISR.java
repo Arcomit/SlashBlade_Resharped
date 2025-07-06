@@ -150,15 +150,14 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
                 .orElseGet(() -> stackDefaultTexture(stack));
 
         String renderTarget;
-        if (types.contains(SwordType.BROKEN))
+        if (types.contains(SwordType.BROKEN)) {
             renderTarget = "item_damaged";
-        else
+        }
+        else if(types.contains(SwordType.NOSCABBARD)) {
+            renderTarget = "item_bladens";
+        } else{
             renderTarget = "item_blade";
-//        if(!types.contains(SwordType.NoScabbard)) {
-//                renderTarget = "item_blade";
-//        } else{
-//            renderTarget = "item_bladens";
-//        }
+        }
 
         BladeRenderState.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn, lightIn);
         BladeRenderState.renderOverridedLuminous(stack, model, renderTarget + "_luminous", textureLocation, matrixStack,
