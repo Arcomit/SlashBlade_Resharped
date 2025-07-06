@@ -20,13 +20,14 @@ public class JEICompat implements IModPlugin {
 
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration) {
-		registration.registerSubtypeInterpreter(SBItems.slashblade, this::syncSlashBlade);
+		registration.registerSubtypeInterpreter(SBItems.slashblade, JEICompat::syncSlashBlade);
 	}
 
-	public String syncSlashBlade(ItemStack stack, UidContext context) {
+	public static String syncSlashBlade(ItemStack stack, UidContext context) {
 		// 同步nbt到Cap
 		stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(cap -> {
-			cap.deserializeNBT(stack.getOrCreateTag().getCompound("bladeState"));
+			if(stack.getOrCreateTag().contains("bladeState"))
+				cap.deserializeNBT(stack.getOrCreateTag().getCompound("bladeState"));
 		});
 
 		return stack.getCapability(ItemSlashBlade.BLADESTATE).map(cap -> cap.getTranslationKey()).orElse("");

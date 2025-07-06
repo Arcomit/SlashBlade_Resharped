@@ -190,7 +190,10 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
     }
 
     public ResourceLocation stackDefaultModel(ItemStack stack) {
-		CompoundTag stateTag = stack.getOrCreateTagElement("bladeState");
+		CompoundTag tag = stack.getOrCreateTag();
+		if(!tag.contains("bladeState"))
+			return DefaultResources.resourceDefaultModel;
+		CompoundTag stateTag = stack.getTagElement("bladeState");
 		String name = stateTag.getString("ModelName");
 		if(!(stack.getItem() instanceof ItemSlashBladeDetune)) {
 			String key = stateTag.getString("translationKey");
@@ -208,7 +211,10 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 	}
 
     public ResourceLocation stackDefaultTexture(ItemStack stack) {
-		CompoundTag stateTag = stack.getOrCreateTagElement("bladeState");
+		CompoundTag tag = stack.getOrCreateTag();
+		if(!tag.contains("bladeState"))
+			return DefaultResources.resourceDefaultTexture;
+		CompoundTag stateTag = stack.getTagElement("bladeState");
 		String name = stateTag.getString("TextureName");
 		if(!(stack.getItem() instanceof ItemSlashBladeDetune)) {
 			String key = stateTag.getString("translationKey");

@@ -1,5 +1,6 @@
 package mods.flammpfeil.slashblade.item;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -22,10 +23,10 @@ public enum SwordType {
 
         if (state.isPresent()) {
             itemStackIn.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
-                if (s.isBroken() || itemStackIn.getOrCreateTagElement("bladeState").getBoolean("isBroken"))
+                if (s.isBroken() || getElement(itemStackIn).getBoolean("isBroken"))
                     types.add(BROKEN);
 
-                if (s.isSealed() || itemStackIn.getOrCreateTagElement("bladeState").getBoolean("isSealed"))
+                if (s.isSealed() || getElement(itemStackIn).getBoolean("isSealed"))
                     types.add(SEALED);
 
                 if (!s.isSealed() && itemStackIn.isEnchanted()
@@ -51,4 +52,11 @@ public enum SwordType {
 
         return types;
     }
+    
+    private static CompoundTag getElement(ItemStack itemStackIn) {
+    	if(itemStackIn.getOrCreateTag().contains("bladeState")) {
+	    	return itemStackIn.getTagElement("bladeState");
+    	}
+    	return new CompoundTag();
+	}
 }

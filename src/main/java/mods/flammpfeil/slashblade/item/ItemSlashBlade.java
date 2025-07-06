@@ -493,12 +493,12 @@ public class ItemSlashBlade extends SwordItem {
 
 	@Override
 	public int getDamage(ItemStack stack) {
-		return stack.getCapability(BLADESTATE).map(s -> s.getDamage()).orElse(0);
+		return stack.getCapability(BLADESTATE).filter(s->!s.isEmpty()).map(s -> s.getDamage()).orElse(0);
 	}
 
 	@Override
 	public int getMaxDamage(ItemStack stack) {
-		return stack.getCapability(BLADESTATE).map(s -> s.getMaxDamage()).orElse(super.getMaxDamage(stack));
+		return stack.getCapability(BLADESTATE).filter(s->!s.isEmpty()).map(s -> s.getMaxDamage()).orElse(this.getTier().getUses());
 	}
 
 	@Override
@@ -513,7 +513,10 @@ public class ItemSlashBlade extends SwordItem {
 	}
 
 	private String stackDefaultDescriptionId(ItemStack stack) {
-		String key = stack.getOrCreateTagElement("bladeState").getString("translationKey");
+		CompoundTag tag = stack.getOrCreateTag();
+		if(!tag.contains("bladeState"))
+			return super.getDescriptionId(stack);
+		String key = tag.getCompound("bladeState").getString("translationKey");
 		return !key.isBlank() ? key : super.getDescriptionId(stack);
 	}
 
@@ -573,7 +576,10 @@ public class ItemSlashBlade extends SwordItem {
 
 	@OnlyIn(Dist.CLIENT)
 	public void appendRefineCount(List<Component> tooltip, @NotNull ItemStack stack) {
-		int refine = stack.getOrCreateTagElement("bladeState").getInt("RepairCounter");
+		CompoundTag tag = stack.getOrCreateTag();
+		if(!tag.contains("bladeState"))
+			return ;
+		int refine = tag.getCompound("bladeState").getInt("RepairCounter");
 		if (refine > 0) {
 			tooltip.add(Component.translatable("slashblade.tooltip.refine", refine)
 					.withStyle((ChatFormatting) refineColor.get(refine)));
@@ -582,7 +588,10 @@ public class ItemSlashBlade extends SwordItem {
 
 	@OnlyIn(Dist.CLIENT)
 	public void appendProudSoulCount(List<Component> tooltip, @NotNull ItemStack stack) {
-		int proudsoul = stack.getOrCreateTagElement("bladeState").getInt("proudSoul");
+		CompoundTag tag = stack.getOrCreateTag();
+		if(!tag.contains("bladeState"))
+			return ;
+		int proudsoul = tag.getCompound("bladeState").getInt("proudSoul");
 		if (proudsoul > 0) {
 			MutableComponent countComponent = Component.translatable("slashblade.tooltip.proud_soul", proudsoul)
 					.withStyle(ChatFormatting.GRAY);
@@ -594,7 +603,10 @@ public class ItemSlashBlade extends SwordItem {
 
 	@OnlyIn(Dist.CLIENT)
 	public void appendKillCount(List<Component> tooltip, @NotNull ItemStack stack) {
-		int killCount = stack.getOrCreateTagElement("bladeState").getInt("killCount");
+		CompoundTag tag = stack.getOrCreateTag();
+		if(!tag.contains("bladeState"))
+			return ;
+		int killCount = tag.getCompound("bladeState").getInt("killCount");
 		if (killCount > 0) {
 			MutableComponent killCountComponent = Component.translatable("slashblade.tooltip.killcount", killCount)
 					.withStyle(ChatFormatting.GRAY);
