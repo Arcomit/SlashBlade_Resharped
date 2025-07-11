@@ -996,8 +996,8 @@ public class ComboStateRegistry {
                     .next(entity -> SlashBlade.prefix("judgement_cut_slash_just"))
                     .nextOfTimeout(entity -> SlashBlade.prefix("judgement_cut_slash_just2"))
                     .addTickAction(
-                            ComboState.TimeLineTickAction.getBuilder().put(0, JudgementCut::doJudgementCutJust).build())
-                    .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(0,
+                            ComboState.TimeLineTickAction.getBuilder().put(1, JudgementCut::doJudgementCutJust).build())
+                    .addTickAction(ComboState.TimeLineTickAction.getBuilder().put(1,
                                     a -> AdvancementHelper.grantCriterion(a, AdvancementHelper.ADVANCEMENT_JUDGEMENT_CUT_JUST))
                             .build())
                     .addTickAction((entityIn) -> UserPoseOverrider.resetRot(entityIn))
