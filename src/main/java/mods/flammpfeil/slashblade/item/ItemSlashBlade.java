@@ -462,11 +462,16 @@ public class ItemSlashBlade extends SwordItem {
 						? ComboStateRegistry.REGISTRY.get().getValue(loc)
 						: ComboStateRegistry.NONE.get();
 				
-				if (isSelected)
+				if (isInMainhand(stack, isSelected, living))
 					cs.tickAction(living);
-				
+				else if(!loc.equals(state.getComboRoot()))
+					state.setComboSeq(state.getComboRoot());
 			}
 		});
+	}
+
+	public static boolean isInMainhand(ItemStack stack, boolean isSelected, LivingEntity living) {
+		return isSelected && stack.equals(living.getMainHandItem(), false);
 	}
 
 	@Nullable

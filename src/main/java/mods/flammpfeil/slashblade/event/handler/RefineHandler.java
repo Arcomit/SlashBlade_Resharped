@@ -105,8 +105,8 @@ public class RefineHandler {
             if (e2.isCanceled()) {
                 return;
             }
-
-            state.setProudSoulCount(state.getProudSoulCount() + Math.min(5000, level * 10));
+            
+            
             if (state.getRefine() < refineLimit) {
                 if (state.getRefine() + e2.getRefineResult() < 200) {
                     state.setMaxDamage(state.getMaxDamage() + e2.getRefineResult());
@@ -114,9 +114,12 @@ public class RefineHandler {
                     state.setMaxDamage(state.getMaxDamage() + Math.min(state.getRefine() + e2.getRefineResult(), 200)
                             - state.getRefine());
                 }
+                
+                state.setProudSoulCount(state.getProudSoulCount() + getRefineProudsoulCount(level, state, e2));
+                
                 state.setRefine(e2.getRefineResult());
             }
-
+            
             result.setDamageValue(result.getDamageValue() - Math.max(1, level / 2));
             result.getOrCreateTag().put("bladeState", state.serializeNBT());
 
@@ -129,7 +132,12 @@ public class RefineHandler {
         event.setOutput(result);
     }
 
-    static private final ResourceLocation REFINE = new ResourceLocation(SlashBlade.MODID, "tips/refine");
+	public int getRefineProudsoulCount(int level, ISlashBladeState state, RefineSettlementEvent e2) {
+		return (e2.getRefineResult() - state.getRefine())
+				* Math.min(5000, level * 10);
+	}
+
+	private static final ResourceLocation REFINE = new ResourceLocation(SlashBlade.MODID, "tips/refine");
 
     @SubscribeEvent
     public void onAnvilRepairEvent(AnvilRepairEvent event) {

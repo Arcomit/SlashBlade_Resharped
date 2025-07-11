@@ -4,6 +4,7 @@ import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
@@ -37,13 +38,17 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
     public ResourceLocation getOutputBlade() {
         return outputBlade;
     }
+    
+    private ResourceKey<SlashBladeDefinition> getOutputBladeKey() {
+        return ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, outputBlade);
+    }
 
     @Override
     public ItemStack getResultItem(RegistryAccess access) {
         ItemStack result = SlashBladeShapedRecipe.getResultBlade(this.getOutputBlade());
 
         if (!ForgeRegistries.ITEMS.getKey(result.getItem()).equals(getOutputBlade())) {
-            result = access.registryOrThrow(SlashBladeDefinition.REGISTRY_KEY).get(getOutputBlade())
+            result = access.registryOrThrow(SlashBladeDefinition.REGISTRY_KEY).getOrThrow(getOutputBladeKey())
                     .getBlade();
         }
 
@@ -66,6 +71,7 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
             resultState.setProudSoulCount(resultState.getProudSoulCount() + ingredientState.getProudSoulCount());
             resultState.setKillCount(resultState.getKillCount() + ingredientState.getKillCount());
             resultState.setRefine(resultState.getRefine() + ingredientState.getRefine());
+            result.getOrCreateTag().put("bladeState", resultState.serializeNBT());
             updateEnchantment(result, stack);
         }
         

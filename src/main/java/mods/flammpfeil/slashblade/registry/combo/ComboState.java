@@ -84,6 +84,9 @@ public class ComboState {
 
     public void tickAction(LivingEntity user) {
         tickAction.accept(user);
+        if(tickAction instanceof TimeLineTickAction timeline) {
+        	timeline.offset = -1;
+        }
     }
 
     public void hitEffect(LivingEntity target, LivingEntity attacker) {
