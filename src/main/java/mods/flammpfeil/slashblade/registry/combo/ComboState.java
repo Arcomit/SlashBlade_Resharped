@@ -4,7 +4,6 @@ import com.google.common.collect.*;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.ability.ArrowReflector;
-import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
@@ -12,14 +11,11 @@ import mods.flammpfeil.slashblade.slasharts.SlashArts;
 import mods.flammpfeil.slashblade.util.*;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nonnull;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.*;
@@ -196,6 +192,7 @@ public class ComboState {
 	}
 
 	public static class TimeLineTickAction implements Consumer<LivingEntity> {
+		long offset = -1;
 
 		public static TimeLineTickActionBuilder getBuilder() {
 			return new TimeLineTickActionBuilder();
@@ -218,15 +215,24 @@ public class ComboState {
 
 		TimeLineTickAction(Map<Integer, Consumer<LivingEntity>> timeLine) {
 			this.timeLine.putAll(timeLine);
+
 		}
 
 		@Override
 		public void accept(LivingEntity livingEntity) {
 			long elapsed = getElapsed(livingEntity);
-//			var combo = livingEntity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
-//			.map((state) -> state.getComboSeq()).orElse(null);
-			Consumer<LivingEntity> action = timeLine.getOrDefault((int) elapsed, this::defaultConsumer);
-//			SlashBlade.LOGGER.info("Combo:{}, Timer:{}", combo, elapsed);
+
+			if (offset < 0) {
+				offset = elapsed;
+			}
+			long adjustElapsed = elapsed -= offset;
+			if (adjustElapsed < 0) {
+				offset = elapsed;
+				adjustElapsed = 0;
+			}
+
+			Consumer<LivingEntity> action = timeLine.getOrDefault((int) adjustElapsed, this::defaultConsumer);
+
 			action.accept(livingEntity);
 		}
 
