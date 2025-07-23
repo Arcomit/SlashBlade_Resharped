@@ -83,7 +83,8 @@ public class ItemSlashBlade extends SwordItem {
 	});
 
 	public static final List<Enchantment> exEnchantment = List.of(Enchantments.SOUL_SPEED, Enchantments.POWER_ARROWS,
-			Enchantments.FALL_PROTECTION, Enchantments.FIRE_PROTECTION, Enchantments.THORNS);
+			Enchantments.FALL_PROTECTION, Enchantments.FIRE_PROTECTION,
+			ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("minecraft", "feather_falling")), ForgeRegistries.ENCHANTMENTS.getValue(new ResourceLocation("minecraft", "fire_protection")), Enchantments.THORNS);
 
 	public ItemSlashBlade(Tier tier, int attackDamageIn, float attackSpeedIn, Properties builder) {
 		super(tier, attackDamageIn, attackSpeedIn, builder);

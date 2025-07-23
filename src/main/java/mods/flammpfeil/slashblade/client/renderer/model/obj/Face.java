@@ -107,18 +107,15 @@ public class Face {
             averageV = averageV / textureCoordinates.length;
         }
 
-        VertexConsumer wr = tessellator;
-
         Matrix4f transform;
         if (matrix != null) {
-            PoseStack.Pose me = matrix.last();
-            transform = me.pose();
+            transform = matrix.last().pose();
         } else {
             transform = defaultTransform.get();
         }
 
         for (int i = 0; i < vertices.length; ++i) {
-            putVertex(wr, i, transform, textureOffset, averageU, averageV);
+            putVertex(tessellator, i, transform, textureOffset, averageU, averageV);
         }
     }
 
@@ -153,12 +150,10 @@ public class Face {
 
         Vector3f vector3f;
         if (isSmoothShade && vertexNormals != null) {
-
-            Vertex normal = vertexNormals[i];
-
-            Vec3 nol = new Vec3(normal.x, normal.y, normal.z);
-            // nol.rotatePitch(180);
-            vector3f = new Vector3f((float) nol.x, (float) nol.y, (float) nol.z);
+            
+        	Vertex normal = vertexNormals[i];
+            
+            vector3f = new Vector3f(normal.x, normal.y, normal.z);
         } else {
             vector3f = new Vector3f(faceNormal.x, faceNormal.y, faceNormal.z);
         }
@@ -172,9 +167,7 @@ public class Face {
     public Vertex calculateFaceNormal() {
         Vec3 v1 = new Vec3(vertices[1].x - vertices[0].x, vertices[1].y - vertices[0].y, vertices[1].z - vertices[0].z);
         Vec3 v2 = new Vec3(vertices[2].x - vertices[0].x, vertices[2].y - vertices[0].y, vertices[2].z - vertices[0].z);
-        Vec3 normalVector = null;
-
-        normalVector = v1.cross(v2).normalize();
+        Vec3 normalVector = v1.cross(v2).normalize();
 
         return new Vertex((float) normalVector.x, (float) normalVector.y, (float) normalVector.z);
     }

@@ -105,9 +105,10 @@ public class RefineHandler {
             if (e2.isCanceled()) {
                 return;
             }
+            materialCost = e2.getMaterialCost();
+            costResult = e2.getCostResult();
             
-            
-            if (state.getRefine() < refineLimit) {
+            if (state.getRefine() <= refineLimit) {
                 if (state.getRefine() + e2.getRefineResult() < 200) {
                     state.setMaxDamage(state.getMaxDamage() + e2.getRefineResult());
                 } else if (state.getRefine() < 200) {
@@ -120,11 +121,10 @@ public class RefineHandler {
                 state.setRefine(e2.getRefineResult());
             }
             
-            result.setDamageValue(result.getDamageValue() - Math.max(1, level / 2));
+            result.setDamageValue(result.getDamageValue() - Math.max(result.getDamageValue(), materialCost * Math.max(1, level / 2)));
             result.getOrCreateTag().put("bladeState", state.serializeNBT());
 
-            materialCost = e2.getMaterialCost();
-            costResult = e2.getCostResult();
+
         }
 
         event.setMaterialCost(materialCost);

@@ -2,6 +2,7 @@ package mods.flammpfeil.slashblade.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeFirstPersonRender;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
@@ -136,7 +137,7 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 
     public void renderIcon(ItemStack stack, PoseStack matrixStack, MultiBufferSource bufferIn, int lightIn,
             float scale, boolean renderDurability) {
-
+        
         matrixStack.scale(scale, scale, scale);
 
         EnumSet<SwordType> types = SwordType.from(stack);
@@ -183,6 +184,7 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 
             boolean isBroken = types.contains(SwordType.BROKEN);
             matrixStack.translate(0.0F, 0.0F, -2.0f * durability);
+            
             BladeRenderState.renderOverrided(stack, durabilityModel, isBroken ? "color_r" : "color",
                     DefaultResources.resourceDurabilityTexture, matrixStack, bufferIn, lightIn);
 

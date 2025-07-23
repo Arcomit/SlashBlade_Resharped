@@ -88,6 +88,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
     }
     
     public void renderOffhandItem(PoseStack matrixStack, MultiBufferSource bufferIn, int lightIn, T entity) {
+
     	ItemStack offhandStack = entity.getItemInHand(InteractionHand.OFF_HAND);
         if (offhandStack.isEmpty() || !offhandStack.getCapability(CapabilitySlashBlade.BLADESTATE).isPresent()) {
         	renderHotbarItem(matrixStack, bufferIn, lightIn, entity);
@@ -296,7 +297,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                         } else {
                             part = "blade";
                         }
-
+                        
                         BladeRenderState.renderOverrided(stack, obj, part, textureLocation, matrixStack, bufferIn,
                                 lightIn);
                         BladeRenderState.renderOverridedLuminous(stack, obj, part + "_luminous", textureLocation,
@@ -320,7 +321,6 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 
                         float modelScale = (float) (modelScaleBase * (1.0f / motionScale));
                         matrixStack.scale(modelScale, modelScale, modelScale);
-
                         BladeRenderState.renderOverrided(stack, obj, "sheath", textureLocation, matrixStack, bufferIn,
                                 lightIn);
                         BladeRenderState.renderOverridedLuminous(stack, obj, "sheath_luminous", textureLocation,
