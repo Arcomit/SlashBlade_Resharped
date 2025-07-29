@@ -2,7 +2,6 @@ package mods.flammpfeil.slashblade.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeFirstPersonRender;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
