@@ -7,7 +7,7 @@ import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
 import mods.flammpfeil.slashblade.capability.mobeffect.CapabilityMobEffect;
 import mods.flammpfeil.slashblade.capability.slashblade.CapabilitySlashBlade;
 import mods.flammpfeil.slashblade.client.renderer.entity.*;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
 import mods.flammpfeil.slashblade.entity.*;
 import mods.flammpfeil.slashblade.event.*;
 import mods.flammpfeil.slashblade.event.handler.AllowFlightOverrwrite;
@@ -497,7 +497,7 @@ public class SlashBlade {
 
     public static Registry<SlashBladeDefinition> getSlashBladeDefinitionRegistry(Level level) {
         if (level.isClientSide())
-            return BladeModelManager.getClientSlashBladeRegistry();
+            return ModelManager.getClientSlashBladeRegistry();
         return level.registryAccess().registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }
 

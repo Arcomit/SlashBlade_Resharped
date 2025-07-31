@@ -8,9 +8,9 @@ import jp.nyatla.nymmd.*;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.CapabilitySlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeMotionManager;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
+import mods.flammpfeil.slashblade.client.renderer.model.MotionManager;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
@@ -118,7 +118,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 	        double motionScale = 1.5 / 12.0;
             ResourceLocation textureLocation = s.getTexture().orElse(DefaultResources.resourceDefaultTexture);
 
-            WavefrontObject obj = BladeModelManager.getInstance()
+            WavefrontObject obj = ModelManager.getInstance()
                     .getModel(s.getModel().orElse(DefaultResources.resourceDefaultModel));
 	        String part;
 	        try (MSAutoCloser msacA = MSAutoCloser.pushMatrix(matrixStack)) {
@@ -226,7 +226,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
                             : ComboStateRegistry.STANDBY.get();
                 }
 
-                MmdVmdMotionMc motion = BladeMotionManager.getInstance().getMotion(combo.getMotionLoc());
+                MmdVmdMotionMc motion = MotionManager.getInstance().getMotion(combo.getMotionLoc());
 
                 double maxSeconds = 0;
                 try {
@@ -270,7 +270,7 @@ public class LayerMainBlade<T extends LivingEntity, M extends EntityModel<T>> ex
 
                     ResourceLocation textureLocation = s.getTexture().orElse(DefaultResources.resourceDefaultTexture);
 
-                    WavefrontObject obj = BladeModelManager.getInstance()
+                    WavefrontObject obj = ModelManager.getInstance()
                             .getModel(s.getModel().orElse(DefaultResources.resourceDefaultModel));
 
                     try (MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)) {

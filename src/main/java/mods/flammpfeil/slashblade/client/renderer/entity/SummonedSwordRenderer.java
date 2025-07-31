@@ -2,8 +2,8 @@ package mods.flammpfeil.slashblade.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.EntityAbstractSummonedSword;
@@ -62,7 +62,7 @@ public class SummonedSwordRenderer<T extends EntityAbstractSummonedSword> extend
             }
 
             // matrixStack.blendEquation(GL14.GL_FUNC_REVERSE_SUBTRACT);
-            WavefrontObject model = BladeModelManager.getInstance().getModel(entity.getModelLoc());
+            WavefrontObject model = ModelManager.getInstance().getModel(entity.getModelLoc());
             BladeRenderState.setCol(entity.getColor(), false);
             BladeRenderState.renderOverridedLuminous(ItemStack.EMPTY, model, "ss", getTextureLocation(entity),
                     matrixStack, bufferIn, packedLightIn);

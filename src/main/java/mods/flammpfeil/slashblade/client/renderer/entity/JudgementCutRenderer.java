@@ -2,8 +2,8 @@ package mods.flammpfeil.slashblade.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
@@ -48,7 +48,7 @@ public class JudgementCutRenderer<T extends EntityJudgementCut> extends EntityRe
                     .mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
             matrixStackIn.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
 
-            WavefrontObject model = BladeModelManager.getInstance().getModel(modelLocation);
+            WavefrontObject model = ModelManager.getInstance().getModel(modelLocation);
 
             int lifetime = entity.getLifetime();
 

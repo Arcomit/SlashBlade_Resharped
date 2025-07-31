@@ -4,8 +4,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import mods.flammpfeil.slashblade.client.renderer.model.BladeFirstPersonRender;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
@@ -144,7 +144,7 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
         ResourceLocation modelLocation = stack.getCapability(ItemSlashBlade.BLADESTATE)
                 .filter(s -> s.getModel().isPresent()).map(s -> s.getModel().get())
                 .orElseGet(() -> stackDefaultModel(stack));
-        WavefrontObject model = BladeModelManager.getInstance().getModel(modelLocation);
+        WavefrontObject model = ModelManager.getInstance().getModel(modelLocation);
         ResourceLocation textureLocation = stack.getCapability(ItemSlashBlade.BLADESTATE)
                 .filter(s -> s.getTexture().isPresent()).map(s -> s.getTexture().get())
                 .orElseGet(() -> stackDefaultTexture(stack));
@@ -159,13 +159,13 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
             renderTarget = "item_blade";
         }
 
-        BladeRenderState.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn, lightIn);
         BladeRenderState.renderOverridedLuminous(stack, model, renderTarget + "_luminous", textureLocation, matrixStack,
                 bufferIn, lightIn);
+        BladeRenderState.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn, lightIn);
 
         if (renderDurability) {
 
-            WavefrontObject durabilityModel = BladeModelManager.getInstance()
+            WavefrontObject durabilityModel = ModelManager.getInstance()
                     .getModel(DefaultResources.resourceDurabilityModel);
 
             float durability = (float) stack.getDamageValue() / (float) stack.getMaxDamage();
@@ -201,7 +201,7 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 			if(!key.isBlank()) {
 				ResourceLocation bladeName = 
 						ResourceLocation.tryParse(key.substring(5).replaceFirst(Pattern.quote("."), Matcher.quoteReplacement(":")));
-				SlashBladeDefinition slashBladeDefinition = BladeModelManager.getClientSlashBladeRegistry().get(bladeName);
+				SlashBladeDefinition slashBladeDefinition = ModelManager.getClientSlashBladeRegistry().get(bladeName);
 				
 				if(slashBladeDefinition != null)
 					name = slashBladeDefinition.getRenderDefinition().getModelName().toString();
@@ -222,7 +222,7 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 			if(!key.isBlank()) {
 				ResourceLocation bladeName = 
 						ResourceLocation.tryParse(key.substring(5).replaceFirst(Pattern.quote("."), Matcher.quoteReplacement(":")));
-				SlashBladeDefinition slashBladeDefinition = BladeModelManager.getClientSlashBladeRegistry().get(bladeName);
+				SlashBladeDefinition slashBladeDefinition = ModelManager.getClientSlashBladeRegistry().get(bladeName);
 				if(slashBladeDefinition != null)
 					name = slashBladeDefinition.getRenderDefinition().getTextureName().toString();
 			}
@@ -244,7 +244,7 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
         ResourceLocation modelLocation = stack.getCapability(ItemSlashBlade.BLADESTATE)
                 .filter(s -> s.getModel().isPresent()).map(s -> s.getModel().get())
                 .orElseGet(() -> stackDefaultModel(stack));
-        WavefrontObject model = BladeModelManager.getInstance().getModel(modelLocation);
+        WavefrontObject model = ModelManager.getInstance().getModel(modelLocation);
         ResourceLocation textureLocation = stack.getCapability(ItemSlashBlade.BLADESTATE)
                 .filter(s -> s.getTexture().isPresent()).map(s -> s.getTexture().get())
                 .orElseGet(() -> stackDefaultTexture(stack));
@@ -359,10 +359,10 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 
             matrixStack.mulPose(Axis.ZP.rotationDegrees(bladeOffsetBaseRot));
 
-            BladeRenderState.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn,
-                    lightIn);
             BladeRenderState.renderOverridedLuminous(stack, model, renderTarget + "_luminous", textureLocation,
                     matrixStack, bufferIn, lightIn);
+            BladeRenderState.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn,
+                    lightIn);
         }
 
         if (hasScabbard) {
@@ -388,10 +388,10 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
 
                 matrixStack.mulPose(Axis.ZP.rotationDegrees(sheathOffsetBaseRot));
 
-                BladeRenderState.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn,
-                        lightIn);
                 BladeRenderState.renderOverridedLuminous(stack, model, renderTarget + "_luminous", textureLocation,
                         matrixStack, bufferIn, lightIn);
+                BladeRenderState.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn,
+                        lightIn);
             }
         }
 

@@ -5,8 +5,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import mods.flammpfeil.slashblade.client.renderer.model.obj.Face;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.Face;
+import mods.flammpfeil.slashblade.client.core.obj.GroupObject;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.event.client.RenderOverrideEvent;
 import net.minecraft.client.renderer.*;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -96,25 +97,26 @@ public class BladeRenderState extends RenderStateShard {
 
         ResourceLocation loc = event.getTexture();
 
-        RenderType rt = getRenderType.apply(loc);// getSlashBladeBlendLuminous(event.getTexture());
-        VertexConsumer vb = bufferIn.getBuffer(rt);
+        RenderType rt = getRenderType.apply(loc);
+        VertexConsumer vb = bufferIn.getBuffer(rt);//这行不要去掉，将 renderType 放入 MultiBufferSource 中，确保渲染将在 Iris 批量实体渲染中运行。
 
-        Face.setCol(col);
-        Face.setLightMap(packedLightIn);
-        Face.setMatrix(matrixStackIn);
-        event.getModel().tessellateOnly(vb, event.getTarget());
+        GroupObject.setCol(col);
+        GroupObject.setLightMap(packedLightIn);
+        GroupObject.setMatrix(matrixStackIn);
+        event.getModel().renderOnly(rt, event.getTarget());
 
         if (stack.hasFoil() && enableEffect) {
-            vb = bufferIn.getBuffer(target.startsWith("item_") ?BladeRenderState.SLASHBLADE_ITEM_GLINT:BladeRenderState.SLASHBLADE_GLINT);
-            event.getModel().tessellateOnly(vb, event.getTarget());
+            rt = target.startsWith("item_") ?BladeRenderState.getSlashBladeItemGlint():BladeRenderState.getSlashBladeGlint();
+            vb = bufferIn.getBuffer(rt);
+            event.getModel().renderOnly(rt, event.getTarget());
         }
-        
-        Face.resetMatrix();
-        Face.resetLightMap();
-        Face.resetCol();
 
-        Face.resetAlphaOverride();
-        Face.resetUvOperator();
+        GroupObject.resetMatrix();
+        GroupObject.resetLightMap();
+        GroupObject.resetCol();
+
+        GroupObject.resetAlphaOverride();
+        GroupObject.resetUvOperator();
 
         resetCol();
     }

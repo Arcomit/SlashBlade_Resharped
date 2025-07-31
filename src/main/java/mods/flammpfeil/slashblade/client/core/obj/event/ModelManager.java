@@ -1,9 +1,9 @@
-package mods.flammpfeil.slashblade.client.renderer.model;
+package mods.flammpfeil.slashblade.client.core.obj.event;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.client.Minecraft;
@@ -16,18 +16,13 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.concurrent.Executors;
 
-/**
- * Created by Furia on 2016/02/06.
- */
+//模型缓存管理器
 @OnlyIn(Dist.CLIENT)
-public class BladeModelManager {
+public class ModelManager {
 
-    private static final class SingletonHolder {
-        private static final BladeModelManager instance = new BladeModelManager();
-    }
-
-    public static BladeModelManager getInstance() {
-        return SingletonHolder.instance;
+    private static final ModelManager instance = new ModelManager();
+    public static ModelManager getInstance() {
+        return instance;
     }
 
     public static Registry<SlashBladeDefinition> getClientSlashBladeRegistry() {
@@ -35,11 +30,11 @@ public class BladeModelManager {
                 .registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }
 
-    WavefrontObject defaultModel;
+    public WavefrontObject defaultModel;
 
-    LoadingCache<ResourceLocation, WavefrontObject> cache;
+    public LoadingCache<ResourceLocation, WavefrontObject> cache;
 
-    private BladeModelManager() {
+    private ModelManager() {
         defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
 
         cache = CacheBuilder.newBuilder()
@@ -54,13 +49,6 @@ public class BladeModelManager {
                     }
 
                 }, Executors.newCachedThreadPool()));
-    }
-
-    @SubscribeEvent
-    public void reload(TextureStitchEvent.Post event) {
-        cache.invalidateAll();
-
-        defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
     }
 
     public WavefrontObject getModel(ResourceLocation loc) {

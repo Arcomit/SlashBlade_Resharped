@@ -12,7 +12,7 @@ import jp.nyatla.nymmd.MmdVmdMotionMc;
 import jp.nyatla.nymmd.core.PmdBone;
 import jp.nyatla.nymmd.types.MmdVector3;
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeMotionManager;
+import mods.flammpfeil.slashblade.client.renderer.model.MotionManager;
 import mods.flammpfeil.slashblade.util.TimeValueHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.LazyOptional;
@@ -295,7 +295,7 @@ public class VmdAnimation implements IAnimation {
         MmdMotionPlayerGL2 mmp = motionPlayer.orElse(null);
 
         double eofTime = 0;
-        MmdVmdMotionMc motion = BladeMotionManager.getInstance().getMotion(loc);
+        MmdVmdMotionMc motion = MotionManager.getInstance().getMotion(loc);
         try {
             mmp.setVmd(motion);
             eofTime = TimeValueHelper.getMSecFromFrames(motion.getMaxFrame());

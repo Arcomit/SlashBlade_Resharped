@@ -3,8 +3,8 @@ package mods.flammpfeil.slashblade.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.EntityDrive;
@@ -56,7 +56,7 @@ public class DriveRenderer<T extends EntityDrive> extends EntityRenderer<T> {
             matrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
             int color = entity.getColor() & 0xFFFFFF;
             int alpha = ((0xFF & (int) (0xFF * baseAlpha)) << 24);
-            WavefrontObject model = BladeModelManager.getInstance().getModel(MODEL);
+            WavefrontObject model = ModelManager.getInstance().getModel(MODEL);
 
             BladeRenderState.setCol(color | alpha);
             BladeRenderState.renderOverridedLuminous(ItemStack.EMPTY, model, "base", TEXTURE, matrixStack, bufferIn,

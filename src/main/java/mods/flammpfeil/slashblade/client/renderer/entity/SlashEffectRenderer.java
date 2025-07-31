@@ -3,9 +3,10 @@ package mods.flammpfeil.slashblade.client.renderer.entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank.ConcentrationRanks;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.Face;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.GroupObject;
+import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.Face;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
@@ -50,7 +51,7 @@ public class SlashEffectRenderer<T extends EntitySlashEffect> extends EntityRend
             matrixStackIn.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
             matrixStackIn.mulPose(Axis.XP.rotationDegrees(entity.getRotationRoll()));
 
-            WavefrontObject model = BladeModelManager.getInstance().getModel(modelLocation);
+            WavefrontObject model = ModelManager.getInstance().getModel(modelLocation);
 
             int lifetime = entity.getLifetime();
 
@@ -96,8 +97,8 @@ public class SlashEffectRenderer<T extends EntitySlashEffect> extends EntityRend
                 try (MSAutoCloser msacb = MSAutoCloser.pushMatrix(matrixStackIn)) {
                     float windscale = entity.getBaseSize() * Mth.lerp(progress, 0.035f, 0.03f);
                     matrixStackIn.scale(windscale, yscale, windscale);
-                    Face.setAlphaOverride(Face.alphaOverrideYZZ);
-                    Face.setUvOperator(1, 1, 0, -0.8f + progress * 0.3f);
+                    GroupObject.setAlphaOverride(GroupObject.alphaOverrideYZZ);
+                    GroupObject.setUvOperator(1, 1, 0, -0.8f + progress * 0.3f);
                     BladeRenderState.setCol(0x222222 | alpha);
                     BladeRenderState.renderOverridedColorWrite(ItemStack.EMPTY, model, "base", rl, matrixStackIn,
                             bufferIn, packedLightIn);
@@ -107,8 +108,8 @@ public class SlashEffectRenderer<T extends EntitySlashEffect> extends EntityRend
             if (ConcentrationRanks.D.level <= rank.level)
                 try (MSAutoCloser msacb = MSAutoCloser.pushMatrix(matrixStackIn)) {
                     matrixStackIn.scale(scale, yscale, scale);
-                    Face.setAlphaOverride(Face.alphaOverrideYZZ);
-                    Face.setUvOperator(1, 1, 0, -0.35f + progress * -0.15f);
+                    GroupObject.setAlphaOverride(GroupObject.alphaOverrideYZZ);
+                    GroupObject.setUvOperator(1, 1, 0, -0.35f + progress * -0.15f);
                     BladeRenderState.setCol(color | alpha);
                     BladeRenderState.renderOverridedColorWrite(ItemStack.EMPTY, model, "base", rl, matrixStackIn,
                             bufferIn, packedLightIn);
@@ -119,8 +120,8 @@ public class SlashEffectRenderer<T extends EntitySlashEffect> extends EntityRend
                 try (MSAutoCloser msacb = MSAutoCloser.pushMatrix(matrixStackIn)) {
                     float windscale = entity.getBaseSize() * Mth.lerp(progress, 0.03f, 0.0375f);
                     matrixStackIn.scale(windscale, yscale, windscale);
-                    Face.setAlphaOverride(Face.alphaOverrideYZZ);
-                    Face.setUvOperator(1, 1, 0, -0.5f + progress * -0.2f);
+                    GroupObject.setAlphaOverride(GroupObject.alphaOverrideYZZ);
+                    GroupObject.setUvOperator(1, 1, 0, -0.5f + progress * -0.2f);
                     BladeRenderState.setCol(0x404040 | alpha);
                     BladeRenderState.renderOverridedLuminous(ItemStack.EMPTY, model, "base", rl, matrixStackIn,
                             bufferIn, packedLightIn);
@@ -129,8 +130,8 @@ public class SlashEffectRenderer<T extends EntitySlashEffect> extends EntityRend
             // color add base
             try (MSAutoCloser msacb = MSAutoCloser.pushMatrix(matrixStackIn)) {
                 matrixStackIn.scale(scale, yscale, scale);
-                Face.setAlphaOverride(Face.alphaOverrideYZZ);
-                Face.setUvOperator(1, 1, 0, -0.35f + progress * -0.15f);
+                GroupObject.setAlphaOverride(GroupObject.alphaOverrideYZZ);
+                GroupObject.setUvOperator(1, 1, 0, -0.35f + progress * -0.15f);
                 BladeRenderState.setCol(color | alpha);
                 BladeRenderState.renderOverridedLuminous(ItemStack.EMPTY, model, "base", rl, matrixStackIn, bufferIn,
                         packedLightIn);

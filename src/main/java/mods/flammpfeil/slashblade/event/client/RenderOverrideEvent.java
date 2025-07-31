@@ -1,7 +1,7 @@
 package mods.flammpfeil.slashblade.event.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;

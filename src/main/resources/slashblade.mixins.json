@@ -8,6 +8,8 @@
     "MixinBlockBehaviour"
   ],
   "client": [
+    "MixinRenderStateShard",
+    "MixinBufferUploader"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -7,8 +7,8 @@ import mods.flammpfeil.slashblade.client.renderer.LockonCircleRender;
 import mods.flammpfeil.slashblade.client.renderer.gui.RankRenderer;
 import mods.flammpfeil.slashblade.client.renderer.layers.LayerMainBlade;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeMotionManager;
+import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
+import mods.flammpfeil.slashblade.client.renderer.model.MotionManager;
 import mods.flammpfeil.slashblade.compat.playerAnim.PlayerAnimationOverrider;
 import mods.flammpfeil.slashblade.event.client.AdvancementsRecipeRenderer;
 import mods.flammpfeil.slashblade.event.client.SneakingMotionCanceller;
@@ -43,8 +43,7 @@ public class ClientHandler {
 
     @SubscribeEvent
     public static void doClientStuff(final FMLClientSetupEvent event) {
-        MinecraftForge.EVENT_BUS.register(BladeModelManager.getInstance());
-        MinecraftForge.EVENT_BUS.register(BladeMotionManager.getInstance());
+        MinecraftForge.EVENT_BUS.register(MotionManager.getInstance());
 
         SneakingMotionCanceller.getInstance().register();
 

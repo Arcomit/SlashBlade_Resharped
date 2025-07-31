@@ -17,13 +17,13 @@ import static mods.flammpfeil.slashblade.init.DefaultResources.ExMotionLocation;
 /**
  * Created by Furia on 2016/02/06.
  */
-public class BladeMotionManager {
+public class MotionManager {
 
     private static final class SingletonHolder {
-        private static final BladeMotionManager instance = new BladeMotionManager();
+        private static final MotionManager instance = new MotionManager();
     }
 
-    public static BladeMotionManager getInstance() {
+    public static MotionManager getInstance() {
         return SingletonHolder.instance;
     }
 
@@ -31,7 +31,7 @@ public class BladeMotionManager {
 
     LoadingCache<ResourceLocation, MmdVmdMotionMc> cache;
 
-    private BladeMotionManager() {
+    private MotionManager() {
         try {
             defaultMotion = new MmdVmdMotionMc(ExMotionLocation);
         } catch (IOException e) {

@@ -147,6 +147,10 @@ dependencies {
     implementation fg.deobf("curse.maven:ftb-library-forge-404465:6164053")
     implementation fg.deobf("curse.maven:ftb-teams-forge-404468:6130786")
     implementation fg.deobf("curse.maven:item-filters-309674:4838266")
+
+    //光影
+    implementation fg.deobf("curse.maven:embeddium-908741:5681725")
+    implementation fg.deobf("curse.maven:oculus-581495:6020952")
 }
 
 tasks.named('processResources', ProcessResources).configure {

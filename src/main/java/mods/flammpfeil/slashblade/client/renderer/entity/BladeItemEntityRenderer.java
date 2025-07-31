@@ -1,8 +1,8 @@
 package mods.flammpfeil.slashblade.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
-import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.BladeItemEntity;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
@@ -62,7 +62,7 @@ public class BladeItemEntityRenderer extends ItemEntityRenderer {
                         .map((state) -> state.getTexture().orElseGet(bladeItem::getTexture))
                         .orElseGet(bladeItem::getTexture);
 
-                WavefrontObject model = BladeModelManager.getInstance().getModel(modelLocation);
+                WavefrontObject model = ModelManager.getInstance().getModel(modelLocation);
 
                 float scale = 0.00625f;
 
@@ -108,10 +108,10 @@ public class BladeItemEntityRenderer extends ItemEntityRenderer {
                         matrixStackIn.translate(heightOffset, 0, 0);
                     }
 
-                    BladeRenderState.renderOverrided(current, model, renderTarget, textureLocation, matrixStackIn,
-                            bufferIn, packedLightIn);
                     BladeRenderState.renderOverridedLuminous(current, model, renderTarget + "_luminous",
                             textureLocation, matrixStackIn, bufferIn, packedLightIn);
+                    BladeRenderState.renderOverrided(current, model, renderTarget, textureLocation, matrixStackIn,
+                            bufferIn, packedLightIn);
                 }
 
                 if (itemIn.isInWater() || itemIn.onGround() && !types.contains(SwordType.NOSCABBARD)) {
@@ -132,10 +132,10 @@ public class BladeItemEntityRenderer extends ItemEntityRenderer {
 
                         String renderTarget = "sheath";
 
-                        BladeRenderState.renderOverrided(current, model, renderTarget, textureLocation, matrixStackIn,
-                                bufferIn, packedLightIn);
                         BladeRenderState.renderOverridedLuminous(current, model, renderTarget + "_luminous",
                                 textureLocation, matrixStackIn, bufferIn, packedLightIn);
+                        BladeRenderState.renderOverrided(current, model, renderTarget, textureLocation, matrixStackIn,
+                                bufferIn, packedLightIn);
                     }
                 }
 
