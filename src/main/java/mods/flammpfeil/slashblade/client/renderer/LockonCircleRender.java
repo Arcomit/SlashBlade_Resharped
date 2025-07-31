@@ -2,8 +2,8 @@ package mods.flammpfeil.slashblade.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
-import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
-import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.ModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.model.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.InputCommand;

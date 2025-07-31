@@ -1,9 +1,9 @@
-package mods.flammpfeil.slashblade.client.core.obj.event;
+package mods.flammpfeil.slashblade.client.core.obj;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.model.WavefrontObject;
 import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.client.Minecraft;
@@ -11,12 +11,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.concurrent.Executors;
 
-//模型缓存管理器
+// 模型缓存管理器
 @OnlyIn(Dist.CLIENT)
 public class ModelManager {
 

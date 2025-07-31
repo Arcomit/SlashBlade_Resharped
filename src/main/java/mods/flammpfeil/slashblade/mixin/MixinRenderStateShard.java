@@ -1,6 +1,6 @@
 package mods.flammpfeil.slashblade.mixin;
 
-import mods.flammpfeil.slashblade.client.core.obj.event.ModelRenderer;
+import mods.flammpfeil.slashblade.client.core.obj.ModelRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

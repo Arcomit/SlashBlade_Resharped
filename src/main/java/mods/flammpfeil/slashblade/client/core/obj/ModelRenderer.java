@@ -1,10 +1,9 @@
-package mods.flammpfeil.slashblade.client.core.obj.event;
+package mods.flammpfeil.slashblade.client.core.obj;
 
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.irisshaders.batchedentityrendering.impl.WrappableRenderType;
 import net.irisshaders.iris.Iris;
-import net.irisshaders.iris.pipeline.WorldRenderingPhase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.ShaderInstance;

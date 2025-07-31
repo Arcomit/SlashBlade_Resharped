@@ -1,8 +1,8 @@
 package mods.flammpfeil.slashblade.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
-import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.ModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.model.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.BladeItemEntity;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;

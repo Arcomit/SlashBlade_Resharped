@@ -2,10 +2,11 @@ package mods.flammpfeil.slashblade.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import mods.flammpfeil.slashblade.client.core.obj.util.OldRender;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeFirstPersonRender;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModel;
-import mods.flammpfeil.slashblade.client.core.obj.event.ModelManager;
-import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.ModelManager;
+import mods.flammpfeil.slashblade.client.core.obj.model.WavefrontObject;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
@@ -159,9 +160,9 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
             renderTarget = "item_blade";
         }
 
-        BladeRenderState.renderOverridedLuminous(stack, model, renderTarget + "_luminous", textureLocation, matrixStack,
+        OldRender.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn, lightIn);
+        OldRender.renderOverridedLuminous(stack, model, renderTarget + "_luminous", textureLocation, matrixStack,
                 bufferIn, lightIn);
-        BladeRenderState.renderOverrided(stack, model, renderTarget, textureLocation, matrixStack, bufferIn, lightIn);
 
         if (renderDurability) {
 
@@ -177,14 +178,14 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
             int g = 0xFF & (int) Mth.lerp(aCol.getGreen(), bCol.getGreen(), durability);
             int b = 0xFF & (int) Mth.lerp(aCol.getBlue(), bCol.getBlue(), durability);
 
-            BladeRenderState.setCol(new Color(r, g, b));
-            BladeRenderState.renderOverrided(stack, durabilityModel, "base", DefaultResources.resourceDurabilityTexture,
+            OldRender.setCol(new Color(r, g, b));
+            OldRender.renderOverrided(stack, durabilityModel, "base", DefaultResources.resourceDurabilityTexture,
                     matrixStack, bufferIn, lightIn);
 
             boolean isBroken = types.contains(SwordType.BROKEN);
             matrixStack.translate(0.0F, 0.0F, -2.0f * durability);
-            
-            BladeRenderState.renderOverrided(stack, durabilityModel, isBroken ? "color_r" : "color",
+
+            OldRender.renderOverrided(stack, durabilityModel, isBroken ? "color_r" : "color",
                     DefaultResources.resourceDurabilityTexture, matrixStack, bufferIn, lightIn);
 
         }

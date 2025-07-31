@@ -5,9 +5,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import mods.flammpfeil.slashblade.client.core.obj.Face;
-import mods.flammpfeil.slashblade.client.core.obj.GroupObject;
-import mods.flammpfeil.slashblade.client.core.obj.WavefrontObject;
+import mods.flammpfeil.slashblade.client.core.obj.model.GroupObject;
+import mods.flammpfeil.slashblade.client.core.obj.model.WavefrontObject;
 import mods.flammpfeil.slashblade.event.client.RenderOverrideEvent;
 import net.minecraft.client.renderer.*;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;

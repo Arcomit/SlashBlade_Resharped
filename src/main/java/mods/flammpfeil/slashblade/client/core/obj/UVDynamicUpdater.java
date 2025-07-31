@@ -1,27 +1,24 @@
-package mods.flammpfeil.slashblade.client.core.obj.event;
+package mods.flammpfeil.slashblade.client.core.obj;
 
 import mods.flammpfeil.slashblade.client.core.obj.util.IrisUtils;
 
 import java.nio.FloatBuffer;
+
 import static org.lwjgl.opengl.GL46.*;
 
-public class ColorDynamicUpdater {
-    // OpenGL 对象
-    private int colorVBO = 0;
-    private long syncObject = 0;
-
-    // 缓冲区管理
+// uv动态更新器，用于高效地管理OpenGL中的顶点uv缓冲区。
+public class UVDynamicUpdater {
+    private int uvVBO = 0;
+    private long syncObject = 0; // 添加同步对象
     private FloatBuffer persistentBuffer = null;
     private FloatBuffer currentBuffer = null;
     private FloatBuffer pendingBuffer = null;
-
-    // 配置参数
     private int maxVertices;
     private boolean isInitialized = false;
 
-    public void initColorBuffer(int maxVertices) {
+    public void initUVBuffer(int maxVertices) {
         if (isInitialized) {
-            throw new IllegalStateException("Color buffer already initialized");
+            throw new IllegalStateException("UV buffer already initialized");
         }
         if (maxVertices <= 0) {
             throw new IllegalArgumentException("maxVertices must be positive");
@@ -29,33 +26,37 @@ public class ColorDynamicUpdater {
 
         this.maxVertices = maxVertices;
 
-        // 创建并配置VBO
-        colorVBO = glGenBuffers();
-        glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
+        uvVBO = glGenBuffers();
+        glBindBuffer(GL_ARRAY_BUFFER, uvVBO);
 
-        // 计算缓冲区大小 (每个顶点4个float: RGBA)
-        long bufferSize = (long) maxVertices * 4 * Float.BYTES;
+        long bufferSize = (long) maxVertices * 2 * Float.BYTES;
         glBufferStorage(GL_ARRAY_BUFFER, bufferSize,
                 GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT);
 
-        // 映射持久化缓冲区
         persistentBuffer = glMapNamedBufferRange(
-                colorVBO,
+                uvVBO,
                 0,
                 bufferSize,
                 GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT
         ).asFloatBuffer();
 
-        // 创建缓冲区视图
+        // 创建独立位置的视图
         currentBuffer = persistentBuffer.duplicate();
         pendingBuffer = persistentBuffer.duplicate();
-        pendingBuffer.limit(0); // 初始化为空
 
-        // 配置顶点属性
-        glEnableVertexAttribArray(IrisUtils.vaColor);
+        // 初始化为空缓冲区
+        pendingBuffer.limit(0);
+
+        // 使用更现代的顶点属性设置
+//        glEnableVertexArrayAttrib(0, IrisUtils.vaUV0); // 假设VAO 0绑定
+//        glVertexArrayAttribBinding(0, IrisUtils.vaUV0, 0);
+//        glVertexArrayAttribFormat(0, IrisUtils.vaUV0, 2, GL_FLOAT, false, 0);
+//        glVertexArrayVertexBuffer(0, 0, uvVBO, 0, 8); // 8 bytes = 2*float
+
+        glEnableVertexAttribArray(IrisUtils.vaUV0);
         glVertexAttribPointer(
-                IrisUtils.vaColor, // 属性位置
-                4,                      // 每个顶点的分量数 (RGBA)
+                IrisUtils.vaUV0, // 属性位置
+                2,                      // 每个顶点的分量数 (RGBA)
                 GL_FLOAT,               // 数据类型
                 false,                  // 是否归一化
                 0,                      // 步长 (紧密排列)
@@ -66,45 +67,44 @@ public class ColorDynamicUpdater {
         isInitialized = true;
     }
 
-    public void updateColors(FloatBuffer colorBuffer, int startVertex, int count) {
+    // 统一更新接口
+    public void updateUVs(FloatBuffer uvBuffer, int startVertex, int count) {
         if (!isInitialized) {
-            throw new IllegalStateException("Color buffer not initialized");
+            throw new IllegalStateException("UV buffer not initialized");
         }
 
-        final int startPos = startVertex * 4; // 每个顶点4个分量
-        final int totalElements = count * 4;
+        final int startPos = startVertex * 2;
+        final int totalElements = count * 2;
 
-        // 参数验证
-        if (startVertex < 0 || count < 0 ||
+        if (startVertex < 0 || count < 0 || // 允许count=0
                 (startVertex + count) > maxVertices ||
-                (colorBuffer != null && colorBuffer.remaining() < totalElements)) {
+                (uvBuffer != null && uvBuffer.remaining() < totalElements)) {
             throw new IllegalArgumentException("Invalid update parameters");
         }
 
-        waitForGpu(); // 等待GPU完成操作
+        // 等待可能未完成的GPU操作
+        waitForGpu();
 
-        // 准备写入位置
+        // 定位并写入数据
         pendingBuffer.limit(persistentBuffer.capacity());
         pendingBuffer.position(startPos);
 
-        if (colorBuffer != null) {
-            // 写入颜色数据
-            for (int i = 0; i < totalElements; i++) {
-                pendingBuffer.put(colorBuffer.get());
-            }
+        if (uvBuffer != null) {
+            pendingBuffer.put(uvBuffer);
         } else {
-            // 清除区域 (设为白色不透明)
+            // 可选：清除区域
             for (int i = 0; i < totalElements; i++) {
-                pendingBuffer.put(1.0f);
+                pendingBuffer.put(0.0f);
             }
         }
         pendingBuffer.flip();
     }
 
+    // 渲染前同步
     public void beforeRender() {
         if (!isInitialized) return;
 
-        // 管理同步对象
+        // 创建新的同步对象并等待旧对象
         long prevSync = syncObject;
         syncObject = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
 
@@ -113,16 +113,15 @@ public class ColorDynamicUpdater {
             glDeleteSync(prevSync);
         }
 
-        flipBuffers(); // 交换缓冲区
+        // 交换缓冲区
+        flipBuffers();
     }
 
     private void waitForGpu() {
         if (syncObject != 0) {
-            int result;
-            do {
-                result = glClientWaitSync(syncObject, GL_SYNC_FLUSH_COMMANDS_BIT, 1_000_000_000);
-            } while (result == GL_TIMEOUT_EXPIRED);
-
+            while (glClientWaitSync(syncObject, GL_SYNC_FLUSH_COMMANDS_BIT, 1_000_000_000) == GL_TIMEOUT_EXPIRED) {
+                // 重试或记录警告
+            }
             glDeleteSync(syncObject);
             syncObject = 0;
         }
@@ -137,24 +136,21 @@ public class ColorDynamicUpdater {
     public void cleanup() {
         if (!isInitialized) return;
 
-        waitForGpu();
+        waitForGpu(); // 确保GPU完成操作
 
-        // 清理同步对象
         if (syncObject != 0) {
             glDeleteSync(syncObject);
             syncObject = 0;
         }
 
-        // 清理VBO
-        if (colorVBO != 0) {
-            glBindBuffer(GL_ARRAY_BUFFER, colorVBO);
+        if (uvVBO != 0) {
+            glBindBuffer(GL_ARRAY_BUFFER, uvVBO);
             glUnmapBuffer(GL_ARRAY_BUFFER);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
-            glDeleteBuffers(colorVBO);
-            colorVBO = 0;
+            glDeleteBuffers(uvVBO);
+            uvVBO = 0;
         }
 
-        // 清理引用
         persistentBuffer = null;
         currentBuffer = null;
         pendingBuffer = null;

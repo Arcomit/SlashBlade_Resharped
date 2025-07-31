@@ -1,14 +1,12 @@
-package mods.flammpfeil.slashblade.client.core.obj;
+package mods.flammpfeil.slashblade.client.core.obj.model;
 
-import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import mods.flammpfeil.slashblade.client.core.obj.event.ColorDynamicUpdater;
-import mods.flammpfeil.slashblade.client.core.obj.event.ModelRenderer;
-import mods.flammpfeil.slashblade.client.core.obj.event.UVDynamicUpdater;
+import mods.flammpfeil.slashblade.client.core.obj.ColorDynamicUpdater;
+import mods.flammpfeil.slashblade.client.core.obj.ModelRenderer;
+import mods.flammpfeil.slashblade.client.core.obj.UVDynamicUpdater;
 import mods.flammpfeil.slashblade.client.core.obj.util.IrisUtils;
 import mods.flammpfeil.slashblade.client.core.obj.util.RenderUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.ShaderInstance;
@@ -234,6 +232,15 @@ public class GroupObject {
         if (faces.size() > 0) {
             for (Face face : faces) {
                 face.tessellate(tessellator);
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void tessellateOld(VertexConsumer tessellator) {
+        if (faces.size() > 0) {
+            for (Face face : faces) {
+                face.addFaceForRender(tessellator);
             }
         }
     }

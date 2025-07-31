@@ -1,7 +1,6 @@
-package mods.flammpfeil.slashblade.client.core.obj;
+package mods.flammpfeil.slashblade.client.core.obj.model;
 
 import com.google.common.base.Suppliers;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -123,5 +122,93 @@ public class Face {
         Vec3 normalVector = v1.cross(v2).normalize();
 
         return new Vertex((float) normalVector.x, (float) normalVector.y, (float) normalVector.z);
+    }
+
+
+    // 老方法保留，拿来渲染物品栏图标（也方便随时兼容AR的代码）
+    private static final Supplier<Matrix4f> defaultTransform = Suppliers.memoize(() -> {
+        Matrix4f m = new Matrix4f();
+        m.identity();
+        return m;
+    });
+    @OnlyIn(Dist.CLIENT)
+    public void addFaceForRender(VertexConsumer tessellator) {
+        addFaceForRender(tessellator, 0.0005F);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void addFaceForRender(VertexConsumer tessellator, float textureOffset) {
+        if (faceNormal == null) {
+            faceNormal = this.calculateFaceNormal();
+        }
+
+        float averageU = 0F;
+        float averageV = 0F;
+
+        if ((textureCoordinates != null) && (textureCoordinates.length > 0)) {
+            for (int i = 0; i < textureCoordinates.length; ++i) {
+                averageU += textureCoordinates[i].u * GroupObject.uvOperator.x() + GroupObject.uvOperator.z();
+                averageV += textureCoordinates[i].v * GroupObject.uvOperator.y() + GroupObject.uvOperator.w();
+            }
+
+            averageU = averageU / textureCoordinates.length;
+            averageV = averageV / textureCoordinates.length;
+        }
+
+        Matrix4f transform;
+        if (GroupObject.matrix != null) {
+            transform = GroupObject.matrix.last().pose();
+        } else {
+            transform = defaultTransform.get();
+        }
+
+        for (int i = 0; i < vertices.length; ++i) {
+            putVertex(tessellator, i, transform, textureOffset, averageU, averageV);
+        }
+    }
+
+    void putVertex(VertexConsumer wr, int i, Matrix4f transform, float textureOffset, float averageU, float averageV) {
+        float offsetU, offsetV;
+        wr.vertex(transform, vertices[i].x, vertices[i].y, vertices[i].z);
+
+        wr.color(GroupObject.col.getRed(), GroupObject.col.getGreen(), GroupObject.col.getBlue(),
+                GroupObject.alphaOverride.apply(new Vector4f(vertices[i].x, vertices[i].y, vertices[i].z, 1.0F), GroupObject.col.getAlpha()));
+
+        if ((textureCoordinates != null) && (textureCoordinates.length > 0)) {
+            offsetU = textureOffset;
+            offsetV = textureOffset;
+
+            float textureU = textureCoordinates[i].u * GroupObject.uvOperator.x() + GroupObject.uvOperator.z();
+            float textureV = textureCoordinates[i].v * GroupObject.uvOperator.y() + GroupObject.uvOperator.w();
+
+            if (textureU > averageU) {
+                offsetU = -offsetU;
+            }
+            if (textureV > averageV) {
+                offsetV = -offsetV;
+            }
+
+            wr.uv(textureU + offsetU, textureV + offsetV);
+        } else {
+            wr.uv(0, 0);
+        }
+
+        wr.overlayCoords(OverlayTexture.NO_OVERLAY);
+        wr.uv2(GroupObject.lightmap);
+
+        Vector3f vector3f;
+        if (vertexNormals != null) {
+
+            Vertex normal = vertexNormals[i];
+
+            vector3f = new Vector3f(normal.x, normal.y, normal.z);
+        } else {
+            vector3f = new Vector3f(faceNormal.x, faceNormal.y, faceNormal.z);
+        }
+        vector3f.mul(new Matrix3f(transform));
+        vector3f.normalize();
+        wr.normal(vector3f.x(), vector3f.y(), vector3f.z());
+
+        wr.endVertex();
     }
 }

@@ -1,5 +1,6 @@
-package mods.flammpfeil.slashblade.client.core.obj;
+package mods.flammpfeil.slashblade.client.core.obj.model;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.resources.ResourceLocation;
@@ -198,6 +199,50 @@ public class WavefrontObject {
         }
     }
 
+
+    // 老方法
+    @OnlyIn(Dist.CLIENT)
+    public void tessellateAll(VertexConsumer tessellator) {
+        for (GroupObject groupObject : groupObjects) {
+            groupObject.tessellateOld(tessellator);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void tessellateOnly(VertexConsumer tessellator, String... groupNames) {
+        for (GroupObject groupObject : groupObjects) {
+            for (String groupName : groupNames) {
+                if (groupName.equalsIgnoreCase(groupObject.name)) {
+                    groupObject.tessellateOld(tessellator);
+                }
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void tessellatePart(VertexConsumer tessellator, String partName) {
+        for (GroupObject groupObject : groupObjects) {
+            if (partName.equalsIgnoreCase(groupObject.name)) {
+                groupObject.tessellateOld(tessellator);
+            }
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void tessellateAllExcept(VertexConsumer tessellator, String... excludedGroupNames) {
+        boolean exclude;
+        for (GroupObject groupObject : groupObjects) {
+            exclude = false;
+            for (String excludedGroupName : excludedGroupNames) {
+                if (excludedGroupName.equalsIgnoreCase(groupObject.name)) {
+                    exclude = true;
+                }
+            }
+            if (!exclude) {
+                groupObject.tessellateOld(tessellator);
+            }
+        }
+    }
     // ================ 解析方法 ================ //
 
     /** 解析顶点数据 */

@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.client.core.obj;
+package mods.flammpfeil.slashblade.client.core.obj.model;
 
 public class TextureCoordinate {
     public float u, v, w;

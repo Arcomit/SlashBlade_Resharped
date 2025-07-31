@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.client.core.obj;
+package mods.flammpfeil.slashblade.client.core.obj.model;
 
 /**
  * Thrown if there is a problem parsing the model
