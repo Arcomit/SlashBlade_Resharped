@@ -35,9 +35,9 @@ public class BladeModelManager {
                 .registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }
 
-    WavefrontObject defaultModel;
+    public WavefrontObject defaultModel;
 
-    LoadingCache<ResourceLocation, WavefrontObject> cache;
+    public LoadingCache<ResourceLocation, WavefrontObject> cache;
 
     private BladeModelManager() {
         defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
@@ -54,13 +54,6 @@ public class BladeModelManager {
                     }
 
                 }, Executors.newCachedThreadPool()));
-    }
-
-    @SubscribeEvent
-    public void reload(TextureStitchEvent.Post event) {
-        cache.invalidateAll();
-
-        defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
     }
 
     public WavefrontObject getModel(ResourceLocation loc) {
