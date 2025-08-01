@@ -91,7 +91,7 @@ public class BladeRenderState extends RenderStateShard {
             PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn,
             Function<ResourceLocation, RenderType> getRenderType, boolean enableEffect) {
         RenderOverrideEvent event = RenderOverrideEvent.onRenderOverride(stack, model, target, texture, matrixStackIn,
-                bufferIn);
+                bufferIn, packedLightIn);
 
         if (event.isCanceled())
             return;

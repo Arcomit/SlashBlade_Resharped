@@ -26,6 +26,8 @@ public class RenderOverrideEvent extends Event {
     String originalTarget;
     ResourceLocation originalTexture;
 
+    int packedLightIn;
+
     public ResourceLocation getTexture() {
         return texture;
     }
@@ -74,8 +76,12 @@ public class RenderOverrideEvent extends Event {
         return buffer;
     }
 
+    public int getPackedLightIn() {
+        return packedLightIn;
+    }
+
     public RenderOverrideEvent(ItemStack stack, WavefrontObject model, String target, ResourceLocation texture,
-            PoseStack matrixStack, MultiBufferSource buffer) {
+            PoseStack matrixStack, MultiBufferSource buffer, int packedLightIn) {
         this.stack = stack;
         this.originalModel = this.model = model;
         this.originalTarget = this.target = target;
@@ -83,11 +89,12 @@ public class RenderOverrideEvent extends Event {
 
         this.matrixStack = matrixStack;
         this.buffer = buffer;
+        this.packedLightIn = packedLightIn;
     }
 
     public static RenderOverrideEvent onRenderOverride(ItemStack stack, WavefrontObject model, String target,
-            ResourceLocation texture, PoseStack matrixStack, MultiBufferSource buffer) {
-        RenderOverrideEvent event = new RenderOverrideEvent(stack, model, target, texture, matrixStack, buffer);
+            ResourceLocation texture, PoseStack matrixStack, MultiBufferSource buffer, int packedLightIn) {
+        RenderOverrideEvent event = new RenderOverrideEvent(stack, model, target, texture, matrixStack, buffer, packedLightIn);
         MinecraftForge.EVENT_BUS.post(event);
         return event;
     }
