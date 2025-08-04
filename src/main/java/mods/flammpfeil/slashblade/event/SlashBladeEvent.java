@@ -308,13 +308,19 @@ public abstract class SlashBladeEvent extends Event {
 
     public static class SummonedSwordOnHitEntityEvent extends Event {
         private final EntityAbstractSummonedSword summonedSword;
+        private final Entity target;
 
-        public SummonedSwordOnHitEntityEvent(EntityAbstractSummonedSword summonedSword) {
+        public SummonedSwordOnHitEntityEvent(EntityAbstractSummonedSword summonedSword, Entity target) {
             this.summonedSword = summonedSword;
+            this.target = target;
         }
 
         public EntityAbstractSummonedSword getSummonedSword() {
             return summonedSword;
+        }
+
+        public Entity getTarget() {
+            return target;
         }
     }
 }

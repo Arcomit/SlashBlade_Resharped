@@ -482,7 +482,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity targetEntity = entityHitResult.getEntity();
 
-        SlashBladeEvent.SummonedSwordOnHitEntityEvent event = new SlashBladeEvent.SummonedSwordOnHitEntityEvent(this);
+        SlashBladeEvent.SummonedSwordOnHitEntityEvent event = new SlashBladeEvent.SummonedSwordOnHitEntityEvent(this, targetEntity);
         MinecraftForge.EVENT_BUS.post(event);
 
         int i = Mth.ceil(this.getDamage());
