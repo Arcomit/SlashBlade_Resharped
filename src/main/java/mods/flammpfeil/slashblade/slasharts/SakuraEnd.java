@@ -3,11 +3,14 @@ package mods.flammpfeil.slashblade.slasharts;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
 import mods.flammpfeil.slashblade.entity.EntitySlashEffect;
+import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.util.KnockBacks;
 import mods.flammpfeil.slashblade.util.VectorHelper;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
 
 public class SakuraEnd {
     public static EntitySlashEffect doSlash(LivingEntity playerIn, float roll, Vec3 centerOffset, boolean mute,
@@ -29,7 +32,17 @@ public class SakuraEnd {
 
         if (playerIn.level().isClientSide())
             return null;
-
+        
+        ItemStack blade = playerIn.getMainHandItem();
+        if(!blade.getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+            return null;
+        SlashBladeEvent.DoSlashEvent event = new SlashBladeEvent.DoSlashEvent(blade,
+                blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new),
+                playerIn, roll, critical, damage, knockback);
+        
+		if (MinecraftForge.EVENT_BUS.post(event))
+            return null;
+        
         Vec3 pos = playerIn.position().add(0.0D, (double) playerIn.getEyeHeight() * 0.75D, 0.0D)
                 .add(playerIn.getLookAngle().scale(0.3f));
 
@@ -40,19 +53,19 @@ public class SakuraEnd {
         EntitySlashEffect jc = new EntitySlashEffect(SlashBlade.RegistryEvents.SlashEffect, playerIn.level());
 
         jc.setPos(pos.x, pos.y, pos.z);
-        jc.setOwner(playerIn);
-        jc.setRotationRoll(roll);
+        jc.setOwner(event.getUser());
+        jc.setRotationRoll(event.getRoll());
         jc.setYRot(playerIn.getYRot());
         jc.setXRot(0);
 
         jc.setColor(colorCode);
 
         jc.setMute(mute);
-        jc.setIsCritical(critical);
+        jc.setIsCritical(event.isCritical());
 
-        jc.setDamage(damage);
+        jc.setDamage(event.getDamage());
 
-        jc.setKnockBack(knockback);
+        jc.setKnockBack(event.getKnockback());
 
         if (playerIn != null)
             playerIn.getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)

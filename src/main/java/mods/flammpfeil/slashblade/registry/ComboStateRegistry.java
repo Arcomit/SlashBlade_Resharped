@@ -104,7 +104,6 @@ public class ComboStateRegistry {
 
     public static final RegistryObject<ComboState> COMBO_A3 = COMBO_STATE.register("combo_a3",
             ComboState.Builder.newInstance().startAndEnd(200, 218)
-
                     .priority(100)
                     .next(ComboState.TimeoutNext.buildFromFrame(9,
                             entity -> AttackManager.isPowered(entity)

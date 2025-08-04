@@ -130,6 +130,8 @@ public class SlashBladeDefinition {
 			result.enchant(enchantment, instance.getEnchantmentLevel());
 
 		}
+		if(this.stateDefinition.isUnbreakable())
+			result.getOrCreateTag().putBoolean("Unbreakable", true);
 		var postRegistry = new SlashBladeRegistryEvent.Post(this, result);
 		MinecraftForge.EVENT_BUS.post(postRegistry);
 		return postRegistry.getBlade();

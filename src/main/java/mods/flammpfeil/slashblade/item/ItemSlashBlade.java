@@ -202,11 +202,13 @@ public class ItemSlashBlade extends SwordItem {
 		return stateHolder.isPresent();
 	}
 
-	static public final String BREAK_ACTION_TIMEOUT = "BreakActionTimeout";
+	public static final String BREAK_ACTION_TIMEOUT = "BreakActionTimeout";
 
 	@Override
 	public void setDamage(ItemStack stack, int damage) {
 		int maxDamage = stack.getMaxDamage();
+		if(maxDamage < 0)
+			return;
 		var state = stack.getCapability(BLADESTATE).orElseThrow(NullPointerException::new);
 		if (state.isBroken()) {
 			if (damage <= 0 && !state.isSealed()) {
@@ -220,6 +222,9 @@ public class ItemSlashBlade extends SwordItem {
 
 	@Override
 	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken) {
+		if (stack.getMaxDamage() <= 0)
+			return 0;
+		
 		if (amount <= 0)
 			return 0;
 
@@ -336,7 +341,7 @@ public class ItemSlashBlade extends SwordItem {
 			ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(loc) != null
 					? ComboStateRegistry.REGISTRY.get().getValue(loc)
 					: ComboStateRegistry.NONE.get();
-
+			
 			if (MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.HitEvent(stack, state, target, attacker)))
 				return;
 

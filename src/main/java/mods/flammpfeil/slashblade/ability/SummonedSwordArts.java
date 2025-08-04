@@ -300,7 +300,6 @@ public class SummonedSwordArts {
                     }
                 });
 
-                // BlisteringSwords command
                 input.getScheduler().schedule("HeavyRainSwords", pressTime + 10, new TimerCallback<LivingEntity>() {
 
                     @Override

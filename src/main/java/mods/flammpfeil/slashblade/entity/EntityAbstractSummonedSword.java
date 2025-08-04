@@ -479,6 +479,7 @@ public class EntityAbstractSummonedSword extends Projectile implements IShootabl
 
     protected void onHitEntity(EntityHitResult entityHitResult) {
         Entity targetEntity = entityHitResult.getEntity();
+
         int i = Mth.ceil(this.getDamage());
         if (this.getPierce() > 0) {
             if (this.alreadyHits == null) {

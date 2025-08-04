@@ -3,6 +3,7 @@ package mods.flammpfeil.slashblade.event.handler;
 import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.capability.concentrationrank.ConcentrationRankCapabilityProvider;
 import mods.flammpfeil.slashblade.capability.concentrationrank.IConcentrationRank;
+import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -44,8 +45,9 @@ public class KillCounter {
             return;
 
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
-
-            state.setKillCount(state.getKillCount() + 1);
+        	var killCountEvent = new SlashBladeEvent.AddKillCountEvent(stack, state, 1);
+        	MinecraftForge.EVENT_BUS.post(killCountEvent);
+            state.setKillCount(state.getKillCount() + killCountEvent.getNewCount());
         });
     }
 
@@ -67,8 +69,11 @@ public class KillCounter {
         int souls = (int) Math.floor(event.getDroppedExperience() * (1.0F + (rankBonus.level * 0.1F)));
 
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
+        	var killCountEvent = new SlashBladeEvent.AddProudSoulEvent(stack, state, Math.min(SlashBladeConfig.MAX_PROUD_SOUL_GOT.get(), souls));
+        	MinecraftForge.EVENT_BUS.post(killCountEvent);
             state.setProudSoulCount(
-                    state.getProudSoulCount() + Math.min(SlashBladeConfig.MAX_PROUD_SOUL_GOT.get(), souls));
+                    state.getProudSoulCount() + killCountEvent.getNewCount());
+            
         });
         
     }

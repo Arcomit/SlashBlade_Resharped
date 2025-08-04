@@ -11,7 +11,7 @@ import com.mojang.serialization.Codec;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 
 public enum SwordType {
-    NONE, EDGEFRAGMENT, BROKEN, ENCHANTED, BEWITCHED, FIERCEREDGE, NOSCABBARD, SEALED,;
+    NONE, EDGEFRAGMENT, BROKEN, ENCHANTED, BEWITCHED, FIERCEREDGE, NOSCABBARD, SEALED, UNBREAKABLE, ;
 
     public static final Codec<SwordType> CODEC = Codec.STRING.xmap(string -> SwordType.valueOf(string.toUpperCase()),
             instance -> instance.name().toLowerCase());
@@ -49,7 +49,9 @@ public enum SwordType {
             types.remove(SwordType.ENCHANTED);
             types.remove(SwordType.BEWITCHED);
         }
-
+        
+        if(itemStackIn.getOrCreateTag().getBoolean("Unbreakable"))
+        	types.remove(SwordType.BROKEN);
         return types;
     }
     

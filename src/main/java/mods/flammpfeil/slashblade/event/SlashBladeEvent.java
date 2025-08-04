@@ -59,6 +59,52 @@ public abstract class SlashBladeEvent extends Event {
 		
 	}
 	
+	public static class AddProudSoulEvent extends SlashBladeEvent {
+		private final int originCount;
+		private int newCount;
+		public AddProudSoulEvent(ItemStack blade, ISlashBladeState state, int count) {
+			super(blade, state);
+			this.originCount = count;
+			this.setNewCount(count);
+		}
+		
+		public int getOriginCount() {
+			return originCount;
+		}
+		
+		public int getNewCount() {
+			return newCount;
+		}
+		
+		public void setNewCount(int newCount) {
+			this.newCount = newCount;
+		}
+
+	}
+	
+	public static class AddKillCountEvent extends SlashBladeEvent {
+		private final int originCount;
+		private int newCount;
+		public AddKillCountEvent(ItemStack blade, ISlashBladeState state, int count) {
+			super(blade, state);
+			this.originCount = count;
+			this.setNewCount(count);
+		}
+		
+		public int getOriginCount() {
+			return originCount;
+		}
+		
+		public int getNewCount() {
+			return newCount;
+		}
+		
+		public void setNewCount(int newCount) {
+			this.newCount = newCount;
+		}
+
+	}
+	
 	public static class UpdateAttackEvent extends SlashBladeEvent {
 		private final double originDamage;
 		private double newDamage;
@@ -208,7 +254,6 @@ public abstract class SlashBladeEvent extends Event {
 		}
 		
 	}
-	
 
     @Cancelable
     public static class ChargeActionEvent extends Event {
