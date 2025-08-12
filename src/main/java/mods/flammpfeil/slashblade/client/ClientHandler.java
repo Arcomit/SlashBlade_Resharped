@@ -1,5 +1,6 @@
 package mods.flammpfeil.slashblade.client;
 
+import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -137,17 +138,23 @@ public class ClientHandler {
         addPlayerLayer(event, "default");
         addPlayerLayer(event, "slim");
 
-        addEntityLayer(event, EntityType.ZOMBIE);
-        addEntityLayer(event, EntityType.HUSK);
-        addEntityLayer(event, EntityType.ZOMBIE_VILLAGER);
+        Minecraft mc = Minecraft.getInstance();
+        // 畜生forge给的什么破事件还带强制转换的, 必须得我这样写，好不优雅
+        for (EntityType<?> type : ForgeRegistries.ENTITY_TYPES) {
+            addEntityLayer(event, mc.getEntityRenderDispatcher().renderers.get(type));
+        }
 
-        addEntityLayer(event, EntityType.WITHER_SKELETON);
-        addEntityLayer(event, EntityType.SKELETON);
-        addEntityLayer(event, EntityType.STRAY);
-
-        addEntityLayer(event, EntityType.PIGLIN);
-        addEntityLayer(event, EntityType.PIGLIN_BRUTE);
-        addEntityLayer(event, EntityType.ZOMBIFIED_PIGLIN);
+//        addEntityLayer(event, EntityType.ZOMBIE);
+//        addEntityLayer(event, EntityType.HUSK);
+//        addEntityLayer(event, EntityType.ZOMBIE_VILLAGER);
+//
+//        addEntityLayer(event, EntityType.WITHER_SKELETON);
+//        addEntityLayer(event, EntityType.SKELETON);
+//        addEntityLayer(event, EntityType.STRAY);
+//
+//        addEntityLayer(event, EntityType.PIGLIN);
+//        addEntityLayer(event, EntityType.PIGLIN_BRUTE);
+//        addEntityLayer(event, EntityType.ZOMBIFIED_PIGLIN);
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -163,6 +170,13 @@ public class ClientHandler {
     private static void addEntityLayer(EntityRenderersEvent.AddLayers evt, EntityType type) {
         EntityRenderer<?> renderer = evt.getRenderer(type);
 
+        if (renderer instanceof LivingEntityRenderer livingRenderer) {
+            livingRenderer.addLayer(new LayerMainBlade<>(livingRenderer));
+        }
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static void addEntityLayer(EntityRenderersEvent.AddLayers evt, EntityRenderer<?> renderer) {
         if (renderer instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new LayerMainBlade<>(livingRenderer));
         }
