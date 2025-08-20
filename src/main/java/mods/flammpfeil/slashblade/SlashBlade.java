@@ -2,6 +2,7 @@ package mods.flammpfeil.slashblade;
 
 import com.google.common.base.CaseFormat;
 import mods.flammpfeil.slashblade.ability.*;
+import mods.flammpfeil.slashblade.advancement.SlashBladeItemPredicate;
 import mods.flammpfeil.slashblade.capability.concentrationrank.CapabilityConcentrationRank;
 import mods.flammpfeil.slashblade.capability.inputstate.CapabilityInputState;
 import mods.flammpfeil.slashblade.capability.mobeffect.CapabilityMobEffect;
@@ -33,6 +34,7 @@ import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.ChatFormatting;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -101,7 +103,7 @@ public class SlashBlade {
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register(modEventBus);
         SpecialEffectsRegistry.SPECIAL_EFFECT.register(modEventBus);
 
-
+        ItemPredicate.register(SlashBlade.prefix("slashblade"), SlashBladeItemPredicate::new);
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -131,6 +133,8 @@ public class SlashBlade {
         SuperSlashArts.getInstance().register();
 
         ComboCommands.initDefaultStandByCommands();
+
+        
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the

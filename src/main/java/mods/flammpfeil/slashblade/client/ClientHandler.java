@@ -15,6 +15,7 @@ import mods.flammpfeil.slashblade.event.client.AdvancementsRecipeRenderer;
 import mods.flammpfeil.slashblade.event.client.SneakingMotionCanceller;
 import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
 import mods.flammpfeil.slashblade.init.SBItems;
+import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -33,6 +34,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -111,6 +113,18 @@ public class ClientHandler {
                 });
 
     }
+    
+    @SubscribeEvent
+	public static void onCreativeTagBuilding(BuildCreativeModeTabContentsEvent event) {
+    	BladeModelManager.getClientSlashBladeRegistry().holders()
+		.sorted(SlashBladeDefinition.COMPARATOR).forEach(entry -> {
+			if(!event.getTabKey().location().equals(entry.get().getCreativeGroup()))
+				return;
+			
+			if(!entry.value().getBlade().isEmpty())
+				event.accept(entry.value().getBlade());
+		});
+	}
 
     @SubscribeEvent
     public static void registerKeyMapping(RegisterKeyMappingsEvent event) {
@@ -166,19 +180,12 @@ public class ClientHandler {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static void addEntityLayer(EntityRenderersEvent.AddLayers evt, EntityType type) {
-        EntityRenderer<?> renderer = evt.getRenderer(type);
-
-        if (renderer instanceof LivingEntityRenderer livingRenderer) {
-            livingRenderer.addLayer(new LayerMainBlade<>(livingRenderer));
-        }
-    }
-
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     private static void addEntityLayer(EntityRenderersEvent.AddLayers evt, EntityRenderer<?> renderer) {
         if (renderer instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new LayerMainBlade<>(livingRenderer));
         }
     }
+    
+
 }

@@ -1,7 +1,6 @@
 package mods.flammpfeil.slashblade.client.renderer.event;
 
 import com.google.common.cache.LoadingCache;
-import com.mojang.blaze3d.systems.RenderSystem;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;

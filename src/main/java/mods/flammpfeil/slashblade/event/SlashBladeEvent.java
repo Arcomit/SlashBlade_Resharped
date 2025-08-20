@@ -216,6 +216,7 @@ public abstract class SlashBladeEvent extends Event {
         private boolean critical;
         private double damage;
         private KnockBacks knockback;
+        private float yRot = 0F;
 
         public DoSlashEvent(ItemStack blade, ISlashBladeState state, LivingEntity user,
                             float roll, boolean critical, double damage, KnockBacks knockback) {
@@ -262,6 +263,14 @@ public abstract class SlashBladeEvent extends Event {
         public void setKnockback(KnockBacks knockback) {
             this.knockback = knockback;
         }
+
+		public float getYRot() {
+			return yRot;
+		}
+
+		public void setYRot(float yRot) {
+			this.yRot = yRot;
+		}
 
     }
 

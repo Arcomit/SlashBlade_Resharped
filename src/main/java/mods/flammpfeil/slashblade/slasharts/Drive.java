@@ -26,6 +26,11 @@ public class Drive {
 
     public static EntityDrive doSlash(LivingEntity playerIn, float roll, int lifetime, int colorCode, Vec3 centerOffset,
             boolean critical, double damage, KnockBacks knockback, float speed) {
+    	return doSlash(playerIn, roll, 0, lifetime, colorCode, centerOffset, critical, damage, knockback, speed);
+    }
+    
+    public static EntityDrive doSlash(LivingEntity playerIn, float roll, float yRot, int lifetime, int colorCode, Vec3 centerOffset,
+            boolean critical, double damage, KnockBacks knockback, float speed) {
 
         if (playerIn.level().isClientSide())
             return null;
@@ -42,16 +47,19 @@ public class Drive {
         drive.setPos(pos.x, pos.y, pos.z);
         drive.setDamage(damage);
         drive.setSpeed(speed);
-        drive.shoot(lookAngle.x, lookAngle.y, lookAngle.z, drive.getSpeed(),
+        
+        var resultAngle = lookAngle.yRot(yRot);
+        
+        drive.shoot(resultAngle.x, resultAngle.y, resultAngle.z, drive.getSpeed(),
                 0);
         
         drive.setOwner(playerIn);
         drive.setRotationRoll(roll);
-
+        
         drive.setColor(colorCode);
         drive.setIsCritical(critical);
         drive.setKnockBack(knockback);
-
+        
         drive.setLifetime(lifetime);
 
         if (playerIn != null)

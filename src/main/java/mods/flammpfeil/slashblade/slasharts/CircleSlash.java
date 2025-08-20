@@ -24,7 +24,8 @@ public class CircleSlash {
             return;
         SlashBladeEvent.DoSlashEvent event = new SlashBladeEvent.DoSlashEvent(blade,
                 blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new),
-                living, yRot, true, 0.325D, KnockBacks.cancel);
+                living, 0, true, 0.325D, KnockBacks.cancel);
+        event.setYRot(yRot);
         if (MinecraftForge.EVENT_BUS.post(event))
             return ;
 

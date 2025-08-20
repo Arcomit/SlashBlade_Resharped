@@ -10,6 +10,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.SlashBladeCreativeGroup;
 import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent;
 import mods.flammpfeil.slashblade.init.SBItems;
@@ -33,7 +34,9 @@ public class SlashBladeDefinition {
 			RenderDefinition.CODEC.fieldOf("render").forGetter(SlashBladeDefinition::getRenderDefinition),
 			PropertiesDefinition.CODEC.fieldOf("properties").forGetter(SlashBladeDefinition::getStateDefinition),
 			EnchantmentDefinition.CODEC.listOf().optionalFieldOf("enchantments", Lists.newArrayList())
-					.forGetter(SlashBladeDefinition::getEnchantments))
+					.forGetter(SlashBladeDefinition::getEnchantments),
+			ResourceLocation.CODEC.optionalFieldOf("creativeGroup", SlashBladeCreativeGroup.SLASHBLADE_GROUP.getId())
+					.forGetter(SlashBladeDefinition::getCreativeGroup))
 			.apply(instance, SlashBladeDefinition::new));
 
 	public static final ResourceKey<Registry<SlashBladeDefinition>> REGISTRY_KEY = ResourceKey
@@ -45,24 +48,42 @@ public class SlashBladeDefinition {
 	private final PropertiesDefinition stateDefinition;
 	private final List<EnchantmentDefinition> enchantments;
 
+	private final ResourceLocation creativeGroup;
+
 	public SlashBladeDefinition(ResourceLocation name, RenderDefinition renderDefinition,
 			PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments) {
-		this(SlashBlade.prefix("slashblade"), name, renderDefinition, stateDefinition, enchantments);
+		this(SlashBlade.prefix("slashblade"), name, renderDefinition, stateDefinition, enchantments, 
+				SlashBladeCreativeGroup.SLASHBLADE_GROUP.getId());
 	}
-
+	
+	public SlashBladeDefinition(ResourceLocation name, RenderDefinition renderDefinition,
+			PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments,
+			ResourceLocation creativeGroup) {
+		this(SlashBlade.prefix("slashblade"), name, renderDefinition, stateDefinition, enchantments, creativeGroup);
+	}
+	
 	public SlashBladeDefinition(ResourceLocation item, ResourceLocation name, RenderDefinition renderDefinition,
 			PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments) {
+		this(item, name, renderDefinition, stateDefinition, enchantments, 
+				SlashBladeCreativeGroup.SLASHBLADE_GROUP.getId());
+	}
+	
+
+	public SlashBladeDefinition(ResourceLocation item, ResourceLocation name, RenderDefinition renderDefinition,
+			PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments,
+			ResourceLocation creativeGroup) {
 		this.item = item;
 		this.name = name;
 		this.renderDefinition = renderDefinition;
 		this.stateDefinition = stateDefinition;
 		this.enchantments = enchantments;
+		this.creativeGroup = creativeGroup;
 	}
 
 	public ResourceLocation getItemName() {
 		return item;
 	}
-	
+
 	public ResourceLocation getName() {
 		return name;
 	}
@@ -88,10 +109,10 @@ public class SlashBladeDefinition {
 	}
 
 	public ItemStack getBlade(Item bladeItem) {
-		
-		if(MinecraftForge.EVENT_BUS.post(new SlashBladeRegistryEvent.Pre(this)))
+
+		if (MinecraftForge.EVENT_BUS.post(new SlashBladeRegistryEvent.Pre(this)))
 			return ItemStack.EMPTY;
-		
+
 		ItemStack result = new ItemStack(bladeItem);
 		var state = result.getCapability(ItemSlashBlade.BLADESTATE).orElse(new SlashBladeState(result));
 		state.setNonEmpty();
@@ -130,7 +151,7 @@ public class SlashBladeDefinition {
 			result.enchant(enchantment, instance.getEnchantmentLevel());
 
 		}
-		if(this.stateDefinition.isUnbreakable())
+		if (this.stateDefinition.isUnbreakable())
 			result.getOrCreateTag().putBoolean("Unbreakable", true);
 		var postRegistry = new SlashBladeRegistryEvent.Post(this, result);
 		MinecraftForge.EVENT_BUS.post(postRegistry);
@@ -140,12 +161,14 @@ public class SlashBladeDefinition {
 	public Item getItem() {
 		@Nullable
 		Item value = ForgeRegistries.ITEMS.getValue(this.item);
-		if(value == null)
+		if (value == null)
 			return SBItems.slashblade;
 		return value;
 	}
-	
-	
+
+	public ResourceLocation getCreativeGroup() {
+		return creativeGroup;
+	}
 
 	public static final BladeComparator COMPARATOR = new BladeComparator();
 

@@ -15,4 +15,7 @@ public class RecipeSerializerRegistry {
     
     public static final RegistryObject<RecipeSerializer<?>> PROUDSOUL_RECIPE = RECIPE_SERIALIZER
             .register("proudsoul", () -> ProudsoulShapelessRecipe.SERIALIZER);
+    
+    public static final RegistryObject<RecipeSerializer<?>> SLASHBLADE_SMITHING = RECIPE_SERIALIZER
+            .register("slashblade_smithing", () -> SlashBladeSmithingRecipe.SERIALIZER);
 }

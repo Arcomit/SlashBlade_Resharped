@@ -1,9 +1,9 @@
-// 1.20.1	2024-05-26T05:01:06.3881008	Recipes
+// 1.20.1	2025-08-20T19:23:08.1461245	Recipes
 c7b095aa6dca275ecc4dd4f62355e36c1ce15eb8 data/slashblade/advancements/recipes/combat/agito.json
 b7ae6b8cb8ea4fabb872cf37e4bdc79bff377645 data/slashblade/advancements/recipes/combat/doutanuki.json
 e0afe883c747929dad0d9464f1996cf4f08a7116 data/slashblade/advancements/recipes/combat/fox_black.json
 40bf9385bf8f60e20514a4afa1543481fd79613b data/slashblade/advancements/recipes/combat/fox_white.json
-cb80ca1985fc5f1fc69471c00fe570a1a271093d data/slashblade/advancements/recipes/combat/muramasa.json
+5d19826a9d6186b4b9623011bb583d5b3613c199 data/slashblade/advancements/recipes/combat/muramasa.json
 490e2676b57390a25785b7332b93359052eea045 data/slashblade/advancements/recipes/combat/orotiagito.json
 b5ea481c1c278f673c85d9cad72d11ea215ed285 data/slashblade/advancements/recipes/combat/orotiagito_sealed.json
 2d89184fcf8873dcbcdf5feb9a69900797f7e515 data/slashblade/advancements/recipes/combat/rodai_diamond.json
@@ -20,8 +20,8 @@ ce40a74adc38a657d3bc6a33553ba6e83b880f50 data/slashblade/advancements/recipes/co
 e32051ca601b03ec75fc8df25b538bf5d373bb73 data/slashblade/advancements/recipes/combat/slashblade_white.json
 f0a664105aa0c430d775300ddbf1fca71e2b29e1 data/slashblade/advancements/recipes/combat/slashblade_wood.json
 4e8b75fb2daeaaa736139d0d21cd8e85450326be data/slashblade/advancements/recipes/combat/tagayasan.json
-65765408e3e95b373231459e75eb4bf408746751 data/slashblade/advancements/recipes/combat/yamato_fix.json
-48ed6ac9971d4cbe0c9c67069e8323b993e47d8b data/slashblade/advancements/recipes/combat/yuzukitukumo.json
+a89b3971e3e4796ecf58a1893b4a4e71f262137a data/slashblade/advancements/recipes/combat/yamato_fix.json
+d6cae405214e44e73cb87de99babb491e83ca388 data/slashblade/advancements/recipes/combat/yuzukitukumo.json
 e360d3cac4a346efec6ae6287bd12ec1f0b3142f data/slashblade/recipes/agito.json
 3c80eee2027a6370533bd948cb98b18f2ce9d9a1 data/slashblade/recipes/doutanuki.json
 1b7630478cbed74ce6ab1c03214cc44dd7c661cf data/slashblade/recipes/fox_black.json

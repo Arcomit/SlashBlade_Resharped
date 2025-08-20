@@ -13,6 +13,7 @@ import com.google.gson.JsonSyntaxException;
 
 import mods.flammpfeil.slashblade.init.SBItems;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -48,6 +49,20 @@ public class SlashBladeIngredient extends Ingredient {
     public static SlashBladeIngredient of(RequestDefinition request) {
         return new SlashBladeIngredient(Set.of(SBItems.slashblade), request);
     }
+    
+    public static SlashBladeIngredient of(ItemLike item, ResourceLocation request) {
+        return new SlashBladeIngredient(Set.of(item.asItem()), 
+        		RequestDefinition.Builder.newInstance().name(request).build());
+    }
+
+    public static SlashBladeIngredient of(ResourceLocation request) {
+        return new SlashBladeIngredient(Set.of(SBItems.slashblade), 
+        		RequestDefinition.Builder.newInstance().name(request).build());
+    }
+    
+    public static SlashBladeIngredient blankNameless() {
+		return of(RequestDefinition.Builder.newInstance().build());
+	}
 
     @Override
     public boolean test(ItemStack input) {

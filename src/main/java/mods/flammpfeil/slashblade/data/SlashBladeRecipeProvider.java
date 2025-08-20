@@ -3,6 +3,7 @@ package mods.flammpfeil.slashblade.data;
 import java.util.function.Consumer;
 
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.advancement.SlashBladeItemPredicate;
 import mods.flammpfeil.slashblade.data.builtin.SlashBladeBuiltInRegistry;
 import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
 import mods.flammpfeil.slashblade.init.SBItems;
@@ -60,7 +61,14 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                                 .name(SlashBladeBuiltInRegistry.YAMATO.location()).addSwordType(SwordType.BROKEN)
                                 .addSwordType(SwordType.SEALED).build()))
                 .define('P', SBItems.proudsoul_sphere)
-                .unlockedBy(getHasName(SBItems.proudsoul_sphere), has(SBItems.proudsoul_sphere))
+                .unlockedBy(getHasName(SBItems.proudsoul_sphere), inventoryTrigger(
+                		new SlashBladeItemPredicate(
+                				RequestDefinition.Builder.newInstance()
+                                        .name(SlashBladeBuiltInRegistry.YAMATO.location()).addSwordType(SwordType.BROKEN)
+                                        .addSwordType(SwordType.SEALED).build()
+                				)
+                		
+                		))
                 .save(consumer, SlashBlade.prefix("yamato_fix"));
 
         SlashBladeShapedRecipeBuilder.shaped(SBItems.slashblade).pattern(" EI").pattern("PBD").pattern("SI ")
@@ -115,7 +123,12 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                         SlashBladeIngredient
                                 .of(RequestDefinition.Builder.newInstance().proudSoul(10000).refineCount(20).build()))
                 .define('S', Ingredient.of(SBItems.proudsoul_sphere))
-                .unlockedBy(getHasName(SBItems.slashblade), has(SBItems.slashblade)).save(consumer);
+                .unlockedBy(getHasName(SBItems.slashblade), inventoryTrigger(
+                		new SlashBladeItemPredicate(
+                				RequestDefinition.Builder.newInstance().build()
+                				)
+                		
+                		)).save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.TAGAYASAN.location()).pattern("SES")
                 .pattern("DBD").pattern("SES")
@@ -181,7 +194,12 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                                         new EnchantmentDefinition(getEnchantmentID(Enchantments.FIRE_ASPECT), 1))
                                 .build()))
                 .define('S', Ingredient.of(SBItems.proudsoul_sphere))
-                .unlockedBy(getHasName(SBItems.slashblade), has(SBItems.slashblade)).save(consumer);
+                .unlockedBy(getHasName(SBItems.slashblade), inventoryTrigger(
+                		new SlashBladeItemPredicate(
+                				RequestDefinition.Builder.newInstance().build()
+                				)
+                		
+                		)).save(consumer);
 
         rodaiRecipe(SlashBladeBuiltInRegistry.RODAI_WOODEN.location(), Items.WOODEN_SWORD, consumer);
         rodaiRecipe(SlashBladeBuiltInRegistry.RODAI_STONE.location(), Items.STONE_SWORD, consumer);

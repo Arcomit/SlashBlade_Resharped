@@ -50,18 +50,20 @@ public class SlashBladeCreativeGroup {
 				output.accept(SBItems.slashblade_white);
 				output.accept(SBItems.slashblade);
 
-				fillBlades(features, output);
+				//fillBlades(features, output);
 			}).build();
 
 	public static final RegistryObject<CreativeModeTab> SLASHBLADE_GROUP = CREATIVE_MODE_TABS.register("slashblade",
 			() -> SLASHBLADE);
 
+	@SuppressWarnings("unused")
+	@Deprecated
 	private static void fillBlades(CreativeModeTab.ItemDisplayParameters features, CreativeModeTab.Output output) {
 		SlashBlade.getSlashBladeDefinitionRegistry(features.holders()).listElements()
 				.sorted(SlashBladeDefinition.COMPARATOR).forEach(entry -> {
 					if(!entry.value().getBlade().isEmpty())
 						output.accept(entry.value().getBlade());
-				});
+		});
 	}
 	
 	private static void fillEnchantmentsSouls(CreativeModeTab.Output output) {
