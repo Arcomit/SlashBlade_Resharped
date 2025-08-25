@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.util.LoaderUtil;
 import org.jetbrains.annotations.Nullable;
 
+import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.client.renderer.LockonCircleRender;
 import mods.flammpfeil.slashblade.client.renderer.gui.RankRenderer;
 import mods.flammpfeil.slashblade.client.renderer.layers.LayerMainBlade;
@@ -116,7 +117,8 @@ public class ClientHandler {
     
     @SubscribeEvent
 	public static void onCreativeTagBuilding(BuildCreativeModeTabContentsEvent event) {
-    	BladeModelManager.getClientSlashBladeRegistry().holders()
+    	SlashBlade.getSlashBladeDefinitionRegistry(event.getParameters().holders())
+    	.listElements()
 		.sorted(SlashBladeDefinition.COMPARATOR).forEach(entry -> {
 			if(!event.getTabKey().location().equals(entry.get().getCreativeGroup()))
 				return;

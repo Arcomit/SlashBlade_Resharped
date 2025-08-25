@@ -34,7 +34,6 @@ import java.util.function.Consumer;
 
 import static mods.flammpfeil.slashblade.SlashBladeConfig.SLASHBLADE_DAMAGE_MULTIPLIER;
 
-@SuppressWarnings("unused")
 public class AttackManager {
     public static boolean isPowered(LivingEntity entity) {
         ItemStack blade = entity.getMainHandItem();

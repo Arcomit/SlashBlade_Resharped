@@ -1,4 +1,4 @@
-// 1.20.1	2025-08-20T19:23:08.1461245	Recipes
+// 1.20.1	2025-08-26T03:10:53.9274433	Recipes
 c7b095aa6dca275ecc4dd4f62355e36c1ce15eb8 data/slashblade/advancements/recipes/combat/agito.json
 b7ae6b8cb8ea4fabb872cf37e4bdc79bff377645 data/slashblade/advancements/recipes/combat/doutanuki.json
 e0afe883c747929dad0d9464f1996cf4f08a7116 data/slashblade/advancements/recipes/combat/fox_black.json
@@ -10,6 +10,7 @@ b5ea481c1c278f673c85d9cad72d11ea215ed285 data/slashblade/advancements/recipes/co
 a65736d84406120905c4e86e42eadc310ec2a4f4 data/slashblade/advancements/recipes/combat/rodai_golden.json
 cb7c11847592bb093aa40eedf49e92c620d13f8c data/slashblade/advancements/recipes/combat/rodai_iron.json
 5d15888c2bfef7d4152b4e23f2b53696c5f0e670 data/slashblade/advancements/recipes/combat/rodai_netherite.json
+cdd81b41191d73f15f6c332ce596b4344784288a data/slashblade/advancements/recipes/combat/rodai_netherite_smithing.json
 18a31c1d77d6af6bdf09a9dc3c5f5475cb33b973 data/slashblade/advancements/recipes/combat/rodai_stone.json
 fbd209904406f8254c8366f3c3cb18fcc5690e26 data/slashblade/advancements/recipes/combat/rodai_wooden.json
 bde1611b04872389ce662f363a5f5bea90d0269f data/slashblade/advancements/recipes/combat/ruby.json
@@ -33,6 +34,7 @@ f80dbcb965abaa4f91cc12c9aad2bdf765a2d6c0 data/slashblade/recipes/rodai_diamond.j
 e33c2cefaf02171b24cb65c540b1474fb522159f data/slashblade/recipes/rodai_golden.json
 2383d1b93eb1ed3843952b0c79861f397e9d257c data/slashblade/recipes/rodai_iron.json
 02c198584924e87adce49819ac5da6dbc777ec3c data/slashblade/recipes/rodai_netherite.json
+a7a72e80d80f4281d92556a9ff5ac9a1a4607685 data/slashblade/recipes/rodai_netherite_smithing.json
 e099d6502d8a66f525c8e61c61240de6aaa7fdcc data/slashblade/recipes/rodai_stone.json
 13e5089f645c5cbf9cda2a2fa72450570c07574d data/slashblade/recipes/rodai_wooden.json
 9436a4b5eabf98a75e89143c035b85c60a0cf27d data/slashblade/recipes/ruby.json

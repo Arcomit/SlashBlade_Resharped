@@ -11,6 +11,7 @@ import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.recipe.RequestDefinition;
 import mods.flammpfeil.slashblade.recipe.SlashBladeIngredient;
 import mods.flammpfeil.slashblade.recipe.SlashBladeShapedRecipeBuilder;
+import mods.flammpfeil.slashblade.recipe.SlashBladeSmithingRecipeBuilder;
 import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -36,6 +37,18 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
 
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
+    	SlashBladeSmithingRecipeBuilder.smithing(
+    			Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), 
+    			SlashBladeIngredient.of(
+                        RequestDefinition.Builder.newInstance()
+                        .name(SlashBladeBuiltInRegistry.RODAI_DIAMOND.location())
+                        .build()), 
+    			Ingredient.of(Tags.Items.INGOTS_NETHERITE), 
+    			RecipeCategory.COMBAT, 
+    			SlashBladeBuiltInRegistry.RODAI_NETHERITE.location())
+    	.unlocks(getHasName(Items.NETHERITE_INGOT), has(Tags.Items.INGOTS_NETHERITE))
+    	.save(consumer, SlashBlade.prefix("rodai_netherite_smithing"));
+    	
         ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, SBItems.slashblade_wood).pattern("  L").pattern(" L ")
                 .pattern("B  ").define('B', Items.WOODEN_SWORD).define('L', ItemTags.LOGS)
                 .unlockedBy(getHasName(Items.WOODEN_SWORD), has(Items.WOODEN_SWORD)).save(consumer);
