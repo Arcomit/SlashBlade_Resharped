@@ -1,6 +1,7 @@
 package mods.flammpfeil.slashblade.compat.emi;
 
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
@@ -50,7 +51,7 @@ public class SlashBladeSmithingEmiRecipe extends EMISimpleRecipe {
                 Container input = createInput(template, base, addition);
                 ItemStack output = assembleResultItem(input, recipe);
                 if (!output.isEmpty()) {
-                    outputs.add(EmiStack.of(output));
+                    outputs.add(EMISlashBladeStack.of(output));
                 }
             }
         }
@@ -83,23 +84,24 @@ public class SlashBladeSmithingEmiRecipe extends EMISimpleRecipe {
 
     @Override
     public int getDisplayWidth() {
-        return 125;
+        return 112;
     }
 
     @Override
     public int getDisplayHeight() {
-        return 54;
+        return 18;
     }
 
     @Override
     public void addWidgets(WidgetHolder widgets) {
+        widgets.addTexture(EmiTexture.EMPTY_ARROW, 62, 1);
         // 模板槽位
-        widgets.addSlot(inputs.get(0), 8, 9);
+        widgets.addSlot(inputs.get(0), 0, 0);
         // 基础物品槽位
-        widgets.addSlot(inputs.get(1), 26, 9);
+        widgets.addSlot(inputs.get(1), 18, 0);
         // 添加物品槽位
-        widgets.addSlot(inputs.get(2), 44, 9);
+        widgets.addSlot(inputs.get(2), 36, 0);
         // 输出槽位
-        widgets.addSlot(outputs.get(0), 98, 9);
+        widgets.addSlot(outputs.get(0), 94, 0).recipeContext(this);
     }
 }
