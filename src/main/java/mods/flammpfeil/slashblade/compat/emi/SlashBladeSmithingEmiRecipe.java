@@ -1,6 +1,7 @@
 package mods.flammpfeil.slashblade.compat.emi;
 
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
@@ -31,9 +32,9 @@ public class SlashBladeSmithingEmiRecipe extends EMISimpleRecipe {
 
     private static List<EmiIngredient> createInputs(SlashBladeSmithingRecipe recipe) {
         List<EmiIngredient> inputs = new ArrayList<>();
-        inputs.add(EmiIngredient.of(recipe.getTemplate()));
-        inputs.add(EmiIngredient.of(recipe.getBase()));
-        inputs.add(EmiIngredient.of(recipe.getAddition()));
+        inputs.add(EMISlashBladeStack.of(recipe.getTemplate()));
+        inputs.add(EMISlashBladeStack.of(recipe.getBase()));
+        inputs.add(EMISlashBladeStack.of(recipe.getAddition()));
         return inputs;
     }
 

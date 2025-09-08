@@ -24,6 +24,9 @@ public class RecipeSerializerRegistry {
     public static final RegistryObject<RecipeSerializer<?>> SLASHBLADE_SMITHING = RECIPE_SERIALIZER
             .register("slashblade_smithing", () -> SlashBladeSmithingRecipe.SERIALIZER);
 
+    public static final RegistryObject<RecipeType<SlashBladeShapedRecipe>> SLASHBLADE_SHAPED_TYPE = RECIPE_TYPES
+            .register("shaped_blade", () -> recipeType("shaped_blade"));
+
     public static final RegistryObject<RecipeType<SlashBladeSmithingRecipe>> SLASHBLADE_SMITHING_TYPE = RECIPE_TYPES
             .register("slashblade_smithing", () -> recipeType("slashblade_smithing"));
 
