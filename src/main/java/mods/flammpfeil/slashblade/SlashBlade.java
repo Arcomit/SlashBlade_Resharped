@@ -100,6 +100,7 @@ public class SlashBlade {
         ComboStateRegistry.COMBO_STATE.register(modEventBus);
         SlashArtsRegistry.SLASH_ARTS.register(modEventBus);
         SlashBladeCreativeGroup.CREATIVE_MODE_TABS.register(modEventBus);
+        RecipeSerializerRegistry.RECIPE_TYPES.register(modEventBus);
         RecipeSerializerRegistry.RECIPE_SERIALIZER.register(modEventBus);
         SpecialEffectsRegistry.SPECIAL_EFFECT.register(modEventBus);
 

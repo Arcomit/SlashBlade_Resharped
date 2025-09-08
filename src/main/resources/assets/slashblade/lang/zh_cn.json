@@ -200,5 +200,7 @@
     "item.slashblade.slashblade_silverbamboo.desc": "工艺品",
     "slash_art.slashblade.drive": "幻影刃",
 
-    "attribute.name.generic.slashblade_damage": "拔刀剑伤害系数"
+    "attribute.name.generic.slashblade_damage": "拔刀剑伤害系数",
+
+    "emi.category.slashblade.slashblade_smithing": "拔刀剑锻造"
 }

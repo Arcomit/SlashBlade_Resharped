@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -56,7 +57,12 @@ public class SlashBladeSmithingRecipe implements SmithingRecipe {
 	public Ingredient getAddition() {
 		return addition;
 	}
-	
+
+    @Override
+    public RecipeType<?> getType() {
+        return RecipeSerializerRegistry.SLASHBLADE_SMITHING_TYPE.get();
+    }
+
     private static ItemStack getResultBlade(ResourceLocation outputBlade) {
         Item bladeItem = ForgeRegistries.ITEMS.containsKey(outputBlade) ? ForgeRegistries.ITEMS.getValue(outputBlade)
                 : SBItems.slashblade;

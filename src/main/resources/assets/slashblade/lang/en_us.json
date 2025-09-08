@@ -201,5 +201,7 @@
   "adv.slashblade.exeffect.feather_falling": "Slow Fall",
   "adv.slashblade.exeffect.feather_falling.desc": "Falling speed during aerial actions will be reduced depending on Feather Falling level.",
 
-  "attribute.name.generic.slashblade_damage": "Slashblade Damage"
+  "attribute.name.generic.slashblade_damage": "Slashblade Damage",
+
+  "emi.category.slashblade.slashblade_smithing": "Slashblade Smithing"
 }
