@@ -11,6 +11,7 @@ import mods.flammpfeil.slashblade.recipe.RecipeSerializerRegistry;
 import mods.flammpfeil.slashblade.recipe.SlashBladeShapedRecipe;
 import mods.flammpfeil.slashblade.recipe.SlashBladeSmithingRecipe;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -56,6 +57,8 @@ public class EMICompat implements EmiPlugin {
                 .forEach(stack -> {
                     registry.addEmiStack(EMISlashBladeStack.of(stack));
                 });
+
+        registry.removeRecipes(new ResourceLocation("emi", "/crafting/repairing/slashblade/slashblade"));
     }
 
     private static <C extends Container, T extends Recipe<C>> List<T> findRecipesByType(RecipeType<T> type) {
