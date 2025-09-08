@@ -10,6 +10,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -38,7 +39,12 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
     public ResourceLocation getOutputBlade() {
         return outputBlade;
     }
-    
+
+    @Override
+    public RecipeType<?> getType() {
+        return RecipeSerializerRegistry.SLASHBLADE_SHAPED_TYPE.get();
+    }
+
     private ResourceKey<SlashBladeDefinition> getOutputBladeKey() {
         return ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, outputBlade);
     }

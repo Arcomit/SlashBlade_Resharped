@@ -6,9 +6,12 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.SlashBladeCreativeGroup;
 import mods.flammpfeil.slashblade.recipe.RecipeSerializerRegistry;
+import mods.flammpfeil.slashblade.recipe.SlashBladeShapedRecipe;
 import mods.flammpfeil.slashblade.recipe.SlashBladeSmithingRecipe;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -23,20 +26,39 @@ public class EMICompat implements EmiPlugin {
             SlashBlade.prefix("slashblade_smithing"),
             EmiStack.of(Blocks.SMITHING_TABLE)
     );
+    public static final EmiRecipeCategory SLASHBLADE_SHAPED_CATEGORY = new EmiRecipeCategory(
+            SlashBlade.prefix("shaped_blade"),
+            EmiStack.of(Blocks.CRAFTING_TABLE)
+    );
 
     @Override
     public void register(EmiRegistry registry) {
         registry.addCategory(SLASHBLADE_SMITHING_CATEGORY);
+        registry.addCategory(SLASHBLADE_SHAPED_CATEGORY);
 
         // 注册SlashBlade锻造配方
         List<SlashBladeSmithingRecipe> smithingRecipes = findRecipesByType(RecipeSerializerRegistry.SLASHBLADE_SMITHING_TYPE.get());
         for (SlashBladeSmithingRecipe recipe : smithingRecipes) {
             registry.addRecipe(new SlashBladeSmithingEmiRecipe(recipe));
-            System.out.println("EMI_DEBUG: " + recipe.getId());
+        }
+
+        // 注册SlashBlade锻造配方
+        List<SlashBladeShapedRecipe> craftingRecipes = findRecipesByType(RecipeSerializerRegistry.SLASHBLADE_SHAPED_TYPE.get());
+        for (SlashBladeShapedRecipe recipe : craftingRecipes) {
+            System.out.println("SB_EMI_DEBUG: " + recipe.getId());
+            registry.addRecipe(new SlashBladeCraftingEmiRecipe(recipe));
         }
 
         // 添加工作站
         registry.addWorkstation(SLASHBLADE_SMITHING_CATEGORY, EmiStack.of(Blocks.SMITHING_TABLE));
+        registry.addWorkstation(SLASHBLADE_SHAPED_CATEGORY, EmiStack.of(Blocks.CRAFTING_TABLE));
+
+        SlashBladeCreativeGroup.SLASHBLADE_GROUP.get().getDisplayItems()
+                .forEach(stack -> {
+                    registry.addEmiStack(EMISlashBladeStack.of(stack));
+                });
+
+        registry.removeRecipes(new ResourceLocation("emi", "/crafting/repairing/slashblade/slashblade"));
     }
 
     private static <C extends Container, T extends Recipe<C>> List<T> findRecipesByType(RecipeType<T> type) {
