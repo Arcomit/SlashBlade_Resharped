@@ -176,7 +176,7 @@ public class RefineHandler {
             return;
         }
         int refineLimit = Math.max(10, oriEvent.getRight().getEnchantmentValue());
-        if (event.getRefineResult() <= refineLimit) {
+        if (event.getRefineResult() < refineLimit) {
             event.setRefineResult(event.getRefineResult() + 1);
         }
     }

@@ -32,10 +32,5 @@ public class SlashBladeEventHandler {
 		if(!ForgeRegistries.ITEMS.containsKey(event.getSlashBladeDefinition().getItemName()))
 			event.setCanceled(true);
 	}
-	
-//	@SubscribeEvent
-//	public static void name(ItemCraftedEvent event) {
-//		
-//	}
 
 }
