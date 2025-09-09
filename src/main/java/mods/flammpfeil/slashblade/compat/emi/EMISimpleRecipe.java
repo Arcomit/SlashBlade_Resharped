@@ -32,9 +32,4 @@ public abstract class EMISimpleRecipe implements EmiRecipe {
     public ResourceLocation getId() {
         return id;
     }
-
-    @Override
-    public boolean supportsRecipeTree() {
-        return false;
-    }
 }

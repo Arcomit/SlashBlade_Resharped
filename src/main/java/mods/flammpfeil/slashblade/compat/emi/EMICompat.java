@@ -71,8 +71,10 @@ public class EMICompat implements EmiPlugin {
         registry.removeEmiStacks(emiStack -> {
             ItemStack stack = emiStack.getItemStack();
             if (!(stack.getItem() instanceof ItemSlashBlade)) return false;
+
             var optional = stack.getCapability(ItemSlashBlade.BLADESTATE);
             if(!optional.isPresent()) return false;
+
             var state = optional.orElseThrow(NullPointerException::new);
             return !(state instanceof SimpleSlashBladeState) && state.isEmpty();
         });
