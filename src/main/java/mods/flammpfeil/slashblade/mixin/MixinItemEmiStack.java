@@ -2,8 +2,6 @@ package mods.flammpfeil.slashblade.mixin;
 
 import dev.emi.emi.api.stack.ItemEmiStack;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,13 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = ItemEmiStack.class, remap = false)
 public class MixinItemEmiStack {
-    @Final
-    @Shadow
-    private Item item;
-
-    @Final
-    @Shadow
-    private CompoundTag nbt;
 
     @Unique
     private ItemStack slashBlade_Resharped$origionalStack;
