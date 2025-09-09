@@ -2,7 +2,6 @@ package mods.flammpfeil.slashblade.entity;
 
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
-import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -121,16 +120,9 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
 			return super.hurt(damageSource, cat);
 		
 		ISlashBladeState state = blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
-
-		if(MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.BladeStandAttackEvent(blade, state, this, damageSource)))
-			return false;
-
-//		if (damageSource.getEntity() instanceof Player player){
-//			ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
-//			if (stack.is(SlashBladeItemTags.PROUD_SOULS)){
-//				return false;
-//			}
-//		}
+		if(MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.BladeStandAttackEvent(blade, state, this, damageSource))) {
+			return true;
+		}
 
 		return super.hurt(damageSource, cat);
 	}

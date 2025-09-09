@@ -20,6 +20,7 @@ import mods.flammpfeil.slashblade.event.handler.KnockBackHandler;
 import mods.flammpfeil.slashblade.event.handler.RankPointHandler;
 import mods.flammpfeil.slashblade.event.handler.RefineHandler;
 import mods.flammpfeil.slashblade.item.BladeStandItem;
+import mods.flammpfeil.slashblade.item.ItemProudSoul;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBladeDetune;
 import mods.flammpfeil.slashblade.item.ItemTierSlashBlade;
@@ -207,46 +208,16 @@ public class SlashBlade {
                 helper.register(new ResourceLocation(MODID, "slashblade"),
                         new ItemSlashBlade(new ItemTierSlashBlade(40, 4F), 4, 0.0F, (new Item.Properties())));
 
-                helper.register(new ResourceLocation(MODID, "proudsoul"), new Item((new Item.Properties())) {
-                    @Override
-                    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
-
-                        if (entity instanceof BladeItemEntity)
-                            return false;
-
-                        CompoundTag tag = entity.serializeNBT();
-                        tag.putInt("Health", 50);
-                        entity.deserializeNBT(tag);
-
-                        if (entity.isCurrentlyGlowing()) {
-                            entity.setDeltaMovement(
-                                    entity.getDeltaMovement().multiply(0.8, 0.0, 0.8).add(0.0D, +0.04D, 0.0D));
-                        } else if (entity.isOnFire()) {
-                            entity.setDeltaMovement(
-                                    entity.getDeltaMovement().multiply(0.8, 0.5, 0.8).add(0.0D, +0.04D, 0.0D));
-                        }
-
-                        return false;
-                    }
-                    
-                    
-
-                    @Override
-                    public boolean isFoil(ItemStack stack) {
-                        return true;// super.hasEffect(stack);
-                    }
+                helper.register(new ResourceLocation(MODID, "proudsoul"), new ItemProudSoul((new Item.Properties())) {
 
                     @Override
                     public int getEnchantmentValue(ItemStack stack) {
                         return 50;
                     }
+                    
                 });
 
-                helper.register(new ResourceLocation(MODID, "proudsoul_ingot"), new Item((new Item.Properties())) {
-                    @Override
-                    public boolean isFoil(ItemStack stack) {
-                        return true;// super.hasEffect(stack);
-                    }
+                helper.register(new ResourceLocation(MODID, "proudsoul_ingot"), new ItemProudSoul((new Item.Properties())) {
 
                     @Override
                     public int getEnchantmentValue(ItemStack stack) {
@@ -254,11 +225,7 @@ public class SlashBlade {
                     }
                 });
 
-                helper.register(new ResourceLocation(MODID, "proudsoul_tiny"), new Item((new Item.Properties())) {
-                    @Override
-                    public boolean isFoil(ItemStack stack) {
-                        return true;// super.hasEffect(stack);
-                    }
+                helper.register(new ResourceLocation(MODID, "proudsoul_tiny"), new ItemProudSoul((new Item.Properties())) {
 
                     @Override
                     public int getEnchantmentValue(ItemStack stack) {
@@ -267,11 +234,7 @@ public class SlashBlade {
                 });
 
                 helper.register(new ResourceLocation(MODID, "proudsoul_sphere"),
-                        new Item((new Item.Properties()).rarity(Rarity.UNCOMMON)) {
-                            @Override
-                            public boolean isFoil(ItemStack stack) {
-                                return true;// super.hasEffect(stack);
-                            }
+                        new ItemProudSoul((new Item.Properties()).rarity(Rarity.UNCOMMON)) {
 
                             @Override
                             public int getEnchantmentValue(ItemStack stack) {
@@ -298,11 +261,7 @@ public class SlashBlade {
                         });
 
                 helper.register(new ResourceLocation(MODID, "proudsoul_crystal"),
-                        new Item((new Item.Properties()).rarity(Rarity.RARE)) {
-                            @Override
-                            public boolean isFoil(ItemStack stack) {
-                                return true;// super.hasEffect(stack);
-                            }
+                        new ItemProudSoul((new Item.Properties()).rarity(Rarity.RARE)) {
 
                             @Override
                             public int getEnchantmentValue(ItemStack stack) {
@@ -336,11 +295,7 @@ public class SlashBlade {
                         });
 
                 helper.register(new ResourceLocation(MODID, "proudsoul_trapezohedron"),
-                        new Item((new Item.Properties()).rarity(Rarity.EPIC)) {
-                            @Override
-                            public boolean isFoil(ItemStack stack) {
-                                return true;// super.hasEffect(stack);
-                            }
+                        new ItemProudSoul((new Item.Properties()).rarity(Rarity.EPIC)) {
 
                             @Override
                             public int getEnchantmentValue(ItemStack stack) {

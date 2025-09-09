@@ -58,6 +58,7 @@ public class BlandStandEventHandler {
             return;
         }
         event.getBladeStand().setItem(Objects.requireNonNull(slashBladeDefinitionRegistry.get(SlashBladeBuiltInRegistry.KOSEKI)).getBlade());
+        event.setCanceled(true);
     }
 
     @SubscribeEvent
@@ -312,7 +313,7 @@ public class BlandStandEventHandler {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void eventProudSoulEnchantment(SlashBladeEvent.BladeStandAttackEvent event) {
         if (!(event.getDamageSource().getEntity() instanceof Player player)) {
             return;
@@ -335,7 +336,6 @@ public class BlandStandEventHandler {
         if (!stack.isEnchanted()) {
             return;
         }
-
         var world = player.level();
         var random = world.getRandom();
         var bladeStand = event.getBladeStand();
@@ -393,7 +393,6 @@ public class BlandStandEventHandler {
 
         currentBladeEnchantments.putAll(enchantments);
         EnchantmentHelper.setEnchantments(currentBladeEnchantments, blade);
-
         if (!enchantments.isEmpty()) {
             spawnSucceedEffects(world, bladeStand, random);
         }

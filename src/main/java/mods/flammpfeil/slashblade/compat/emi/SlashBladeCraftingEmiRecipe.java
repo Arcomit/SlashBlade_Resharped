@@ -12,8 +12,6 @@ import dev.emi.emi.runtime.EmiLog;
 import mods.flammpfeil.slashblade.recipe.SlashBladeShapedRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
