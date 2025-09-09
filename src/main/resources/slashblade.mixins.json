@@ -6,7 +6,9 @@
   "refmap": "slashblade.refmap.json",
   "mixins": [
     "MixinBlockBehaviour",
-    "MixinItemEmiStack"
+    "EmiStackAccessor",
+    "MixinItemEmiStack",
+    "MixinItemEmiStackSerializer"
   ],
   "client": [
   ],
