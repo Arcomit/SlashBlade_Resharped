@@ -60,7 +60,7 @@ public class EMICompat implements EmiPlugin {
     			return false;
     		var state = s.getItemStack().getCapability(ItemSlashBlade.BLADESTATE)
     				.orElseThrow(NullPointerException::new);
-    		return (state instanceof SimpleSlashBladeState) || state.isEmpty();
+    		return !(state instanceof SimpleSlashBladeState) && state.isEmpty();
     	});
         
         BladeModelManager.getClientSlashBladeRegistry()
