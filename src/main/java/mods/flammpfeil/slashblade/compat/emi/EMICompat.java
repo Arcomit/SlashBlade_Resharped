@@ -6,6 +6,7 @@ import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.capability.slashblade.SimpleSlashBladeState;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.recipe.RecipeSerializerRegistry;
@@ -54,12 +55,17 @@ public class EMICompat implements EmiPlugin {
         registry.addWorkstation(SLASHBLADE_SMITHING_CATEGORY, EmiStack.of(Blocks.SMITHING_TABLE));
         registry.addWorkstation(SLASHBLADE_SHAPED_CATEGORY, EmiStack.of(Blocks.CRAFTING_TABLE));
 
+    	registry.removeEmiStacks(s->{
+    		if(!s.getItemStack().getCapability(ItemSlashBlade.BLADESTATE).isPresent())
+    			return false;
+    		var state = s.getItemStack().getCapability(ItemSlashBlade.BLADESTATE)
+    				.orElseThrow(NullPointerException::new);
+    		return (state instanceof SimpleSlashBladeState) || state.isEmpty();
+    	});
+        
         BladeModelManager.getClientSlashBladeRegistry()
                 .forEach(defi -> {
                 	var stack = defi.getBlade();
-                	registry.removeEmiStacks(s->{
-                		return s.equals(EmiStack.of(stack)) && s.getItemStack().getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new).isEmpty();
-                	});
                     registry.addEmiStack(EMISlashBladeStack.of(stack));
                 });
 
