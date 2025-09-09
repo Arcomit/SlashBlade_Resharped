@@ -40,11 +40,6 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
         return outputBlade;
     }
 
-    @Override
-    public RecipeType<?> getType() {
-        return RecipeSerializerRegistry.SLASHBLADE_SHAPED_TYPE.get();
-    }
-
     private ResourceKey<SlashBladeDefinition> getOutputBladeKey() {
         return ResourceKey.create(SlashBladeDefinition.REGISTRY_KEY, outputBlade);
     }

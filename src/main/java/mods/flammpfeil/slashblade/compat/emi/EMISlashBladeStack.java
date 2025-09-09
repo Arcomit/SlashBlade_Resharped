@@ -1,5 +1,6 @@
 package mods.flammpfeil.slashblade.compat.emi;
 
+import dev.emi.emi.api.stack.Comparison;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.ItemEmiStack;
@@ -12,13 +13,30 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.Arrays;
 
-    public class EMISlashBladeStack extends ItemEmiStack {
+public class EMISlashBladeStack extends ItemEmiStack {
+    public static final Comparison COMPARE_SLASHBLADE = Comparison.of((a, b) -> {
+        ItemStack aStack = a.getItemStack();
+        ItemStack bStack = b.getItemStack();
+        if (aStack.getItem() != bStack.getItem()) return false;
+        String keyA = a.getNbt().getCompound("bladeState").getString("translationKey");
+        String keyB = b.getNbt().getCompound("bladeState").getString("translationKey");
+
+        System.out.println(a.getClass());
+        System.out.println(a.getNbt());
+        System.out.println(b.getClass());
+        System.out.println(b.getNbt());
+
+        return keyA.equals(keyB);
+    });
+
     private CompoundTag capNBT;
+
     public EMISlashBladeStack(ItemStack stack) {
         super(stack);
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
             this.capNBT = s.serializeNBT();
         });
+        this.comparison = COMPARE_SLASHBLADE;
     }
 
     @Override

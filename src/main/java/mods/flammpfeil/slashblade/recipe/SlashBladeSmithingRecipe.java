@@ -58,11 +58,6 @@ public class SlashBladeSmithingRecipe implements SmithingRecipe {
 		return addition;
 	}
 
-    @Override
-    public RecipeType<?> getType() {
-        return RecipeSerializerRegistry.SLASHBLADE_SMITHING_TYPE.get();
-    }
-
     private static ItemStack getResultBlade(ResourceLocation outputBlade) {
         Item bladeItem = ForgeRegistries.ITEMS.containsKey(outputBlade) ? ForgeRegistries.ITEMS.getValue(outputBlade)
                 : SBItems.slashblade;

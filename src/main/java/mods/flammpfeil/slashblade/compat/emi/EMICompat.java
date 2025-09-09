@@ -15,10 +15,12 @@ import mods.flammpfeil.slashblade.recipe.SlashBladeSmithingRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.HashSet;
 import java.util.List;
 
 @EmiEntrypoint
@@ -39,37 +41,50 @@ public class EMICompat implements EmiPlugin {
         registry.addCategory(SLASHBLADE_SHAPED_CATEGORY);
 
         // 注册SlashBlade锻造配方
-        List<SlashBladeSmithingRecipe> smithingRecipes = findRecipesByType(RecipeSerializerRegistry.SLASHBLADE_SMITHING_TYPE.get());
+        HashSet<ResourceLocation> vanillaSmithing = new HashSet<>();
+        List<SlashBladeSmithingRecipe> smithingRecipes = findRecipesByType(RecipeType.SMITHING).stream()
+                .filter(r -> r instanceof SlashBladeSmithingRecipe).map(r -> (SlashBladeSmithingRecipe) r).toList();
         for (SlashBladeSmithingRecipe recipe : smithingRecipes) {
             registry.addRecipe(new SlashBladeSmithingEmiRecipe(recipe));
+            vanillaSmithing.add(recipe.getId());
         }
+        registry.removeRecipes(emiRecipe -> {
+            return vanillaSmithing.contains(emiRecipe.getId()) && !(emiRecipe instanceof SlashBladeSmithingEmiRecipe);
+        });
 
         // 注册SlashBlade锻造配方
-        List<SlashBladeShapedRecipe> craftingRecipes = findRecipesByType(RecipeSerializerRegistry.SLASHBLADE_SHAPED_TYPE.get());
+        HashSet<ResourceLocation> vanillaCrafting = new HashSet<>();
+        List<SlashBladeShapedRecipe> craftingRecipes = findRecipesByType(RecipeType.CRAFTING).stream()
+                .filter(r -> r instanceof SlashBladeShapedRecipe).map(r -> (SlashBladeShapedRecipe) r).toList();;
         for (SlashBladeShapedRecipe recipe : craftingRecipes) {
-            System.out.println("SB_EMI_DEBUG: " + recipe.getId());
             registry.addRecipe(new SlashBladeCraftingEmiRecipe(recipe));
+            vanillaCrafting.add(recipe.getId());
         }
+        registry.removeRecipes(emiRecipe -> {
+            return vanillaCrafting.contains(emiRecipe.getId()) && !(emiRecipe instanceof SlashBladeCraftingEmiRecipe);
+        });
 
         // 添加工作站
         registry.addWorkstation(SLASHBLADE_SMITHING_CATEGORY, EmiStack.of(Blocks.SMITHING_TABLE));
         registry.addWorkstation(SLASHBLADE_SHAPED_CATEGORY, EmiStack.of(Blocks.CRAFTING_TABLE));
 
-    	registry.removeEmiStacks(s->{
-    		if(!s.getItemStack().getCapability(ItemSlashBlade.BLADESTATE).isPresent())
-    			return false;
-    		var state = s.getItemStack().getCapability(ItemSlashBlade.BLADESTATE)
-    				.orElseThrow(NullPointerException::new);
-    		return !(state instanceof SimpleSlashBladeState) && state.isEmpty();
-    	});
-        
+        registry.removeEmiStacks(emiStack -> {
+            ItemStack stack = emiStack.getItemStack();
+            if (!(stack.getItem() instanceof ItemSlashBlade)) return false;
+            var optional = stack.getCapability(ItemSlashBlade.BLADESTATE);
+            if(!optional.isPresent()) return false;
+            var state = optional.orElseThrow(NullPointerException::new);
+            return !(state instanceof SimpleSlashBladeState) && state.isEmpty();
+        });
+
         BladeModelManager.getClientSlashBladeRegistry()
-                .forEach(defi -> {
-                	var stack = defi.getBlade();
+                .forEach(def -> {
+                    var stack = def.getBlade();
+                    System.out.println("EMIDEBUG: " + stack.getDisplayName());
                     registry.addEmiStack(EMISlashBladeStack.of(stack));
                 });
 
-        registry.removeRecipes(new ResourceLocation("emi", "/crafting/repairing/slashblade/slashblade"));
+        registry.removeRecipes(ResourceLocation.parse("emi:/crafting/repairing/slashblade/slashblade"));
     }
 
     private static <C extends Container, T extends Recipe<C>> List<T> findRecipesByType(RecipeType<T> type) {
