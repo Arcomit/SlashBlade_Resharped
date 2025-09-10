@@ -3,7 +3,6 @@ package mods.flammpfeil.slashblade.mixin;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.emi.emi.EmiPort;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
@@ -18,13 +17,12 @@ import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.regex.Matcher;
 
 @Mixin(value = ItemEmiStackSerializer.class, remap = false)
-public class MixinItemEmiStackSerializer implements EmiStackSerializer<ItemEmiStack> {
+public abstract class MixinItemEmiStackSerializer implements EmiStackSerializer<ItemEmiStack> {
 
     @Override
     public JsonElement serialize(ItemEmiStack stack) {
@@ -143,15 +141,5 @@ public class MixinItemEmiStackSerializer implements EmiStackSerializer<ItemEmiSt
             }
         }
         return EmiStack.EMPTY;
-    }
-
-    public String getType() {
-        return "item";
-    }
-
-    public EmiStack create(ResourceLocation id, CompoundTag nbt, long amount) {
-        ItemStack stack = new ItemStack((ItemLike) EmiPort.getItemRegistry().get(id));
-        stack.setTag(nbt);
-        return EmiStack.of(stack, amount);
     }
 }
