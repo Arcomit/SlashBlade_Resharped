@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.mixin;
+package mods.flammpfeil.slashblade.emi.mixin;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

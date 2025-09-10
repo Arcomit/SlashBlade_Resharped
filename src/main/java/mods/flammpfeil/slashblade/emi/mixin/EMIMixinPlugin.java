@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.patchouli.mixin;
+package mods.flammpfeil.slashblade.emi.mixin;
 
 import net.minecraftforge.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import java.util.List;
 import java.util.Set;
 
-public class PatchouliMixinPlugin implements IMixinConfigPlugin {
+public class EMIMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {}
@@ -20,7 +20,7 @@ public class PatchouliMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return LoadingModList.get().getModFileById("emi") != null;
+        return LoadingModList.get().getModFileById("patchouli") != null;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package mods.flammpfeil.slashblade.mixin;
+package mods.flammpfeil.slashblade.emi.mixin;
 
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.ItemEmiStack;

@@ -46,12 +46,6 @@ minecraft {
 
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            jvmArgs = [
-                    '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
-                    '--add-opens', 'java.base/java.lang.reflect=ALL-UNNAMED',
-                    '--add-opens', 'java.base/java.util=ALL-UNNAMED',
-                    '-Djava.awt.headless=true'
-            ]
         }
 
         server {
@@ -79,6 +73,7 @@ mixin {
     config 'slashblade.mixins.json'
     config 'slashblade.thetwilightforest.mixins.json'
     config 'slashblade.patchouli.mixins.json'
+    config 'slashblade.emi.mixins.json'
     debug {
         verbose = true
         exportMixinAP = true
