@@ -10,16 +10,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = ItemEmiStack.class, remap = false)
-public class MixinItemEmiStack {
+import static mods.flammpfeil.slashblade.compat.emi.EMIUtils.SLASHBLADE_COMPARISON;
 
+@Mixin(value = ItemEmiStack.class, remap = false)
+public abstract class MixinItemEmiStack extends EmiStack {
     @Unique
     public ItemStack slashBlade_Resharped$origionalStack;
 
     @Inject(method = "<init>(Lnet/minecraft/world/item/ItemStack;)V", at = @At("TAIL"))
     private void onConstructor(ItemStack stack, CallbackInfo ci) {
-        if (stack.getItem() instanceof ItemSlashBlade)
+        if (stack.getItem() instanceof ItemSlashBlade) {
             this.slashBlade_Resharped$origionalStack = stack.copy();
+            this.comparison = SLASHBLADE_COMPARISON;
+        }
     }
 
     @Inject(method = "getItemStack()Lnet/minecraft/world/item/ItemStack;", at = @At("TAIL"), cancellable = true)
@@ -34,9 +37,9 @@ public class MixinItemEmiStack {
         if (this.slashBlade_Resharped$origionalStack != null) {
             EmiStack origin = cir.getReturnValue();
             EmiStack stack = new ItemEmiStack(this.slashBlade_Resharped$origionalStack);
-            stack.setChance(origin.getChance());
-            stack.setRemainder(origin.getRemainder().copy());
-            ((EmiStackAccessor) stack).setComparison(((EmiStackAccessor) origin).getComparison());
+            stack.setChance(origin.getChance())
+                    .setRemainder(origin.getRemainder().copy())
+                    .comparison(SLASHBLADE_COMPARISON);
 
             cir.setReturnValue(stack);
         }
