@@ -20,7 +20,7 @@ public class PatchouliMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        return LoadingModList.get().getModFileById("emi") != null;
+    	return LoadingModList.get().getModFileById("patchouli") != null;
     }
 
     @Override
