@@ -1,7 +1,6 @@
 package mods.flammpfeil.slashblade.compat.emi;
 
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
@@ -105,4 +104,8 @@ public class SlashBladeSmithingEmiRecipe extends EMISimpleRecipe {
         // 输出槽位
         widgets.addSlot(outputs.get(0), 94, 0).recipeContext(this);
     }
+
+	public SlashBladeSmithingRecipe getRecipe() {
+		return recipe;
+	}
 }

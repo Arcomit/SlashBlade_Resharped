@@ -11,7 +11,7 @@ import com.mojang.serialization.Codec;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
 
 public enum SwordType {
-    NONE, EDGEFRAGMENT, BROKEN, ENCHANTED, BEWITCHED, FIERCEREDGE, NOSCABBARD, SEALED, UNBREAKABLE, ;
+    NONE, EDGEFRAGMENT, BROKEN, ENCHANTED, BEWITCHED, FIERCEREDGE, NOSCABBARD, SEALED, UNBREAKABLE, SOULEATER;
 
     public static final Codec<SwordType> CODEC = Codec.STRING.xmap(string -> SwordType.valueOf(string.toUpperCase()),
             instance -> instance.name().toLowerCase());
@@ -26,7 +26,7 @@ public enum SwordType {
                 if (s.isBroken() || getElement(itemStackIn).getBoolean("isBroken"))
                     types.add(BROKEN);
 
-                if (s.isSealed() || getElement(itemStackIn).getBoolean("isSealed"))
+                if (s.isSealed() || getElement(itemStackIn).getBoolean("isSealed")) 
                     types.add(SEALED);
 
                 if (!s.isSealed() && itemStackIn.isEnchanted()
@@ -35,6 +35,9 @@ public enum SwordType {
 
                 if (s.getKillCount() >= 1000)
                     types.add(FIERCEREDGE);
+                
+                if (s.getProudSoulCount() >= 10000)
+                    types.add(SOULEATER);
 
             });
         } else {
