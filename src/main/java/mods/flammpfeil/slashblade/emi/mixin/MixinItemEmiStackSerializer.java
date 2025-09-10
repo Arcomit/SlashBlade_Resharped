@@ -1,9 +1,8 @@
-package mods.flammpfeil.slashblade.mixin;
+package mods.flammpfeil.slashblade.emi.mixin;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import dev.emi.emi.EmiPort;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
@@ -20,31 +19,10 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import java.util.regex.Matcher;
 
 @Mixin(value = ItemEmiStackSerializer.class, remap = false)
 public class MixinItemEmiStackSerializer implements EmiStackSerializer<ItemEmiStack> {
-
-//    @Inject(method = "serialize(Ldev/emi/emi/api/stack/EmiStack;)Lcom/google/gson/JsonElement;", at = @At("TAIL"), cancellable = true)
-//    public void serialize(EmiStack stack, CallbackInfoReturnable<JsonElement> cir) {
-//        if (stack instanceof ItemEmiStack itemEmiStack) {
-//            if (itemEmiStack.getItemStack().getItem() instanceof ItemSlashBlade) {
-//                JsonElement json = cir.getReturnValue();
-//                if (json instanceof JsonObject jsonObject) {
-//                    var optional = stack.getItemStack().getCapability(ItemSlashBlade.BLADESTATE);
-//                    if (optional.isPresent()) {
-//                        jsonObject.addProperty("sbCaps", optional.orElseThrow(NullPointerException::new).serializeNBT().getAsString());
-//
-//                    }
-//                }
-//            }
-//        }
-//
-//    }
 
     @Override
     public JsonElement serialize(ItemEmiStack stack) {
@@ -93,31 +71,6 @@ public class MixinItemEmiStackSerializer implements EmiStackSerializer<ItemEmiSt
             return json;
         }
     }
-
-//    @Inject(method = "deserialize(Lcom/google/gson/JsonElement;)Ldev/emi/emi/api/stack/EmiIngredient;", at = @At("TAIL"), cancellable = true)
-//    public void deserialize(JsonElement element, CallbackInfoReturnable<EmiIngredient> cir) throws CommandSyntaxException {
-//        EmiIngredient emiIngredient = cir.getReturnValue();
-//        if (emiIngredient instanceof EmiStack emiStack) {
-//            ItemStack origin = emiStack.getItemStack();
-//            JsonObject json = element.getAsJsonObject();
-//            ItemStack stack = new ItemStack(
-//                    emiStack.getItemStack().getItem(),
-//                    (int) emiStack.getAmount(),
-//                    TagParser.parseTag(GsonHelper.getAsString(json, "sbCaps"))
-//            );
-//            if (origin.hasTag()) {
-//                CompoundTag originTag = origin.getTag();
-//                CompoundTag newTag = stack.getOrCreateTag();
-//
-//                for (String key : originTag.getAllKeys()) {
-//                    newTag.put(key, originTag.get(key).copy());
-//                }
-//            }
-//
-//            cir.setReturnValue(new ItemEmiStack(stack));
-//        }
-//
-//    }
 
     @Override
     public EmiIngredient deserialize(JsonElement element) {
