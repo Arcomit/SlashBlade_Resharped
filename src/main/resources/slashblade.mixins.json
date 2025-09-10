@@ -5,8 +5,8 @@
   "minVersion": "0.8",
   "refmap": "slashblade.refmap.json",
   "mixins": [
-    "MixinBlockBehaviour",
     "EmiStackAccessor",
+    "MixinBlockBehaviour",
     "MixinItemEmiStack",
     "MixinItemEmiStackSerializer"
   ],
