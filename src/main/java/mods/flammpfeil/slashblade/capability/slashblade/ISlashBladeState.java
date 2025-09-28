@@ -383,11 +383,13 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag> {
 	}
 
 	default void updateComboSeq(LivingEntity entity, ResourceLocation loc) {
-		MinecraftForge.EVENT_BUS.post(new BladeMotionEvent(entity, loc));
-		this.setComboSeq(loc);
+		BladeMotionEvent event = new BladeMotionEvent(entity, loc);
+		MinecraftForge.EVENT_BUS.post(event);
+		if (event.isCanceled()) return;
+		this.setComboSeq(event.getCombo());
 		this.setLastActionTime(entity.level().getGameTime());
-		ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(loc);
-		cs.clickAction(entity);
+		ComboState cs = ComboStateRegistry.REGISTRY.get().getValue(event.getCombo());
+		cs.clickAction(event.getEntity());
 	}
 
 	default ResourceLocation resolvCurrentComboState(LivingEntity user) {
