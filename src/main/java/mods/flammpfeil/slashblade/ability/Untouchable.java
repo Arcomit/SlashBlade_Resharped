@@ -53,37 +53,40 @@ public class Untouchable {
         StunManager.setStun((LivingEntity) entity);
     }
 
+    public boolean doUntouchable(LivingEntity self, Entity other) {
+        if (checkUntouchable(self)) {
+            doWitchTime(other);
+            return true;
+        }
+        return false;
+    }
+
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
-        if (checkUntouchable(event.getEntity())) {
+        if (doUntouchable(event.getEntity(), event.getSource().getEntity())) {
             event.setCanceled(true);
-            doWitchTime(event.getSource().getEntity());
         }
     }
 
     @SubscribeEvent
     public void onLivingDamage(LivingDamageEvent event) {
-        if (checkUntouchable(event.getEntity())) {
+        if (doUntouchable(event.getEntity(), event.getSource().getEntity())) {
             event.setCanceled(true);
-            doWitchTime(event.getSource().getEntity());
         }
     }
 
     @SubscribeEvent
     public void onLivingAttack(LivingAttackEvent event) {
-        if (checkUntouchable(event.getEntity())) {
+        if (doUntouchable(event.getEntity(), event.getSource().getEntity())) {
             event.setCanceled(true);
-            doWitchTime(event.getSource().getEntity());
         }
     }
 
     @SubscribeEvent
     public void onLivingDeath(LivingDeathEvent event) {
-        if (checkUntouchable(event.getEntity())) {
+        LivingEntity entity = event.getEntity();
+        if (doUntouchable(entity, event.getSource().getEntity())) {
             event.setCanceled(true);
-            doWitchTime(event.getSource().getEntity());
-
-            LivingEntity entity = event.getEntity();
 
             entity.getCapability(CapabilityMobEffect.MOB_EFFECT).ifPresent(ef -> {
                 if (ef.hasUntouchableWorked()) {
