@@ -8,7 +8,8 @@ import net.minecraftforge.eventbus.api.Event;
 @Cancelable
 public class BladeMotionEvent extends Event {
     private final LivingEntity entity;
-    private final ResourceLocation combo;
+
+    private ResourceLocation combo;
 
     public BladeMotionEvent(LivingEntity entity, ResourceLocation combo) {
         this.entity = entity;
@@ -22,4 +23,9 @@ public class BladeMotionEvent extends Event {
     public ResourceLocation getCombo() {
         return this.combo;
     }
+
+    public void setCombo(ResourceLocation combo) {
+        this.combo = combo;
+    }
+
 }
