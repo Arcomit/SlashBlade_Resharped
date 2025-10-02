@@ -39,9 +39,9 @@ import java.util.Set;
 public class SlayerStyleArts {
 
     private static final class SingletonHolder {
+
         private static final SlayerStyleArts INSTANCE = new SlayerStyleArts();
     }
-
     public static SlayerStyleArts getInstance() {
         return SlayerStyleArts.SingletonHolder.INSTANCE;
     }
@@ -52,6 +52,7 @@ public class SlayerStyleArts {
     public void register() {
         MinecraftForge.EVENT_BUS.register(this);
     }
+
 
     final static EnumSet<InputCommand> FORWARD_SPRINT_SNEAK_COMMAND = EnumSet.of(
             InputCommand.FORWARD,
@@ -69,6 +70,8 @@ public class SlayerStyleArts {
             InputCommand.LEFT,
             InputCommand.RIGHT
     );
+
+    public static final Vec3 BACK_MOTION = new Vec3(0, -5, 0);
 
     static public final ResourceLocation ADVANCEMENT_AIR_TRICK = SlashBlade.prefix("abilities/air_trick");
     static public final ResourceLocation ADVANCEMENT_TRICK_DOWN = SlashBlade.prefix("abilities/trick_down");
@@ -122,7 +125,7 @@ public class SlayerStyleArts {
         if (!isHandled && sender.onGround() &&
                 current.contains(InputCommand.SPRINT)
                 && current.stream().anyMatch(MOVE_COMMAND::contains)) {
-            handleSprintMove(sender, current);
+            isHandled = handleSprintMove(sender, current);
 
         }
     }
@@ -146,11 +149,10 @@ public class SlayerStyleArts {
 
     public boolean handleBackSprintSneak(ServerPlayer sender) {
         Vec3 oldPos = sender.position();
-        Vec3 motion = new Vec3(0, -5, 0);
 
-        sender.move(MoverType.SELF, motion);
+        sender.move(MoverType.SELF, BACK_MOTION);
         if (sender.onGround()) {
-            applyFullTrickEffects(sender, motion, AVOID_COUNTER_PATH, ADVANCEMENT_TRICK_DOWN, 0.75f);
+            applyFullTrickEffects(sender, BACK_MOTION, AVOID_COUNTER_PATH, ADVANCEMENT_TRICK_DOWN, 0.75f);
 
             return true;
         } else {
