@@ -53,12 +53,22 @@ public class SlayerStyleArts {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
-    final static EnumSet<InputCommand> FORWARD_SPRINT_SNEAK_COMMAND = EnumSet.of(InputCommand.FORWARD, InputCommand.SPRINT,
-            InputCommand.SNEAK);
-    final static EnumSet<InputCommand> BACK_SPRINT_SNEAK_COMMAND = EnumSet.of(InputCommand.BACK, InputCommand.SPRINT,
-            InputCommand.SNEAK);
-    final static EnumSet<InputCommand> MOVE_COMMAND = EnumSet.of(InputCommand.FORWARD, InputCommand.BACK, InputCommand.LEFT,
-            InputCommand.RIGHT);
+    final static EnumSet<InputCommand> FORWARD_SPRINT_SNEAK_COMMAND = EnumSet.of(
+            InputCommand.FORWARD,
+            InputCommand.SPRINT,
+            InputCommand.SNEAK
+    );
+    final static EnumSet<InputCommand> BACK_SPRINT_SNEAK_COMMAND = EnumSet.of(
+            InputCommand.BACK,
+            InputCommand.SPRINT,
+            InputCommand.SNEAK
+    );
+    final static EnumSet<InputCommand> MOVE_COMMAND = EnumSet.of(
+            InputCommand.FORWARD,
+            InputCommand.BACK,
+            InputCommand.LEFT,
+            InputCommand.RIGHT
+    );
 
     static public final ResourceLocation ADVANCEMENT_AIR_TRICK = SlashBlade.prefix("abilities/air_trick");
     static public final ResourceLocation ADVANCEMENT_TRICK_DOWN = SlashBlade.prefix("abilities/trick_down");
@@ -74,8 +84,7 @@ public class SlayerStyleArts {
     public static final String STORE_STEPUP_PATH = "sb.store.stepup";
     public static final String TMP_STEPUP_PATH = "sb.tmp.stepup";
 
-
-    final static int TRICK_ACTION_UNTOUCHABLE_TIME = 10;
+    public final static int TRICK_ACTION_UNTOUCHABLE_TIME = 10;
 
     @SubscribeEvent
     public void onInputChange(InputCommandEvent event) {
@@ -216,7 +225,7 @@ public class SlayerStyleArts {
     }
 
     public void applyFullTrickEffects(ServerPlayer sender, Vec3 motion, String counterPath,
-                                       ResourceLocation advancement, float motionScale) {
+                                      ResourceLocation advancement, float motionScale) {
         applyBasicTrickEffects(sender);
         sender.connection.send(new ClientboundSetEntityMotionPacket(sender.getId(), motion.scale(motionScale)));
         sender.getPersistentData().putInt(counterPath, 2);
@@ -358,7 +367,7 @@ public class SlayerStyleArts {
     }
 
     public static void handleServerPlayerTeleportation(ServerPlayer serverPlayer, ServerLevel serverLevel,
-                                                        double x, double y, double z, float yaw, float pitch) {
+                                                       double x, double y, double z, float yaw, float pitch) {
         Set<RelativeMovement> relativeList = Collections.emptySet();
         BlockPos blockPos = new BlockPos((int) x, (int) y, (int) z);
         ChunkPos chunkPos = new ChunkPos(blockPos);
@@ -383,7 +392,7 @@ public class SlayerStyleArts {
     }
 
     public static void handleEntityTeleportation(Entity entityIn, ServerLevel serverLevel,
-                                                  double x, double y, double z, float yaw, float pitch) {
+                                                 double x, double y, double z, float yaw, float pitch) {
         float wrappedYaw = Mth.wrapDegrees(yaw);
         float clampedPitch = Mth.clamp(Mth.wrapDegrees(pitch), -90.0F, 90.0F);
 
@@ -396,7 +405,7 @@ public class SlayerStyleArts {
     }
 
     public static void handleCrossDimensionTeleport(Entity entityIn, ServerLevel serverLevel,
-                                                     double x, double y, double z, float yaw, float pitch) {
+                                                    double x, double y, double z, float yaw, float pitch) {
         entityIn.unRide();
         Entity newEntity = entityIn.getType().create(serverLevel);
 
