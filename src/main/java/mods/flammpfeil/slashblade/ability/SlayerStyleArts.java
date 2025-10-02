@@ -95,7 +95,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private void processInputCommands(ServerPlayer sender, Level worldIn, EnumSet<InputCommand> current) {
+    public void processInputCommands(ServerPlayer sender, Level worldIn, EnumSet<InputCommand> current) {
         boolean isHandled = false;
 
         if (current.containsAll(FORWARD_SPRINT_SNEAK_COMMAND)) {
@@ -117,7 +117,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private boolean handleForwardSprintSneak(ServerPlayer sender, Level worldIn) {
+    public boolean handleForwardSprintSneak(ServerPlayer sender, Level worldIn) {
         return sender.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).map(state -> {
             Entity tmpTarget = state.getTargetEntity(worldIn);
             Entity target = (tmpTarget != null && tmpTarget.getParts() != null && tmpTarget.getParts().length > 0)
@@ -134,7 +134,7 @@ public class SlayerStyleArts {
         }).orElse(false);
     }
 
-    private boolean handleBackSprintSneak(ServerPlayer sender) {
+    public boolean handleBackSprintSneak(ServerPlayer sender) {
         Vec3 oldPos = sender.position();
         Vec3 motion = new Vec3(0, -5, 0);
 
@@ -150,7 +150,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private boolean handleSprintMove(ServerPlayer sender, EnumSet<InputCommand> current) {
+    public boolean handleSprintMove(ServerPlayer sender, EnumSet<InputCommand> current) {
         ServerLevel level = sender.serverLevel();
         int count = sender.getCapability(CapabilityMobEffect.MOB_EFFECT)
                 .map(effect -> effect.doAvoid(level.getGameTime()))
@@ -178,7 +178,7 @@ public class SlayerStyleArts {
         return true;
     }
 
-    private static @NotNull Vec3 getInput(EnumSet<InputCommand> current) {
+    public static @NotNull Vec3 getInput(EnumSet<InputCommand> current) {
         float moveForward = current.contains(InputCommand.FORWARD) ^ current.contains(InputCommand.BACK)
                 ?
                 (current.contains(InputCommand.FORWARD) ?
@@ -196,26 +196,26 @@ public class SlayerStyleArts {
         return new Vec3(moveStrafe, 0, moveForward);
     }
 
-    private void applyBasicTrickEffects(ServerPlayer sender) {
+    public void applyBasicTrickEffects(ServerPlayer sender) {
         Untouchable.setUntouchable(sender, TRICK_ACTION_UNTOUCHABLE_TIME);
         sender.isChangingDimension = true;
 
     }
 
-    private void applyTrickMotionAndData(ServerPlayer sender, Vec3 motion, String counterPath, Vec3 position) {
+    public void applyTrickMotionAndData(ServerPlayer sender, Vec3 motion, String counterPath, Vec3 position) {
         sender.connection.send(new ClientboundSetEntityMotionPacket(sender.getId(), motion.scale(0.75f)));
         sender.getPersistentData().putInt(counterPath, 2);
         NBTHelper.putVector3d(sender.getPersistentData(), AVOID_VEC_PATH, position);
 
     }
 
-    private void applyTrickSoundAndAdvancement(ServerPlayer sender, ResourceLocation advancement) {
+    public void applyTrickSoundAndAdvancement(ServerPlayer sender, ResourceLocation advancement) {
         AdvancementHelper.grantCriterion(sender, advancement);
         sender.playNotifySound(SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.5f, 1.2f);
 
     }
 
-    private void applyFullTrickEffects(ServerPlayer sender, Vec3 motion, String counterPath,
+    public void applyFullTrickEffects(ServerPlayer sender, Vec3 motion, String counterPath,
                                        ResourceLocation advancement, float motionScale) {
         applyBasicTrickEffects(sender);
         sender.connection.send(new ClientboundSetEntityMotionPacket(sender.getId(), motion.scale(motionScale)));
@@ -225,7 +225,7 @@ public class SlayerStyleArts {
 
     }
 
-    private boolean executeTrickUp(ServerPlayer sender) {
+    public boolean executeTrickUp(ServerPlayer sender) {
         Vec3 motion = new Vec3(0, +0.8, 0);
         sender.move(MoverType.SELF, motion);
 
@@ -236,7 +236,7 @@ public class SlayerStyleArts {
         return true;
     }
 
-    private boolean executeAirTrick(ServerPlayer sender, Level worldIn, Entity target, ISlashBladeState state) {
+    public boolean executeAirTrick(ServerPlayer sender, Level worldIn, Entity target, ISlashBladeState state) {
         if (target == sender.getLastHurtMob() && sender.tickCount < sender.getLastHurtMobTimestamp() + 100) {
             LivingEntity hitEntity = sender.getLastHurtMob();
             if (hitEntity != null) {
@@ -250,7 +250,7 @@ public class SlayerStyleArts {
         return true;
     }
 
-    private void createSummonedSwordForAirTrick(ServerPlayer sender, Level worldIn, Entity target, ISlashBladeState state) {
+    public void createSummonedSwordForAirTrick(ServerPlayer sender, Level worldIn, Entity target, ISlashBladeState state) {
         EntityAbstractSummonedSword ss = new EntityAbstractSummonedSword(
                 SlashBlade.RegistryEvents.SummonedSword, worldIn) {
 
@@ -296,7 +296,7 @@ public class SlayerStyleArts {
 
     }
 
-    private static void doTeleport(Entity entityIn, LivingEntity target) {
+    public static void doTeleport(Entity entityIn, LivingEntity target) {
         entityIn.getPersistentData().putInt(AIRTRICK_COUNTER_PATH, 3);
         entityIn.getPersistentData().putInt(AIRTRICK_TARGET_PATH, target.getId());
 
@@ -308,7 +308,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private static void executeTeleport(Entity entityIn, LivingEntity target) {
+    public static void executeTeleport(Entity entityIn, LivingEntity target) {
         if (!(entityIn.level() instanceof ServerLevel serverLevel)) return;
 
         prepareTeleportEffects(entityIn);
@@ -323,7 +323,7 @@ public class SlayerStyleArts {
 
     }
 
-    private static void prepareTeleportEffects(Entity entityIn) {
+    public static void prepareTeleportEffects(Entity entityIn) {
         if (entityIn instanceof ServerPlayer serverPlayer) {
             serverPlayer.playNotifySound(SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 0.75F, 1.25F);
             serverPlayer.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
@@ -332,18 +332,18 @@ public class SlayerStyleArts {
         }
     }
 
-    private static Vec3 calculateTeleportPosition(Entity entityIn, LivingEntity target) {
+    public static Vec3 calculateTeleportPosition(Entity entityIn, LivingEntity target) {
         return target.position()
                 .add(0, target.getBbHeight() / 2.0, 0)
                 .add(entityIn.getLookAngle().scale(-2.0));
     }
 
-    private static boolean isValidTeleportPosition(Vec3 teleportPos) {
+    public static boolean isValidTeleportPosition(Vec3 teleportPos) {
         BlockPos blockPos = new BlockPos((int) teleportPos.x, (int) teleportPos.y, (int) teleportPos.z);
         return Level.isInSpawnableBounds(blockPos);
     }
 
-    private static void performTeleportation(Entity entityIn, ServerLevel serverLevel, Vec3 teleportPos) {
+    public static void performTeleportation(Entity entityIn, ServerLevel serverLevel, Vec3 teleportPos) {
         double x = teleportPos.x;
         double y = teleportPos.y;
         double z = teleportPos.z;
@@ -357,7 +357,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private static void handleServerPlayerTeleportation(ServerPlayer serverPlayer, ServerLevel serverLevel,
+    public static void handleServerPlayerTeleportation(ServerPlayer serverPlayer, ServerLevel serverLevel,
                                                         double x, double y, double z, float yaw, float pitch) {
         Set<RelativeMovement> relativeList = Collections.emptySet();
         BlockPos blockPos = new BlockPos((int) x, (int) y, (int) z);
@@ -382,7 +382,7 @@ public class SlayerStyleArts {
 
     }
 
-    private static void handleEntityTeleportation(Entity entityIn, ServerLevel serverLevel,
+    public static void handleEntityTeleportation(Entity entityIn, ServerLevel serverLevel,
                                                   double x, double y, double z, float yaw, float pitch) {
         float wrappedYaw = Mth.wrapDegrees(yaw);
         float clampedPitch = Mth.clamp(Mth.wrapDegrees(pitch), -90.0F, 90.0F);
@@ -395,7 +395,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private static void handleCrossDimensionTeleport(Entity entityIn, ServerLevel serverLevel,
+    public static void handleCrossDimensionTeleport(Entity entityIn, ServerLevel serverLevel,
                                                      double x, double y, double z, float yaw, float pitch) {
         entityIn.unRide();
         Entity newEntity = entityIn.getType().create(serverLevel);
@@ -407,7 +407,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private static void applyPostTeleportEffects(Entity entityIn) {
+    public static void applyPostTeleportEffects(Entity entityIn) {
         if (!(entityIn instanceof LivingEntity) || !((LivingEntity) entityIn).isFallFlying()) {
             entityIn.setDeltaMovement(entityIn.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D));
             entityIn.setOnGround(false);
@@ -481,7 +481,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private void handleTickStart(TickEvent.PlayerTickEvent event) {
+    public void handleTickStart(TickEvent.PlayerTickEvent event) {
         handleStepUpBoost(event.player);
         handleTrickUpCooldown(event.player);
         handleAvoidCounter(event.player);
@@ -489,7 +489,7 @@ public class SlayerStyleArts {
 
     }
 
-    private void handleStepUpBoost(Player player) {
+    public void handleStepUpBoost(Player player) {
         float stepUp = player.maxUpStep();
         boolean doStepupBoost = shouldApplyStepUpBoost(player);
 
@@ -501,7 +501,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private boolean shouldApplyStepUpBoost(Player player) {
+    public boolean shouldApplyStepUpBoost(Player player) {
         Vec3 deltaMovement = calculatePlayerMovement(player);
 
         if (deltaMovement.equals(Vec3.ZERO)) {
@@ -515,7 +515,7 @@ public class SlayerStyleArts {
         return !blockState.liquid();
     }
 
-    private Vec3 calculatePlayerMovement(Player player) {
+    public Vec3 calculatePlayerMovement(Player player) {
         Vec3 input = new Vec3(player.xxa, player.yya, player.zza);
         double scale = 1.0;
         float yRot = player.getYRot();
@@ -532,7 +532,7 @@ public class SlayerStyleArts {
         return new Vec3(vec3.x * f1 - vec3.z * f, vec3.y, vec3.z * f1 + vec3.x * f);
     }
 
-    private void handleTrickUpCooldown(Player player) {
+    public void handleTrickUpCooldown(Player player) {
         if (!player.onGround() || !player.getPersistentData().contains(AVOID_TRICKUP_PATH)) {
             return;
         }
@@ -547,7 +547,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private void handleAvoidCounter(Player player) {
+    public void handleAvoidCounter(Player player) {
         if (!player.getPersistentData().contains(AVOID_COUNTER_PATH)) {
             return;
         }
@@ -565,7 +565,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private void restoreAvoidPosition(Player player) {
+    public void restoreAvoidPosition(Player player) {
         if (player.getPersistentData().contains(AVOID_VEC_PATH)) {
             Vec3 pos = NBTHelper.getVector3d(player.getPersistentData(), AVOID_VEC_PATH);
             player.moveTo(pos);
@@ -573,13 +573,13 @@ public class SlayerStyleArts {
         }
     }
 
-    private void clearAvoidData(Player player) {
+    public void clearAvoidData(Player player) {
         player.getPersistentData().remove(AVOID_COUNTER_PATH);
         player.getPersistentData().remove(AVOID_VEC_PATH);
 
     }
 
-    private void handleAirTrickCounter(Player player) {
+    public void handleAirTrickCounter(Player player) {
         if (!player.getPersistentData().contains(AIRTRICK_COUNTER_PATH)) {
             return;
         }
@@ -597,7 +597,7 @@ public class SlayerStyleArts {
         }
     }
 
-    private void executeAirTrickTeleport(Player player) {
+    public void executeAirTrickTeleport(Player player) {
         if (!player.getPersistentData().contains(AIRTRICK_TARGET_PATH)) {
             return;
         }
@@ -611,20 +611,20 @@ public class SlayerStyleArts {
         }
     }
 
-    private void clearAirTrickData(Player player) {
+    public void clearAirTrickData(Player player) {
         player.getPersistentData().remove(AIRTRICK_COUNTER_PATH);
         player.getPersistentData().remove(AIRTRICK_TARGET_PATH);
 
     }
 
-    private void triggerDimensionChange(Player player) {
+    public void triggerDimensionChange(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
             serverPlayer.hasChangedDimension();
 
         }
     }
 
-    private void handleTickEnd(TickEvent.PlayerTickEvent event) {
+    public void handleTickEnd(TickEvent.PlayerTickEvent event) {
         float stepUp = event.player.getPersistentData().getFloat(TMP_STEPUP_PATH);
         stepUp = Math.max(stepUp, stepUpDefault);
 
