@@ -78,11 +78,12 @@ public class SlayerStyleArts {
     public static final String AVOID_TRICKUP_PATH = "sb.avoid.trickup";
     public static final String AVOID_COUNTER_PATH = "sb.avoid.counter";
     public static final String AVOID_VEC_PATH = "sb.avoid.vec";
-    public static final String DO_FORCE_HIT_PATH = "doForceHit";
     public static final String AIRTRICK_COUNTER_PATH = "sb.airtrick.counter";
     public static final String AIRTRICK_TARGET_PATH = "sb.airtrick.target";
+
     public static final String STORE_STEPUP_PATH = "sb.store.stepup";
     public static final String TMP_STEPUP_PATH = "sb.tmp.stepup";
+    public static final String DO_FORCE_HIT_PATH = "doForceHit";
 
     public final static int TRICK_ACTION_UNTOUCHABLE_TIME = 10;
 
