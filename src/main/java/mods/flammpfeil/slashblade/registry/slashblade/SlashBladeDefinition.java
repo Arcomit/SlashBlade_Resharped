@@ -26,8 +26,8 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class SlashBladeDefinition {
-
-	public static final Codec<SlashBladeDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	
+    public static final Codec<SlashBladeDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			ResourceLocation.CODEC.optionalFieldOf("item", SlashBlade.prefix("slashblade"))
 					.forGetter(SlashBladeDefinition::getItemName),
 			ResourceLocation.CODEC.fieldOf("name").forGetter(SlashBladeDefinition::getName),

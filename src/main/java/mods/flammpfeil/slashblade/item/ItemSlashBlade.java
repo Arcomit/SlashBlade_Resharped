@@ -100,6 +100,12 @@ public class ItemSlashBlade extends SwordItem {
 	}
 
 	@Override
+	public @org.jetbrains.annotations.Nullable String getCreatorModId(ItemStack itemStack) {
+		// TODO Auto-generated method stub
+		return super.getCreatorModId(itemStack);
+	}
+	
+	@Override
 	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
 		Multimap<Attribute, AttributeModifier> def = super.getAttributeModifiers(slot, stack);
 		Multimap<Attribute, AttributeModifier> result = ArrayListMultimap.create();
@@ -608,7 +614,7 @@ public class ItemSlashBlade extends SwordItem {
 		if (proudsoul > 0) {
 			MutableComponent countComponent = Component.translatable("slashblade.tooltip.proud_soul", proudsoul)
 					.withStyle(ChatFormatting.GRAY);
-			if (proudsoul > 1000)
+			if (proudsoul > 10000)
 				countComponent = countComponent.withStyle(ChatFormatting.DARK_PURPLE);
 			tooltip.add(countComponent);
 		}
