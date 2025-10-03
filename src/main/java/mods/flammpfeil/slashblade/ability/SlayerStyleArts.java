@@ -483,7 +483,6 @@ public class SlayerStyleArts {
     static final float stepUpBoost = 1.1f;
     static final float stepUpDefault = 0.6f;
 
-    @SuppressWarnings("deprecation")
     @SubscribeEvent
     public void onTick(TickEvent.PlayerTickEvent event) {
         switch (event.phase) {
@@ -513,7 +512,8 @@ public class SlayerStyleArts {
         }
     }
 
-    public boolean shouldApplyStepUpBoost(Player player) {
+    
+	public boolean shouldApplyStepUpBoost(Player player) {
         Vec3 deltaMovement = calculatePlayerMovement(player);
 
         if (deltaMovement.equals(Vec3.ZERO)) {
@@ -523,8 +523,9 @@ public class SlayerStyleArts {
         Vec3 offset = deltaMovement.normalize().scale(0.5f).add(0, 0.25, 0);
         BlockPos offsetPos = new BlockPos(VectorHelper.f2i(player.position().add(offset))).below();
         BlockState blockState = player.level().getBlockState(offsetPos);
-
-        return !blockState.liquid();
+        @SuppressWarnings("deprecation")
+        var liquid = !blockState.liquid();
+        return liquid;
     }
 
     public Vec3 calculatePlayerMovement(Player player) {

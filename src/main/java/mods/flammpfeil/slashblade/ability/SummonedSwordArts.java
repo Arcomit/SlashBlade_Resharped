@@ -99,76 +99,7 @@ public class SummonedSwordArts {
 
                     @Override
                     public void handle(LivingEntity rawEntity, TimerQueue<LivingEntity> queue, long now) {
-                        if (!(rawEntity instanceof ServerPlayer))
-                            return;
-                        ServerPlayer entity = (ServerPlayer) rawEntity;
-
-                        InputCommand targetCommnad = InputCommand.M_DOWN;
-                        boolean inputSucceed = entity.getCapability(CapabilityInputState.INPUT_STATE)
-                                .filter(input -> input.getCommands().contains(targetCommnad)
-                                        && (!InputCommand.anyMatch(input.getCommands(), InputCommand.move)
-                                                || !input.getCommands().contains(InputCommand.SNEAK))
-                                        && input.getLastPressTime(targetCommnad) == pressTime)
-                                .isPresent();
-                        
-                        if (!inputSucceed)
-                            return;
-
-                        // spiralSwords
-                        boolean alreadySummoned = entity.getPassengers().stream()
-                                .anyMatch(e -> e instanceof EntitySpiralSwords);
-
-                        if (alreadySummoned) {
-                            // fire
-                            List<Entity> list = entity.getPassengers().stream()
-                                    .filter(e -> e instanceof EntitySpiralSwords).toList();
-
-                            list.stream().forEach(e -> {
-                                ((EntitySpiralSwords) e).doFire();
-                            });
-                        } else {
-                            // summon
-                            entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
-
-                                if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
-                                    return;
-                                state.setProudSoulCount(
-                                        state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
-
-                                //圆环幻影剑
-                                AdvancementHelper.grantCriterion(entity, ADVANCEMENT_SPIRAL_SWORDS);
-
-                                Level worldIn = entity.level();
-
-                                int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
-                                        .map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
-
-                                int count = 6;
-
-                                if (IConcentrationRank.ConcentrationRanks.S.level <= rank) {
-                                    count = 8;
-                                }
-
-                                for (int i = 0; i < count; i++) {
-                                    EntitySpiralSwords ss = new EntitySpiralSwords(
-                                            SlashBlade.RegistryEvents.SpiralSwords, worldIn);
-                                    ss.setPos(entity.position());
-                                    ss.setOwner(entity);
-                                    ss.setColor(state.getColorCode());
-                                    ss.setRoll(0);
-                                    ss.setDamage(powerLevel);
-                                    // force riding
-                                    ss.startRiding(entity, true);
-
-                                    ss.setDelay(360 / count * i);
-
-                                    worldIn.addFreshEntity(ss);
-
-                                    entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
-                                            1.45F);
-                                }
-                            });
-                        }
+                        performSpiralSwords(powerLevel, pressTime, rawEntity);
                     }
                 });
 
@@ -177,62 +108,7 @@ public class SummonedSwordArts {
 
                     @Override
                     public void handle(LivingEntity rawEntity, TimerQueue<LivingEntity> queue, long now) {
-                        if (!(rawEntity instanceof ServerPlayer))
-                            return;
-                        ServerPlayer entity = (ServerPlayer) rawEntity;
-
-                        InputCommand targetCommnad = InputCommand.M_DOWN;
-                        boolean inputSucceed = entity.getCapability(CapabilityInputState.INPUT_STATE)
-                                .filter(input -> input.getCommands().contains(targetCommnad)
-                                        && input.getCommands().contains(InputCommand.SNEAK)
-                                        && input.getCommands().contains(InputCommand.BACK)
-                                        && !input.getCommands().contains(InputCommand.FORWARD)
-                                        && input.getLastPressTime(targetCommnad) == pressTime)
-                                .isPresent();
-                        if (!inputSucceed)
-                            return;
-
-                        // summon
-                        entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
-
-                            Level worldIn = entity.level();
-                            Entity target = state.getTargetEntity(worldIn);
-
-                            if (target == null || !target.isAlive() || target.isRemoved()) return;
-                            if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
-                                return;
-                            state.setProudSoulCount(
-                                    state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
-                            //烈风环影剑
-                            AdvancementHelper.grantCriterion(entity, ADVANCEMENT_STORM_SWORDS);
-
-                            int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
-                                    .map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
-
-                            int count = 6;
-
-                            if (IConcentrationRank.ConcentrationRanks.S.level <= rank) {
-                                count = 8;
-                            }
-
-                            for (int i = 0; i < count; i++) {
-                                EntityStormSwords ss = new EntityStormSwords(SlashBlade.RegistryEvents.StormSwords,
-                                        worldIn);
-
-                                ss.setPos(entity.position());
-                                ss.setOwner(entity);
-                                ss.setColor(state.getColorCode());
-                                ss.setRoll(0);
-                                ss.setDamage(powerLevel);
-                                // force riding
-                                ss.startRiding(target, true);
-                                ss.setDelay(360 / count * i);
-                                worldIn.addFreshEntity(ss);
-
-                                entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
-                                        1.45F);
-                            }
-                        });
+                        performStormSwords(powerLevel, pressTime, rawEntity);
                     }
                 });
 
@@ -241,62 +117,7 @@ public class SummonedSwordArts {
 
                     @Override
                     public void handle(LivingEntity rawEntity, TimerQueue<LivingEntity> queue, long now) {
-                        if (!(rawEntity instanceof ServerPlayer))
-                            return;
-                        ServerPlayer entity = (ServerPlayer) rawEntity;
-
-                        InputCommand targetCommnad = InputCommand.M_DOWN;
-                        boolean inputSucceed = entity.getCapability(CapabilityInputState.INPUT_STATE)
-                                .filter(input -> input.getCommands().contains(targetCommnad)
-                                        && input.getCommands().contains(InputCommand.SNEAK)
-                                        && input.getCommands().contains(InputCommand.FORWARD)
-                                        && input.getLastPressTime(InputCommand.BACK) + 20 < now
-                                        && input.getLastPressTime(targetCommnad) == pressTime)
-                                .isPresent();
-                        if (!inputSucceed)
-                            return;
-
-                        // summon
-                        entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
-
-                            Level worldIn = entity.level();
-
-                            if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
-                                return;
-                            state.setProudSoulCount(
-                                    state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
-                            //急袭幻影剑
-                            AdvancementHelper.grantCriterion(entity, ADVANCEMENT_BLISTERING_SWORDS);
-
-                            int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
-                                    .map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
-
-                            int count = 6;
-
-                            if (IConcentrationRank.ConcentrationRanks.S.level <= rank) {
-                                count = 8;
-                            }
-
-                            for (int i = 0; i < count; i++) {
-                                EntityBlisteringSwords ss = new EntityBlisteringSwords(
-                                        SlashBlade.RegistryEvents.BlisteringSwords, worldIn);
-
-                                ss.setPos(entity.position());
-                                ss.setOwner(entity);
-                                ss.setColor(state.getColorCode());
-                                ss.setRoll(0);
-                                ss.setDamage(powerLevel);
-                                // force riding
-                                ss.startRiding(entity, true);
-
-                                ss.setDelay(i);
-
-                                worldIn.addFreshEntity(ss);
-
-                                entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
-                                        1.45F);
-                            }
-                        });
+                        performBlisteringSwords(powerLevel, pressTime, rawEntity, now);
                     }
                 });
 
@@ -304,95 +125,7 @@ public class SummonedSwordArts {
 
                     @Override
                     public void handle(LivingEntity rawEntity, TimerQueue<LivingEntity> queue, long now) {
-                        if (!(rawEntity instanceof ServerPlayer))
-                            return;
-                        ServerPlayer entity = (ServerPlayer) rawEntity;
-
-                        InputCommand targetCommnad = InputCommand.M_DOWN;
-                        boolean inputSucceed = entity.getCapability(CapabilityInputState.INPUT_STATE)
-                                .filter(input -> input.getCommands().contains(targetCommnad)
-                                        && input.getCommands().contains(InputCommand.SNEAK)
-                                        && input.getCommands().contains(InputCommand.FORWARD)
-                                        && input.getLastPressTime(InputCommand.BACK) + 30 > now
-                                        && input.getLastPressTime(targetCommnad) == pressTime)
-                                .isPresent();
-                        if (!inputSucceed)
-                            return;
-
-                        // summon
-                        entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
-
-                            Level worldIn = entity.level();
-                            Entity target = state.getTargetEntity(worldIn);
-                            if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
-                                return;
-                            state.setProudSoulCount(
-                                    state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
-
-                            //五月雨
-                            AdvancementHelper.grantCriterion(entity, ADVANCEMENT_HEAVY_RAIN_SWORDS);
-
-                            int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
-                                    .map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
-
-                            Vec3 basePos;
-
-                            if (target != null) {
-                                basePos = target.position();
-                            } else {
-                                Vec3 forwardDir = calculateViewVector(0, entity.getYRot());
-                                basePos = entity.getPosition(0).add(forwardDir.scale(5));
-                            }
-
-                            float yOffset = 7;
-                            basePos = basePos.add(0, yOffset, 0);
-
-                            {// no random pos
-                                EntityHeavyRainSwords ss = new EntityHeavyRainSwords(
-                                        SlashBlade.RegistryEvents.HeavyRainSwords, worldIn);
-
-                                ss.setOwner(entity);
-                                ss.setColor(state.getColorCode());
-                                ss.setRoll(0);
-                                ss.setDamage(powerLevel);
-                                // force riding
-                                ss.startRiding(entity, true);
-
-                                ss.setDelay(0);
-
-                                ss.setPos(basePos);
-
-                                ss.setXRot(-90);
-
-                                worldIn.addFreshEntity(ss);
-                            }
-
-                            int count = 9 + Math.min(rank - 1, 0);
-                            int multiplier = 2;
-                            for (int i = 0; i < count; i++)
-                                for (int l = 0; l < multiplier; l++) {
-                                    EntityHeavyRainSwords ss = new EntityHeavyRainSwords(
-                                            SlashBlade.RegistryEvents.HeavyRainSwords, worldIn);
-
-                                    ss.setOwner(entity);
-                                    ss.setColor(state.getColorCode());
-                                    ss.setRoll(0);
-                                    ss.setDamage(powerLevel);
-                                    // force riding
-                                    ss.startRiding(entity, true);
-
-                                    ss.setDelay(i);
-
-                                    ss.setSpread(basePos);
-
-                                    ss.setXRot(-90);
-
-                                    worldIn.addFreshEntity(ss);
-
-                                    entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
-                                            1.45F);
-                                }
-                        });
+                        performHeavyRains(powerLevel, pressTime, rawEntity, now);
                     }
                 });
 
@@ -472,4 +205,287 @@ public class SummonedSwordArts {
         float f5 = Mth.sin(f);
         return new Vec3((double) (f3 * f4), (double) (-f5), (double) (f2 * f4));
     }
+
+	private void performSpiralSwords(int powerLevel, final Long pressTime, LivingEntity rawEntity) {
+		if (!(rawEntity instanceof ServerPlayer))
+		    return;
+		ServerPlayer entity = (ServerPlayer) rawEntity;
+
+		InputCommand targetCommnad = InputCommand.M_DOWN;
+		boolean inputSucceed = entity.getCapability(CapabilityInputState.INPUT_STATE)
+		        .filter(input -> input.getCommands().contains(targetCommnad)
+		                && (!InputCommand.anyMatch(input.getCommands(), InputCommand.move)
+		                        || !input.getCommands().contains(InputCommand.SNEAK))
+		                && input.getLastPressTime(targetCommnad) == pressTime)
+		        .isPresent();
+		
+		if (!inputSucceed)
+		    return;
+
+		// spiralSwords
+		boolean alreadySummoned = entity.getPassengers().stream()
+		        .anyMatch(e -> e instanceof EntitySpiralSwords);
+
+		if (alreadySummoned) {
+		    // fire
+		    List<Entity> list = entity.getPassengers().stream()
+		            .filter(e -> e instanceof EntitySpiralSwords).toList();
+
+		    list.stream().forEach(e -> {
+		        ((EntitySpiralSwords) e).doFire();
+		    });
+		} else {
+		    // summon
+		    entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
+
+		        if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
+		            return;
+		        state.setProudSoulCount(
+		                state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
+
+		        //圆环幻影剑
+		        AdvancementHelper.grantCriterion(entity, ADVANCEMENT_SPIRAL_SWORDS);
+
+		        Level worldIn = entity.level();
+
+		        int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
+		                .map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
+
+		        int count = 6;
+
+		        if (IConcentrationRank.ConcentrationRanks.S.level <= rank) {
+		            count = 8;
+		        }
+
+		        for (int i = 0; i < count; i++) {
+		            EntitySpiralSwords ss = new EntitySpiralSwords(
+		                    SlashBlade.RegistryEvents.SpiralSwords, worldIn);
+		            ss.setPos(entity.position());
+		            ss.setOwner(entity);
+		            ss.setColor(state.getColorCode());
+		            ss.setRoll(0);
+		            ss.setDamage(powerLevel);
+		            // force riding
+		            ss.startRiding(entity, true);
+
+		            ss.setDelay(360 / count * i);
+
+		            worldIn.addFreshEntity(ss);
+
+		            entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
+		                    1.45F);
+		        }
+		    });
+		}
+	}
+
+	private void performStormSwords(int powerLevel, final Long pressTime, LivingEntity rawEntity) {
+		if (!(rawEntity instanceof ServerPlayer))
+		    return;
+		ServerPlayer entity = (ServerPlayer) rawEntity;
+
+		InputCommand targetCommnad = InputCommand.M_DOWN;
+		boolean inputSucceed = entity.getCapability(CapabilityInputState.INPUT_STATE)
+		        .filter(input -> input.getCommands().contains(targetCommnad)
+		                && input.getCommands().contains(InputCommand.SNEAK)
+		                && input.getCommands().contains(InputCommand.BACK)
+		                && !input.getCommands().contains(InputCommand.FORWARD)
+		                && input.getLastPressTime(targetCommnad) == pressTime)
+		        .isPresent();
+		if (!inputSucceed)
+		    return;
+
+		// summon
+		entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
+
+		    Level worldIn = entity.level();
+		    Entity target = state.getTargetEntity(worldIn);
+
+		    if (target == null || !target.isAlive() || target.isRemoved()) return;
+		    if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
+		        return;
+		    state.setProudSoulCount(
+		            state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
+		    //烈风环影剑
+		    AdvancementHelper.grantCriterion(entity, ADVANCEMENT_STORM_SWORDS);
+
+		    int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
+		            .map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
+
+		    int count = 6;
+
+		    if (IConcentrationRank.ConcentrationRanks.S.level <= rank) {
+		        count = 8;
+		    }
+
+		    for (int i = 0; i < count; i++) {
+		        EntityStormSwords ss = new EntityStormSwords(SlashBlade.RegistryEvents.StormSwords,
+		                worldIn);
+
+		        ss.setPos(entity.position());
+		        ss.setOwner(entity);
+		        ss.setColor(state.getColorCode());
+		        ss.setRoll(0);
+		        ss.setDamage(powerLevel);
+		        // force riding
+		        ss.startRiding(target, true);
+		        ss.setDelay(360 / count * i);
+		        worldIn.addFreshEntity(ss);
+
+		        entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
+		                1.45F);
+		    }
+		});
+	}
+
+	private void performBlisteringSwords(int powerLevel, final Long pressTime, LivingEntity rawEntity, long now) {
+		if (!(rawEntity instanceof ServerPlayer))
+		    return;
+		ServerPlayer entity = (ServerPlayer) rawEntity;
+
+		InputCommand targetCommnad = InputCommand.M_DOWN;
+		boolean inputSucceed = entity.getCapability(CapabilityInputState.INPUT_STATE)
+		        .filter(input -> input.getCommands().contains(targetCommnad)
+		                && input.getCommands().contains(InputCommand.SNEAK)
+		                && input.getCommands().contains(InputCommand.FORWARD)
+		                && input.getLastPressTime(InputCommand.BACK) + 20 < now
+		                && input.getLastPressTime(targetCommnad) == pressTime)
+		        .isPresent();
+		if (!inputSucceed)
+		    return;
+
+		// summon
+		entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
+
+		    Level worldIn = entity.level();
+
+		    if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
+		        return;
+		    state.setProudSoulCount(
+		            state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
+		    //急袭幻影剑
+		    AdvancementHelper.grantCriterion(entity, ADVANCEMENT_BLISTERING_SWORDS);
+
+		    int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
+		            .map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
+
+		    int count = 6;
+
+		    if (IConcentrationRank.ConcentrationRanks.S.level <= rank) {
+		        count = 8;
+		    }
+
+		    for (int i = 0; i < count; i++) {
+		        EntityBlisteringSwords ss = new EntityBlisteringSwords(
+		                SlashBlade.RegistryEvents.BlisteringSwords, worldIn);
+
+		        ss.setPos(entity.position());
+		        ss.setOwner(entity);
+		        ss.setColor(state.getColorCode());
+		        ss.setRoll(0);
+		        ss.setDamage(powerLevel);
+		        // force riding
+		        ss.startRiding(entity, true);
+
+		        ss.setDelay(i);
+
+		        worldIn.addFreshEntity(ss);
+
+		        entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
+		                1.45F);
+		    }
+		});
+	}
+
+	private void performHeavyRains(int powerLevel, final Long pressTime, LivingEntity rawEntity, long now) {
+		if (!(rawEntity instanceof ServerPlayer))
+		    return;
+		ServerPlayer entity = (ServerPlayer) rawEntity;
+
+		InputCommand targetCommnad = InputCommand.M_DOWN;
+		boolean inputSucceed = entity.getCapability(CapabilityInputState.INPUT_STATE)
+		        .filter(input -> input.getCommands().contains(targetCommnad)
+		                && input.getCommands().contains(InputCommand.SNEAK)
+		                && input.getCommands().contains(InputCommand.FORWARD)
+		                && input.getLastPressTime(InputCommand.BACK) + 30 > now
+		                && input.getLastPressTime(targetCommnad) == pressTime)
+		        .isPresent();
+		if (!inputSucceed)
+		    return;
+
+		// summon
+		entity.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE).ifPresent((state) -> {
+
+		    Level worldIn = entity.level();
+		    Entity target = state.getTargetEntity(worldIn);
+		    if (state.getProudSoulCount() < SlashBladeConfig.SUMMON_SWORD_ART_COST.get())
+		        return;
+		    state.setProudSoulCount(
+		            state.getProudSoulCount() - SlashBladeConfig.SUMMON_SWORD_ART_COST.get());
+
+		    //五月雨
+		    AdvancementHelper.grantCriterion(entity, ADVANCEMENT_HEAVY_RAIN_SWORDS);
+
+		    int rank = entity.getCapability(CapabilityConcentrationRank.RANK_POINT)
+		            .map(r -> r.getRank(worldIn.getGameTime()).level).orElse(0);
+
+		    Vec3 basePos;
+
+		    if (target != null) {
+		        basePos = target.position();
+		    } else {
+		        Vec3 forwardDir = calculateViewVector(0, entity.getYRot());
+		        basePos = entity.getPosition(0).add(forwardDir.scale(5));
+		    }
+
+		    float yOffset = 7;
+		    basePos = basePos.add(0, yOffset, 0);
+
+		    {// no random pos
+		        EntityHeavyRainSwords ss = new EntityHeavyRainSwords(
+		                SlashBlade.RegistryEvents.HeavyRainSwords, worldIn);
+
+		        ss.setOwner(entity);
+		        ss.setColor(state.getColorCode());
+		        ss.setRoll(0);
+		        ss.setDamage(powerLevel);
+		        // force riding
+		        ss.startRiding(entity, true);
+
+		        ss.setDelay(0);
+
+		        ss.setPos(basePos);
+
+		        ss.setXRot(-90);
+
+		        worldIn.addFreshEntity(ss);
+		    }
+
+		    int count = 9 + Math.min(rank - 1, 0);
+		    int multiplier = 2;
+		    for (int i = 0; i < count; i++)
+		        for (int l = 0; l < multiplier; l++) {
+		            EntityHeavyRainSwords ss = new EntityHeavyRainSwords(
+		                    SlashBlade.RegistryEvents.HeavyRainSwords, worldIn);
+
+		            ss.setOwner(entity);
+		            ss.setColor(state.getColorCode());
+		            ss.setRoll(0);
+		            ss.setDamage(powerLevel);
+		            // force riding
+		            ss.startRiding(entity, true);
+
+		            ss.setDelay(i);
+
+		            ss.setSpread(basePos);
+
+		            ss.setXRot(-90);
+
+		            worldIn.addFreshEntity(ss);
+
+		            entity.playNotifySound(SoundEvents.CHORUS_FRUIT_TELEPORT, SoundSource.PLAYERS, 0.2F,
+		                    1.45F);
+		        }
+		});
+	}
 }

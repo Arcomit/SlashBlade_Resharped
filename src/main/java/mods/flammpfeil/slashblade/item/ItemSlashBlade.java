@@ -384,16 +384,19 @@ public class ItemSlashBlade extends SwordItem {
 					return;
 
 				ResourceLocation sa = state.doChargeAction(entityLiving, elapsed);
-
+				boolean isCreative = false;
 				// sa.tickAction(entityLiving);
 				if (!sa.equals(ComboStateRegistry.NONE.getId())) {
-
-					var cost = state.getSlashArts().getProudSoulCost();
-					if (state.getProudSoulCount() >= cost)
-						state.setProudSoulCount(state.getProudSoulCount() - cost);
-					else
-						stack.hurtAndBreak(1, entityLiving, ItemSlashBlade.getOnBroken(stack));
-
+					if(entityLiving instanceof Player player) {
+						isCreative = player.getAbilities().instabuild;
+					}
+					if(!isCreative) {
+						var cost = state.getSlashArts().getProudSoulCost();
+						if (state.getProudSoulCount() >= cost)
+							state.setProudSoulCount(state.getProudSoulCount() - cost);
+						else
+							stack.hurtAndBreak(1, entityLiving, ItemSlashBlade.getOnBroken(stack));
+					}
 					entityLiving.swing(InteractionHand.MAIN_HAND);
 				}
 			});
