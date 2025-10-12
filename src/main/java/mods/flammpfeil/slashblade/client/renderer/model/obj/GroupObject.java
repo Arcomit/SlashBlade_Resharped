@@ -1,5 +1,6 @@
 package mods.flammpfeil.slashblade.client.renderer.model.obj;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -22,10 +23,10 @@ public class GroupObject {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void render(VertexConsumer tessellator) {
+    public void render(VertexConsumer tessellator, PoseStack matrixStack, int light, int color) {
         if (faces.size() > 0) {
             for (Face face : faces) {
-                face.addFaceForRender(tessellator);
+                face.addFaceForRender(tessellator, matrixStack, light, color);
             }
         }
     }

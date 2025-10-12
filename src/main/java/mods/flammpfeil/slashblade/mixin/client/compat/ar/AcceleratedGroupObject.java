@@ -19,6 +19,7 @@ import com.github.argon4w.acceleratedrendering.core.buffers.accelerated.renderer
 import com.github.argon4w.acceleratedrendering.core.meshes.IMesh;
 import com.github.argon4w.acceleratedrendering.core.meshes.collectors.CulledMeshCollector;
 import com.github.argon4w.acceleratedrendering.features.entities.AcceleratedEntityRenderingFeature;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -26,7 +27,6 @@ import lombok.experimental.ExtensionMethod;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.Face;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.GroupObject;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.FastColor;
 
 @ExtensionMethod(VertexConsumerExtension.class)
 @Mixin(GroupObject.class)
@@ -38,7 +38,7 @@ public class AcceleratedGroupObject implements IAcceleratedRenderer<Void> {
 	@Unique private final	Map<IBufferGraph, IMesh>	meshes = new Object2ObjectOpenHashMap<>();
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true, remap = false)
-	public void renderFaces(VertexConsumer tessellator, CallbackInfo ci) {
+	public void renderFaces(VertexConsumer tessellator, PoseStack matrixStack, int light, int color, CallbackInfo ci) {
 		var extension = tessellator.getAccelerated();
 		if (AcceleratedEntityRenderingFeature.isEnabled()
 				&& AcceleratedEntityRenderingFeature.shouldUseAcceleratedPipeline()
@@ -49,16 +49,13 @@ public class AcceleratedGroupObject implements IAcceleratedRenderer<Void> {
 
 			if (faces.size() > 0) {
 				extension.doRender(this, null, 
-						Face.matrix.last().pose(), 
-						Face.matrix.last().normal(), 
-						Face.lightmap, OverlayTexture.NO_OVERLAY, 
-						FastColor.ARGB32.color(
-								Face.col.getAlpha(),
-								Face.col.getRed(),
-								Face.col.getGreen(),
-								Face.col.getBlue()
-								)
+						matrixStack.last().pose(), 
+						matrixStack.last().normal(), 
+						light, 
+						OverlayTexture.NO_OVERLAY, 
+						color
 						);
+				
 			}
 		}
 	}
@@ -76,7 +73,7 @@ public class AcceleratedGroupObject implements IAcceleratedRenderer<Void> {
 
 		var extension	= vertexConsumer.getAccelerated	();
 		var mesh		= meshes		.get			(extension);
-
+		
 		extension.beginTransform(transform, normal);
 
 		if (mesh != null) {
@@ -95,7 +92,7 @@ public class AcceleratedGroupObject implements IAcceleratedRenderer<Void> {
 		var meshBuilder			= extension.decorate		(culledMeshCollector);
 
 		for (var face : faces) {
-			face.addFaceForRender(meshBuilder);
+			face.addFaceForRender(meshBuilder, 0.0005F, transform, light, color);
 		}
 
 		culledMeshCollector.flush();
