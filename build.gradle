@@ -21,7 +21,7 @@ base {
     archivesName = "SlashBladeResharped-1.20.1"
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
@@ -74,6 +74,7 @@ mixin {
     config 'slashblade.thetwilightforest.mixins.json'
     config 'slashblade.patchouli.mixins.json'
     config 'slashblade.emi.mixins.json'
+    config 'slashblade.ar.mixins.json'
     debug {
         verbose = true
         exportMixinAP = true
@@ -110,6 +111,9 @@ repositories {
         url "https://cursemaven.com"
     }
 
+    maven {
+        url = "https://api.modrinth.com/maven"
+    }
 }
 
 dependencies {
@@ -117,6 +121,10 @@ dependencies {
 
     //添加 Mixin 支持
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    compileOnly           "org.projectlombok:lombok:1.18.38"
+    annotationProcessor   "org.projectlombok:lombok:1.18.38"
+    implementation fg.deobf("maven.modrinth:acceleratedrendering:1.0.4.3-1.20.1-alpha")
 
     implementation fg.deobf("dev.kosmx.player-anim:player-animation-lib-forge:${project.player_anim}")
 

@@ -5,15 +5,12 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GroupObject {
     public String name;
-    public ArrayList<Face> faces = new ArrayList<Face>();
+    public List<Face> faces = new ArrayList<Face>();
     public int glDrawingMode;
-
-    public GroupObject() {
-        this("");
-    }
 
     public GroupObject(String name) {
         this(name, -1);
