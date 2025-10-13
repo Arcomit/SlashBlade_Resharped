@@ -81,7 +81,6 @@ public class Face {
         
         wr.color(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color),
                 alphaOverride.apply(new Vector4f(vertices[i].x, vertices[i].y, vertices[i].z, 1.0F), FastColor.ARGB32.alpha(color))
-                
         );
 
         if ((textureCoordinates != null) && (textureCoordinates.length > 0)) {

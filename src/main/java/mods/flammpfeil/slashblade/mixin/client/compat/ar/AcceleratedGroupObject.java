@@ -93,7 +93,7 @@ public class AcceleratedGroupObject implements IAcceleratedRenderer<Void> {
 		var meshBuilder			= extension.decorate		(culledMeshCollector);
 
 		for (var face : faces) {
-			face.addFaceForRender(meshBuilder, 0.0005F, new Matrix4f(), light, color);
+			face.addFaceForRender(meshBuilder, 0.0005F, new Matrix4f(), light, -1);
 		}
 
 		culledMeshCollector.flush();

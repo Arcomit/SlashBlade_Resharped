@@ -198,7 +198,8 @@ public class BladeRenderState extends RenderStateShard {
         });
     }
 
-    protected static final RenderStateShard.TransparencyStateShard LIGHTNING_ADDITIVE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard(
+    protected static final RenderStateShard.TransparencyStateShard LIGHTNING_ADDITIVE_TRANSPARENCY = 
+    		new RenderStateShard.TransparencyStateShard(
             "lightning_additive_transparency", () -> {
                 RenderSystem.enableBlend();
                 RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE,
@@ -207,6 +208,7 @@ public class BladeRenderState extends RenderStateShard {
                 RenderSystem.disableBlend();
                 RenderSystem.defaultBlendFunc();
             });
+    
     public static RenderType getSlashBladeBlendLuminous(ResourceLocation texture) {
         return slashBladeBlendLuminousCache.computeIfAbsent(texture, t -> {
             RenderType.CompositeState state = RenderType.CompositeState.builder()
