@@ -1,5 +1,6 @@
 package mods.flammpfeil.slashblade.recipe;
 
+import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
@@ -59,22 +60,33 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
     public ItemStack assemble(CraftingContainer container, RegistryAccess access) {
         var result = this.getResultItem(access);
         if (!(result.getItem() instanceof ItemSlashBlade)) {
-        	result = new ItemStack(SBItems.slashblade);
+            result = new ItemStack(SBItems.slashblade);
         }
-        
+
         var resultState = result.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
+        boolean sumRefine = SlashBladeConfig.DO_CRAFTING_SUM_REFINE.get();
+        int proudSoul = resultState.getProudSoulCount();
+        int killCount = resultState.getKillCount();
+        int refine = resultState.getRefine();
         for (var stack : container.getItems()) {
             if (!(stack.getItem() instanceof ItemSlashBlade))
                 continue;
             var ingredientState = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
 
-            resultState.setProudSoulCount(resultState.getProudSoulCount() + ingredientState.getProudSoulCount());
-            resultState.setKillCount(resultState.getKillCount() + ingredientState.getKillCount());
-            resultState.setRefine(resultState.getRefine() + ingredientState.getRefine());
-            result.getOrCreateTag().put("bladeState", resultState.serializeNBT());
+            proudSoul += ingredientState.getProudSoulCount();
+            killCount += ingredientState.getKillCount();
+            if (sumRefine) {
+                refine += ingredientState.getRefine();
+            } else {
+                refine = Math.max(refine, ingredientState.getRefine());
+            }
             updateEnchantment(result, stack);
         }
-        
+        resultState.setProudSoulCount(proudSoul);
+        resultState.setKillCount(killCount);
+        resultState.setRefine(refine);
+        result.getOrCreateTag().put("bladeState", resultState.serializeNBT());
+
         return result;
     }
 
