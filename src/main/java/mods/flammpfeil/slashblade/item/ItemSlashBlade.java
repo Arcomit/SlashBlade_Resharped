@@ -100,9 +100,8 @@ public class ItemSlashBlade extends SwordItem {
 	}
 
 	@Override
-	public @org.jetbrains.annotations.Nullable String getCreatorModId(ItemStack itemStack) {
-		// TODO Auto-generated method stub
-		return super.getCreatorModId(itemStack);
+	public String getCreatorModId(ItemStack itemStack) {
+		return this.getBladeId(itemStack).getNamespace();
 	}
 	
 	@Override
@@ -533,6 +532,11 @@ public class ItemSlashBlade extends SwordItem {
 		return stack.getCapability(BLADESTATE).filter((s) -> !s.getTranslationKey().isBlank())
 				.map((state) -> state.getTranslationKey()).orElseGet(() -> stackDefaultDescriptionId(stack));
 	}
+	
+	public ResourceLocation getBladeId(ItemStack stack) {
+		return stack.getCapability(BLADESTATE).filter((s) -> !s.getTranslationKey().isBlank())
+				.map((state) -> parseBladeID(state.getTranslationKey())).orElseGet(() -> stackDefaultId(stack));
+	}
 
 	private String stackDefaultDescriptionId(ItemStack stack) {
 		CompoundTag tag = stack.getOrCreateTag();
@@ -540,6 +544,18 @@ public class ItemSlashBlade extends SwordItem {
 			return super.getDescriptionId(stack);
 		String key = tag.getCompound("bladeState").getString("translationKey");
 		return !key.isBlank() ? key : super.getDescriptionId(stack);
+	}
+	
+	private ResourceLocation stackDefaultId(ItemStack stack) {
+		CompoundTag tag = stack.getOrCreateTag();
+		if(!tag.contains("bladeState"))
+			return ForgeRegistries.ITEMS.getKey(this);
+		String key = tag.getCompound("bladeState").getString("translationKey");
+		return !key.isBlank() ? parseBladeID(key) : ForgeRegistries.ITEMS.getKey(this);
+	}
+	
+	public static ResourceLocation parseBladeID(String key) {
+		return ResourceLocation.tryParse(key.substring(5).replaceFirst("\\.", ":"));
 	}
 
 	public boolean isDestructable(ItemStack stack) {

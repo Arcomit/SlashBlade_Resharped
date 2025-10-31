@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface ISlashBladeState extends INBTSerializable<CompoundTag> {
+	
 	@Override
 	default CompoundTag serializeNBT() {
 		CompoundTag tag = new CompoundTag();
