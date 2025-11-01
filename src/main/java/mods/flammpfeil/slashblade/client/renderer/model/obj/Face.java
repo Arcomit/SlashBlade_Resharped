@@ -4,16 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.FastColor;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import java.util.function.BiFunction;
-import net.minecraft.world.phys.Vec3;
-
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+
+import java.util.function.BiFunction;
 
 public class Face {
 
@@ -49,7 +48,7 @@ public class Face {
     public void addFaceForRender(VertexConsumer tessellator, PoseStack matrixStack, int light, int color) {
         addFaceForRender(tessellator, 0.0005F, matrixStack.last().pose(), light, color);
     }
-    
+
     @OnlyIn(Dist.CLIENT)
     public void addFaceForRender(VertexConsumer tessellator, float textureOffset, Matrix4f transform, int light, int color) {
         if (faceNormal == null) {
@@ -60,9 +59,9 @@ public class Face {
         float averageV = 0F;
 
         if ((textureCoordinates != null) && (textureCoordinates.length > 0)) {
-            for (int i = 0; i < textureCoordinates.length; ++i) {
-                averageU += textureCoordinates[i].u * uvOperator.x() + uvOperator.z();
-                averageV += textureCoordinates[i].v * uvOperator.y() + uvOperator.w();
+            for (TextureCoordinate textureCoordinate : textureCoordinates) {
+                averageU += textureCoordinate.u * uvOperator.x() + uvOperator.z();
+                averageV += textureCoordinate.v * uvOperator.y() + uvOperator.w();
             }
 
             averageU = averageU / textureCoordinates.length;
@@ -78,7 +77,7 @@ public class Face {
         float offsetU, offsetV;
         wr.vertex(transform, vertices[i].x, vertices[i].y, vertices[i].z);
 
-        
+
         wr.color(FastColor.ARGB32.red(color), FastColor.ARGB32.green(color), FastColor.ARGB32.blue(color),
                 alphaOverride.apply(new Vector4f(vertices[i].x, vertices[i].y, vertices[i].z, 1.0F), FastColor.ARGB32.alpha(color))
         );
@@ -107,13 +106,13 @@ public class Face {
 
         Vector3f vector3f;
         if (vertexNormals != null) {
-        	Vertex normal = vertexNormals[i];
-            
+            Vertex normal = vertexNormals[i];
+
             vector3f = new Vector3f(normal.x, normal.y, normal.z);
         } else {
             vector3f = new Vector3f(faceNormal.x, faceNormal.y, faceNormal.z);
         }
-        
+
         vector3f.mul(new Matrix3f(transform));
         vector3f.normalize();
         wr.normal(vector3f.x(), vector3f.y(), vector3f.z());

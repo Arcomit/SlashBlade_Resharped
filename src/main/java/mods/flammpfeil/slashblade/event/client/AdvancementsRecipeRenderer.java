@@ -7,36 +7,34 @@ import io.netty.buffer.Unpooled;
 import mods.flammpfeil.slashblade.SlashBlade;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.world.item.crafting.*;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.advancements.AdvancementTab;
+import net.minecraft.client.gui.screens.advancements.AdvancementWidget;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.minecraft.client.gui.screens.recipebook.GhostRecipe;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.world.Container;
-import net.minecraft.world.item.ItemStack;
-
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.recipebook.PlaceRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.core.Vec3i;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-
-import net.minecraft.recipebook.PlaceRecipe;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 
 public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
 
@@ -73,7 +71,8 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
 
     static public ResourceLocation currentRecipe = null;
 
-    static final RecipeType<DummyAnvilRecipe> dummy_anvilType = new RecipeType<DummyAnvilRecipe>() {
+    static final RecipeType<DummyAnvilRecipe> dummy_anvilType = new RecipeType<>() {
+        @Override
         public String toString() {
             return "sb_forgeing";
         }
@@ -107,12 +106,12 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         }
 
         @Override
-        public boolean matches(Container inv, Level worldIn) {
+        public boolean matches(@NotNull Container inv, @NotNull Level worldIn) {
             return false;
         }
 
         @Override
-        public ItemStack assemble(Container p_44001_, RegistryAccess p_267165_) {
+        public @NotNull ItemStack assemble(@NotNull Container p_44001_, @NotNull RegistryAccess p_267165_) {
             return result.copy();
         }
 
@@ -122,32 +121,32 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         }
 
         @Override
-        public ItemStack getResultItem(RegistryAccess p_267052_) {
+        public @NotNull ItemStack getResultItem(@NotNull RegistryAccess p_267052_) {
             return result;
         }
 
         @Override
-        public NonNullList<Ingredient> getIngredients() {
+        public @NotNull NonNullList<Ingredient> getIngredients() {
             return nonnulllist;
         }
 
         @Override
-        public ItemStack getToastSymbol() {
+        public @NotNull ItemStack getToastSymbol() {
             return new ItemStack(Blocks.ANVIL);
         }
 
         @Override
-        public ResourceLocation getId() {
+        public @NotNull ResourceLocation getId() {
             return this.recipeId;
         }
 
         @Override
-        public RecipeSerializer<?> getSerializer() {
+        public @NotNull RecipeSerializer<?> getSerializer() {
             return null;
         }
 
         @Override
-        public RecipeType<?> getType() {
+        public @NotNull RecipeType<?> getType() {
             return dummy_anvilType;
         }
     }
@@ -158,20 +157,21 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         }
 
         @Override
-        public ItemStack getToastSymbol() {
+        public @NotNull ItemStack getToastSymbol() {
             return original.getToastSymbol();
         }
 
         @Override
-        public RecipeType<?> getType() {
+        public @NotNull RecipeType<?> getType() {
             return original.getType();
         }
     }
 
     static Recipe<?> overrideDummyRecipe(Recipe<?> original) {
 
-        if (!(original instanceof SmithingTransformRecipe))
+        if (!(original instanceof SmithingTransformRecipe)) {
             return original;
+        }
 
         if (original.getId().getPath().startsWith("anvilcrafting")) {
             return new DummyAnvilRecipe((SmithingTransformRecipe) original);
@@ -183,7 +183,7 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
     static public class RecipeView {
         final RecipeType<?> recipeType;
         final ResourceLocation background;
-        List<Vec3i> slots = Lists.newArrayList();
+        List<Vec3i> slots;
         final boolean isWideOutputSlot;
 
         public RecipeView(RecipeType<?> recipeType, ResourceLocation background, List<Vec3i> slots) {
@@ -294,18 +294,25 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
     }
 
     static void setGhostRecipe(ItemStack icon) {
-        if (icon == null || !(icon.hasTag() && icon.getTag().contains("Crafting"))){
+        if (icon.getTag() != null && !(icon.hasTag() && icon.getTag().contains("Crafting"))) {
             clearGhostRecipe();
             return;
         }
-        getInstance().setGhostRecipe(new ResourceLocation(icon.getTag().getString("Crafting")));
+        if (icon.getTag() != null) {
+            getInstance().setGhostRecipe(new ResourceLocation(icon.getTag().getString("Crafting")));
+        }
     }
 
     void setGhostRecipe(ResourceLocation loc) {
-        if (Objects.equals(loc, currentRecipe)) return;
+        if (Objects.equals(loc, currentRecipe)) {
+            return;
+        }
         currentRecipe = loc;//减少性能消耗
-        Optional<? extends Recipe<?>> recipe = MCINSTANCE.level.getRecipeManager().byKey(loc);
-        if (!recipe.isPresent()){
+        Optional<? extends Recipe<?>> recipe = Optional.empty();
+        if (MCINSTANCE.level != null) {
+            recipe = MCINSTANCE.level.getRecipeManager().byKey(loc);
+        }
+        if (recipe.isEmpty()) {
             SlashBlade.LOGGER.warn("[Achievement Recipe Render] Recipe does not exist: {}", loc);
             clearGhostRecipe();
             return;
@@ -316,7 +323,7 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
         iRecipe = overrideDummyRecipe(iRecipe);
         gr.setRecipe(iRecipe);
         currentView = typeRecipeViewMap.get(iRecipe.getType());
-        if (currentView == null || currentView.slots.size() <= 0){
+        if (currentView == null || currentView.slots.isEmpty()) {
             SlashBlade.LOGGER.warn("[Achievement Recipe Render] The GUI display of the current recipe type is not supported: {}", iRecipe.getType());
             clearGhostRecipe();
             return;
@@ -346,7 +353,9 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
              * float tmp = ir.blitOffset; ir.blitOffset = zOffset - 125;
              */
             int padding = 5;
-            gg.renderFakeItem(gr.getRecipe().getToastSymbol(), xCorner + padding, yCorner + padding);
+            if (gr.getRecipe() != null) {
+                gg.renderFakeItem(gr.getRecipe().getToastSymbol(), xCorner + padding, yCorner + padding);
+            }
 
             boolean wideOutputSlot = currentView.isWideOutputSlot;
 
@@ -374,24 +383,23 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
             }
         }
 
-        if (itemStack != null) {
-            if (itemStack != null && MCINSTANCE.screen != null) {
-                gg.renderTooltip(MCINSTANCE.font, itemStack, mouseX, mouseY);
-            }
+        if (itemStack != null && MCINSTANCE.screen != null) {
+            gg.renderTooltip(MCINSTANCE.font, itemStack, mouseX, mouseY);
         }
     }
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onDrawScreenPost(ScreenEvent.Render.Post event) {
-        if (!(event.getScreen() instanceof AdvancementsScreen))
+        if (!(event.getScreen() instanceof AdvancementsScreen gui)) {
             return;
-        if (AdvancementsRecipeRenderer.currentRecipe == null)
+        }
+        if (AdvancementsRecipeRenderer.currentRecipe == null) {
             return;
-        if (AdvancementsRecipeRenderer.currentView == null)
+        }
+        if (AdvancementsRecipeRenderer.currentView == null) {
             return;
-
-        AdvancementsScreen gui = (AdvancementsScreen) event.getScreen();
+        }
 
         try {
 
@@ -423,13 +431,13 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
     }
 
     @SuppressWarnings("unchecked")
-	@OnlyIn(Dist.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
     public void onInitGuiPost(ScreenEvent.Init.Post event) {
-        if (!(event.getScreen() instanceof AdvancementsScreen))
+        if (!(event.getScreen() instanceof AdvancementsScreen gui)) {
             return;
+        }
 
-        AdvancementsScreen gui = (AdvancementsScreen) event.getScreen();
         ((List<GuiEventListener>) gui.children()).add(new AdvancementsExGuiEventListener(gui));
     }
 
@@ -454,8 +462,9 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
 
             AdvancementTab selectedTab = screen.selectedTab;
 
-            if (selectedTab == null)
+            if (selectedTab == null) {
                 return false;
+            }
 
             int mouseXX = (int) (mouseX - offsetX - 9);
             int mouseYY = (int) (mouseY - offsetY - 18);
@@ -479,7 +488,9 @@ public class AdvancementsRecipeRenderer implements PlaceRecipe<Ingredient> {
                 }
             }
 
-            setGhostRecipe(found);
+            if (found != null) {
+                setGhostRecipe(found);
+            }
 
             return false;
         }

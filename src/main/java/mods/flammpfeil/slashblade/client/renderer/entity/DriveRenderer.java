@@ -16,8 +16,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class DriveRenderer<T extends EntityDrive> extends EntityRenderer<T> {
@@ -25,9 +24,8 @@ public class DriveRenderer<T extends EntityDrive> extends EntityRenderer<T> {
     private static final ResourceLocation TEXTURE = SlashBlade.prefix("model/util/ss.png");
     private static final ResourceLocation MODEL = SlashBlade.prefix("model/util/drive.obj");
 
-    @Nullable
     @Override
-    public ResourceLocation getTextureLocation(T entity) {
+    public @NotNull ResourceLocation getTextureLocation(T entity) {
         return entity.getTextureLoc();
     }
 
@@ -36,8 +34,8 @@ public class DriveRenderer<T extends EntityDrive> extends EntityRenderer<T> {
     }
 
     @Override
-    public void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn,
-            int packedLightIn) {
+    public void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStack, @NotNull MultiBufferSource bufferIn,
+                       int packedLightIn) {
 
         try (MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStack)) {
             float lifetime = entity.getLifetime();

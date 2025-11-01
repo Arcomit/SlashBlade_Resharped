@@ -10,20 +10,9 @@ import mods.flammpfeil.slashblade.capability.slashblade.CapabilitySlashBlade;
 import mods.flammpfeil.slashblade.client.renderer.entity.*;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.entity.*;
-import mods.flammpfeil.slashblade.event.*;
-import mods.flammpfeil.slashblade.event.handler.AllowFlightOverrwrite;
-import mods.flammpfeil.slashblade.event.handler.BlockPickCanceller;
-import mods.flammpfeil.slashblade.event.handler.CapabilityAttachHandler;
-import mods.flammpfeil.slashblade.event.handler.FallHandler;
-import mods.flammpfeil.slashblade.event.handler.KillCounter;
-import mods.flammpfeil.slashblade.event.handler.KnockBackHandler;
-import mods.flammpfeil.slashblade.event.handler.RankPointHandler;
-import mods.flammpfeil.slashblade.event.handler.RefineHandler;
-import mods.flammpfeil.slashblade.item.BladeStandItem;
-import mods.flammpfeil.slashblade.item.ItemProudSoul;
-import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import mods.flammpfeil.slashblade.item.ItemSlashBladeDetune;
-import mods.flammpfeil.slashblade.item.ItemTierSlashBlade;
+import mods.flammpfeil.slashblade.event.BladeMotionEventBroadcaster;
+import mods.flammpfeil.slashblade.event.handler.*;
+import mods.flammpfeil.slashblade.item.*;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.recipe.RecipeSerializerRegistry;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
@@ -37,20 +26,23 @@ import mods.flammpfeil.slashblade.util.TargetSelector;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.stats.StatFormatter;
-import net.minecraft.stats.Stats;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.stats.StatFormatter;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -62,15 +54,17 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.*;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 import static mods.flammpfeil.slashblade.SlashBladeConfig.TRAPEZOHEDRON_MAX_REFINE;
 
@@ -135,7 +129,7 @@ public class SlashBlade {
 
         ComboCommands.initDefaultStandByCommands();
 
-        
+
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the
@@ -187,21 +181,21 @@ public class SlashBlade {
             event.register(ForgeRegistries.Keys.ITEMS, helper -> {
 
                 helper.register(new ResourceLocation(MODID, "slashblade_wood"),
-                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(60, 2F), 2, 0.0F,
+                        (new ItemSlashBladeDetune(new ItemTierSlashBlade(60, 2F), 2, 0.0F,
                                 (new Item.Properties()))).setDestructable()
-                                        .setTexture(SlashBlade.prefix("model/wood.png")));
+                                .setTexture(SlashBlade.prefix("model/wood.png")));
 
                 helper.register(new ResourceLocation(MODID, "slashblade_bamboo"),
-                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 3F), 3, 0.0F,
+                        (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 3F), 3, 0.0F,
                                 (new Item.Properties()))).setDestructable()
-                                        .setTexture(SlashBlade.prefix("model/bamboo.png")));
+                                .setTexture(SlashBlade.prefix("model/bamboo.png")));
 
                 helper.register(new ResourceLocation(MODID, "slashblade_silverbamboo"),
-                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(40, 3F), 3, 0.0F,
+                        (new ItemSlashBladeDetune(new ItemTierSlashBlade(40, 3F), 3, 0.0F,
                                 (new Item.Properties()))).setTexture(SlashBlade.prefix("model/silverbamboo.png")));
 
                 helper.register(new ResourceLocation(MODID, "slashblade_white"),
-                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 4F), 4, 0.0F,
+                        (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 4F), 4, 0.0F,
                                 (new Item.Properties()))).setTexture(SlashBlade.prefix("model/white.png")));
 
                 helper.register(new ResourceLocation(MODID, "slashblade"),
@@ -213,7 +207,7 @@ public class SlashBlade {
                     public int getEnchantmentValue(ItemStack stack) {
                         return 50;
                     }
-                    
+
                 });
 
                 helper.register(new ResourceLocation(MODID, "proudsoul_ingot"), new ItemProudSoul((new Item.Properties())) {
@@ -241,17 +235,13 @@ public class SlashBlade {
                             }
 
                             @Override
-                            public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flag)
-                            {
-                                if (stack.getTag() != null)
-                                {
+                            public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag flag) {
+                                if (stack.getTag() != null) {
                                     CompoundTag tag = stack.getTag();
-                                    if (tag.contains("SpecialAttackType"))
-                                    {
+                                    if (tag.contains("SpecialAttackType")) {
                                         ResourceLocation SA = new ResourceLocation(tag.getString("SpecialAttackType"));
-                                        if (SlashArtsRegistry.REGISTRY.get().containsKey(SA) && !SlashArtsRegistry.REGISTRY.get().getValue(SA).equals(SlashArtsRegistry.NONE.get()))
-                                        {
-                                            components.add(Component.translatable("slashblade.tooltip.slash_art", SlashArtsRegistry.REGISTRY.get().getValue(SA).getDescription()).withStyle(ChatFormatting.GRAY));
+                                        if (SlashArtsRegistry.REGISTRY.get().containsKey(SA) && !Objects.equals(SlashArtsRegistry.REGISTRY.get().getValue(SA), SlashArtsRegistry.NONE.get())) {
+                                            components.add(Component.translatable("slashblade.tooltip.slash_art", Objects.requireNonNull(SlashArtsRegistry.REGISTRY.get().getValue(SA)).getDescription()).withStyle(ChatFormatting.GRAY));
                                         }
                                     }
                                 }
@@ -266,26 +256,24 @@ public class SlashBlade {
                             public int getEnchantmentValue(ItemStack stack) {
                                 return 200;
                             }
-                            
+
                             @Override
                             @OnlyIn(Dist.CLIENT)
-                            public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flag)
-                            {
-                                if (stack.getTag() != null)
-                                {
+                            public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag flag) {
+                                if (stack.getTag() != null) {
                                     CompoundTag tag = stack.getTag();
-                                    if (tag.contains("SpecialEffectType"))
-                                    {
-                                    	Minecraft mcinstance = Minecraft.getInstance();
-                                		Player player = mcinstance.player;
+                                    if (tag.contains("SpecialEffectType")) {
+                                        Minecraft mcinstance = Minecraft.getInstance();
+                                        Player player = mcinstance.player;
                                         ResourceLocation se = new ResourceLocation(tag.getString("SpecialEffectType"));
-                                        if (SpecialEffectsRegistry.REGISTRY.get().containsKey(se))
-                                        {
-                                        	components.add(Component.translatable("slashblade.tooltip.special_effect", SpecialEffect.getDescription(se),
-                                					Component.literal(String.valueOf(SpecialEffect.getRequestLevel(se)))
-                                							.withStyle(SpecialEffect.isEffective(se, player.experienceLevel) ? ChatFormatting.RED
-                                									: ChatFormatting.DARK_GRAY))
-                                					.withStyle(ChatFormatting.GRAY));
+                                        if (SpecialEffectsRegistry.REGISTRY.get().containsKey(se)) {
+                                            if (player != null) {
+                                                components.add(Component.translatable("slashblade.tooltip.special_effect", SpecialEffect.getDescription(se),
+                                                                Component.literal(String.valueOf(SpecialEffect.getRequestLevel(se)))
+                                                                        .withStyle(SpecialEffect.isEffective(se, player.experienceLevel) ? ChatFormatting.RED
+                                                                                : ChatFormatting.DARK_GRAY))
+                                                        .withStyle(ChatFormatting.GRAY));
+                                            }
                                         }
                                     }
                                 }
@@ -400,9 +388,7 @@ public class SlashBlade {
 
             });
 
-            event.register(ForgeRegistries.Keys.STAT_TYPES, helper -> {
-                SWORD_SUMMONED = registerCustomStat("sword_summoned");
-            });
+            event.register(ForgeRegistries.Keys.STAT_TYPES, helper -> SWORD_SUMMONED = registerCustomStat("sword_summoned"));
 
         }
 
@@ -448,15 +434,16 @@ public class SlashBlade {
             return resourcelocation;
         }
 
-        /**
-         * /scoreboard objectives add stat minecraft.custom:slashblade.sword_summoned
-         * /scoreboard objectives setdisplay sidebar stat
+        /*
+          /scoreboard objectives add stat minecraft.custom:slashblade.sword_summoned
+          /scoreboard objectives setdisplay sidebar stat
          */
     }
 
     public static Registry<SlashBladeDefinition> getSlashBladeDefinitionRegistry(Level level) {
-        if (level.isClientSide())
+        if (level.isClientSide()) {
             return BladeModelManager.getClientSlashBladeRegistry();
+        }
         return level.registryAccess().registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }
 

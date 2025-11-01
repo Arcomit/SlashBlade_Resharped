@@ -14,6 +14,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Objects;
+
 @Mod.EventBusSubscriber
 public class EntityDropEvent {
     @SubscribeEvent
@@ -21,43 +23,47 @@ public class EntityDropEvent {
         LivingEntity entity = event.getEntity();
         var bladeRegistry = SlashBlade.getSlashBladeDefinitionRegistry(entity.level());
         entity.level().registryAccess().registryOrThrow(EntityDropEntry.REGISTRY_KEY).forEach(entry -> {
-            if (!ForgeRegistries.ENTITY_TYPES.containsKey(entry.getEntityType()))
+            if (!ForgeRegistries.ENTITY_TYPES.containsKey(entry.entityType())) {
                 return;
-            if (!bladeRegistry.containsKey(entry.getBladeName()))
-                return;
-
-            if (!(event.getSource().getEntity() instanceof LivingEntity))
-                return;
-
-            LivingEntity attacker = (LivingEntity) event.getSource().getEntity();
-
-            if(SlashBladeConfig.FRIENDLY_ENABLE.get() || (entity instanceof Enemy)) {
-	            if (entry.isRequestSlashBladeKill() 
-	            		&& !(attacker.getMainHandItem().getItem() instanceof ItemSlashBlade))
-	                return ;
             }
-            
-            float resultRate = Math.min(1F, entry.getDropRate() + event.getLootingLevel() * 0.1F);
+            if (!bladeRegistry.containsKey(entry.bladeName())) {
+                return;
+            }
 
-            if (entry.isDropFixedPoint())
-                dropBlade(entity, ForgeRegistries.ENTITY_TYPES.getValue(entry.getEntityType()),
-                        bladeRegistry.get(entry.getBladeName()).getBlade(), resultRate, entry.getDropPoint().x,
-                        entry.getDropPoint().y, entry.getDropPoint().z);
-            else
-                dropBlade(entity, ForgeRegistries.ENTITY_TYPES.getValue(entry.getEntityType()),
-                        bladeRegistry.get(entry.getBladeName()).getBlade(), resultRate, entity.getX(), entity.getY(),
+            if (!(event.getSource().getEntity() instanceof LivingEntity attacker)) {
+                return;
+            }
+
+            if (SlashBladeConfig.FRIENDLY_ENABLE.get() || (entity instanceof Enemy)) {
+                if (entry.requestSlashBladeKill()
+                        && !(attacker.getMainHandItem().getItem() instanceof ItemSlashBlade)) {
+                    return;
+                }
+            }
+
+            float resultRate = Math.min(1F, entry.dropRate() + event.getLootingLevel() * 0.1F);
+
+            if (entry.dropFixedPoint()) {
+                dropBlade(entity, ForgeRegistries.ENTITY_TYPES.getValue(entry.entityType()),
+                        Objects.requireNonNull(bladeRegistry.get(entry.bladeName())).getBlade(), resultRate, entry.dropPoint().x,
+                        entry.dropPoint().y, entry.dropPoint().z);
+            } else {
+                dropBlade(entity, ForgeRegistries.ENTITY_TYPES.getValue(entry.entityType()),
+                        Objects.requireNonNull(bladeRegistry.get(entry.bladeName())).getBlade(), resultRate, entity.getX(), entity.getY(),
                         entity.getZ());
+            }
         });
 
     }
 
     public static void dropBlade(LivingEntity entity, EntityType<?> type, ItemStack blade, float percent, double x,
-            double y, double z) {
+                                 double y, double z) {
         if (entity.getType().equals(type)) {
             var rand = entity.level().getRandom();
 
-            if (rand.nextFloat() > percent)
+            if (rand.nextFloat() > percent) {
                 return;
+            }
             ItemEntity itementity = new ItemEntity(entity.level(), x, y, z, blade);
             BladeItemEntity e = new BladeItemEntity(SlashBlade.RegistryEvents.BladeItem, entity.level());
 

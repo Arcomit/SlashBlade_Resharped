@@ -1,14 +1,8 @@
 package mods.flammpfeil.slashblade.registry.slashblade;
 
-import java.util.Comparator;
-import java.util.List;
-
-import org.jetbrains.annotations.Nullable;
-
 import com.google.common.collect.Lists;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.SlashBladeCreativeGroup;
 import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
@@ -24,172 +18,184 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Comparator;
+import java.util.List;
 
 public class SlashBladeDefinition {
-	
+
     public static final Codec<SlashBladeDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			ResourceLocation.CODEC.optionalFieldOf("item", SlashBlade.prefix("slashblade"))
-					.forGetter(SlashBladeDefinition::getItemName),
-			ResourceLocation.CODEC.fieldOf("name").forGetter(SlashBladeDefinition::getName),
-			RenderDefinition.CODEC.fieldOf("render").forGetter(SlashBladeDefinition::getRenderDefinition),
-			PropertiesDefinition.CODEC.fieldOf("properties").forGetter(SlashBladeDefinition::getStateDefinition),
-			EnchantmentDefinition.CODEC.listOf().optionalFieldOf("enchantments", Lists.newArrayList())
-					.forGetter(SlashBladeDefinition::getEnchantments),
-			ResourceLocation.CODEC.optionalFieldOf("creativeGroup", SlashBladeCreativeGroup.SLASHBLADE_GROUP.getId())
-					.forGetter(SlashBladeDefinition::getCreativeGroup))
-			.apply(instance, SlashBladeDefinition::new));
+                    ResourceLocation.CODEC.optionalFieldOf("item", SlashBlade.prefix("slashblade"))
+                            .forGetter(SlashBladeDefinition::getItemName),
+                    ResourceLocation.CODEC.fieldOf("name").forGetter(SlashBladeDefinition::getName),
+                    RenderDefinition.CODEC.fieldOf("render").forGetter(SlashBladeDefinition::getRenderDefinition),
+                    PropertiesDefinition.CODEC.fieldOf("properties").forGetter(SlashBladeDefinition::getStateDefinition),
+                    EnchantmentDefinition.CODEC.listOf().optionalFieldOf("enchantments", Lists.newArrayList())
+                            .forGetter(SlashBladeDefinition::getEnchantments),
+                    ResourceLocation.CODEC.optionalFieldOf("creativeGroup", SlashBladeCreativeGroup.SLASHBLADE_GROUP.getId())
+                            .forGetter(SlashBladeDefinition::getCreativeGroup))
+            .apply(instance, SlashBladeDefinition::new));
 
-	public static final ResourceKey<Registry<SlashBladeDefinition>> REGISTRY_KEY = ResourceKey
-			.createRegistryKey(SlashBlade.prefix("named_blades"));
+    public static final ResourceKey<Registry<SlashBladeDefinition>> REGISTRY_KEY = ResourceKey
+            .createRegistryKey(SlashBlade.prefix("named_blades"));
 
-	private final ResourceLocation item;
-	private final ResourceLocation name;
-	private final RenderDefinition renderDefinition;
-	private final PropertiesDefinition stateDefinition;
-	private final List<EnchantmentDefinition> enchantments;
+    private final ResourceLocation item;
+    private final ResourceLocation name;
+    private final RenderDefinition renderDefinition;
+    private final PropertiesDefinition stateDefinition;
+    private final List<EnchantmentDefinition> enchantments;
 
-	private final ResourceLocation creativeGroup;
+    private final ResourceLocation creativeGroup;
 
-	public SlashBladeDefinition(ResourceLocation name, RenderDefinition renderDefinition,
-			PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments) {
-		this(SlashBlade.prefix("slashblade"), name, renderDefinition, stateDefinition, enchantments, 
-				SlashBladeCreativeGroup.SLASHBLADE_GROUP.getId());
-	}
-	
-	public SlashBladeDefinition(ResourceLocation name, RenderDefinition renderDefinition,
-			PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments,
-			ResourceLocation creativeGroup) {
-		this(SlashBlade.prefix("slashblade"), name, renderDefinition, stateDefinition, enchantments, creativeGroup);
-	}
-	
-	public SlashBladeDefinition(ResourceLocation item, ResourceLocation name, RenderDefinition renderDefinition,
-			PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments) {
-		this(item, name, renderDefinition, stateDefinition, enchantments, 
-				SlashBladeCreativeGroup.SLASHBLADE_GROUP.getId());
-	}
-	
+    public SlashBladeDefinition(ResourceLocation name, RenderDefinition renderDefinition,
+                                PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments) {
+        this(SlashBlade.prefix("slashblade"), name, renderDefinition, stateDefinition, enchantments,
+                SlashBladeCreativeGroup.SLASHBLADE_GROUP.getId());
+    }
 
-	public SlashBladeDefinition(ResourceLocation item, ResourceLocation name, RenderDefinition renderDefinition,
-			PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments,
-			ResourceLocation creativeGroup) {
-		this.item = item;
-		this.name = name;
-		this.renderDefinition = renderDefinition;
-		this.stateDefinition = stateDefinition;
-		this.enchantments = enchantments;
-		this.creativeGroup = creativeGroup;
-	}
+    public SlashBladeDefinition(ResourceLocation name, RenderDefinition renderDefinition,
+                                PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments,
+                                ResourceLocation creativeGroup) {
+        this(SlashBlade.prefix("slashblade"), name, renderDefinition, stateDefinition, enchantments, creativeGroup);
+    }
 
-	public ResourceLocation getItemName() {
-		return item;
-	}
+    public SlashBladeDefinition(ResourceLocation item, ResourceLocation name, RenderDefinition renderDefinition,
+                                PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments) {
+        this(item, name, renderDefinition, stateDefinition, enchantments,
+                SlashBladeCreativeGroup.SLASHBLADE_GROUP.getId());
+    }
 
-	public ResourceLocation getName() {
-		return name;
-	}
 
-	public String getTranslationKey() {
-		return Util.makeDescriptionId("item", this.getName());
-	}
+    public SlashBladeDefinition(ResourceLocation item, ResourceLocation name, RenderDefinition renderDefinition,
+                                PropertiesDefinition stateDefinition, List<EnchantmentDefinition> enchantments,
+                                ResourceLocation creativeGroup) {
+        this.item = item;
+        this.name = name;
+        this.renderDefinition = renderDefinition;
+        this.stateDefinition = stateDefinition;
+        this.enchantments = enchantments;
+        this.creativeGroup = creativeGroup;
+    }
 
-	public RenderDefinition getRenderDefinition() {
-		return renderDefinition;
-	}
+    public ResourceLocation getItemName() {
+        return item;
+    }
 
-	public PropertiesDefinition getStateDefinition() {
-		return stateDefinition;
-	}
+    public ResourceLocation getName() {
+        return name;
+    }
 
-	public List<EnchantmentDefinition> getEnchantments() {
-		return enchantments;
-	}
+    public String getTranslationKey() {
+        return Util.makeDescriptionId("item", this.getName());
+    }
 
-	public ItemStack getBlade() {
-		return getBlade(getItem());
-	}
+    public RenderDefinition getRenderDefinition() {
+        return renderDefinition;
+    }
 
-	public ItemStack getBlade(Item bladeItem) {
+    public PropertiesDefinition getStateDefinition() {
+        return stateDefinition;
+    }
 
-		if (MinecraftForge.EVENT_BUS.post(new SlashBladeRegistryEvent.Pre(this)))
-			return ItemStack.EMPTY;
+    public List<EnchantmentDefinition> getEnchantments() {
+        return enchantments;
+    }
 
-		ItemStack result = new ItemStack(bladeItem);
-		var state = result.getCapability(ItemSlashBlade.BLADESTATE).orElse(new SlashBladeState(result));
-		state.setNonEmpty();
-		state.setBaseAttackModifier(this.stateDefinition.getBaseAttackModifier());
-		state.setMaxDamage(this.stateDefinition.getMaxDamage());
-		state.setComboRoot(this.stateDefinition.getComboRoot());
-		state.setSlashArtsKey(this.stateDefinition.getSpecialAttackType());
+    public ItemStack getBlade() {
+        return getBlade(getItem());
+    }
 
-		this.stateDefinition.getSpecialEffects().forEach(state::addSpecialEffect);
+    public ItemStack getBlade(Item bladeItem) {
 
-		this.stateDefinition.getDefaultType().forEach(type -> {
-			switch (type) {
-			case BEWITCHED -> state.setDefaultBewitched(true);
-			case BROKEN -> {
-				result.setDamageValue(result.getMaxDamage() - 1);
-				state.setBroken(true);
-			}
-			case SEALED -> state.setSealed(true);
-			default -> {
-			}
-			}
-		});
+        if (MinecraftForge.EVENT_BUS.post(new SlashBladeRegistryEvent.Pre(this))) {
+            return ItemStack.EMPTY;
+        }
 
-		state.setModel(this.renderDefinition.getModelName());
-		state.setTexture(this.renderDefinition.getTextureName());
-		state.setColorCode(this.renderDefinition.getSummonedSwordColor());
-		state.setEffectColorInverse(this.renderDefinition.isSummonedSwordColorInverse());
-		state.setCarryType(this.renderDefinition.getStandbyRenderType());
-		if (!this.getName().equals(SlashBlade.prefix("none")))
-			state.setTranslationKey(this.getTranslationKey());
+        ItemStack result = new ItemStack(bladeItem);
+        var state = result.getCapability(ItemSlashBlade.BLADESTATE).orElse(new SlashBladeState(result));
+        state.setNonEmpty();
+        state.setBaseAttackModifier(this.stateDefinition.getBaseAttackModifier());
+        state.setMaxDamage(this.stateDefinition.getMaxDamage());
+        state.setComboRoot(this.stateDefinition.getComboRoot());
+        state.setSlashArtsKey(this.stateDefinition.getSpecialAttackType());
 
-		result.getOrCreateTag().put("bladeState", state.serializeNBT());
+        this.stateDefinition.getSpecialEffects().forEach(state::addSpecialEffect);
 
-		for (var instance : this.enchantments) {
-			var enchantment = ForgeRegistries.ENCHANTMENTS.getValue(instance.getEnchantmentID());
-			result.enchant(enchantment, instance.getEnchantmentLevel());
+        this.stateDefinition.getDefaultType().forEach(type -> {
+            switch (type) {
+                case BEWITCHED -> state.setDefaultBewitched(true);
+                case BROKEN -> {
+                    result.setDamageValue(result.getMaxDamage() - 1);
+                    state.setBroken(true);
+                }
+                case SEALED -> state.setSealed(true);
+                default -> {
+                }
+            }
+        });
 
-		}
-		if (this.stateDefinition.isUnbreakable())
-			result.getOrCreateTag().putBoolean("Unbreakable", true);
-		var postRegistry = new SlashBladeRegistryEvent.Post(this, result);
-		MinecraftForge.EVENT_BUS.post(postRegistry);
-		return postRegistry.getBlade();
-	}
+        state.setModel(this.renderDefinition.getModelName());
+        state.setTexture(this.renderDefinition.getTextureName());
+        state.setColorCode(this.renderDefinition.getSummonedSwordColor());
+        state.setEffectColorInverse(this.renderDefinition.isSummonedSwordColorInverse());
+        state.setCarryType(this.renderDefinition.getStandbyRenderType());
+        if (!this.getName().equals(SlashBlade.prefix("none"))) {
+            state.setTranslationKey(this.getTranslationKey());
+        }
 
-	public Item getItem() {
-		@Nullable
-		Item value = ForgeRegistries.ITEMS.getValue(this.item);
-		if (value == null)
-			return SBItems.slashblade;
-		return value;
-	}
+        result.getOrCreateTag().put("bladeState", state.serializeNBT());
 
-	public ResourceLocation getCreativeGroup() {
-		return creativeGroup;
-	}
+        for (var instance : this.enchantments) {
+            var enchantment = ForgeRegistries.ENCHANTMENTS.getValue(instance.getEnchantmentID());
+            if (enchantment != null) {
+                result.enchant(enchantment, instance.getEnchantmentLevel());
+            }
 
-	public static final BladeComparator COMPARATOR = new BladeComparator();
+        }
+        if (this.stateDefinition.isUnbreakable()) {
+            result.getOrCreateTag().putBoolean("Unbreakable", true);
+        }
+        var postRegistry = new SlashBladeRegistryEvent.Post(this, result);
+        MinecraftForge.EVENT_BUS.post(postRegistry);
+        return postRegistry.getBlade();
+    }
 
-	private static class BladeComparator implements Comparator<Reference<SlashBladeDefinition>> {
-		@Override
-		public int compare(Reference<SlashBladeDefinition> left, Reference<SlashBladeDefinition> right) {
+    public Item getItem() {
+        @Nullable
+        Item value = ForgeRegistries.ITEMS.getValue(this.item);
+        if (value == null) {
+            return SBItems.slashblade;
+        }
+        return value;
+    }
 
-			ResourceLocation leftKey = left.key().location();
-			ResourceLocation rightKey = right.key().location();
-			boolean checkSame = leftKey.getNamespace().equalsIgnoreCase(rightKey.getNamespace());
-			if (!checkSame) {
-				if (leftKey.getNamespace().equalsIgnoreCase(SlashBlade.MODID))
-					return -1;
+    public ResourceLocation getCreativeGroup() {
+        return creativeGroup;
+    }
 
-				if (rightKey.getNamespace().equalsIgnoreCase(SlashBlade.MODID))
-					return 1;
-			}
-			String leftName = leftKey.toString();
-			String rightName = rightKey.toString();
+    public static final BladeComparator COMPARATOR = new BladeComparator();
 
-			return leftName.compareToIgnoreCase(rightName);
-		}
-	}
+    public static class BladeComparator implements Comparator<Reference<SlashBladeDefinition>> {
+        @Override
+        public int compare(Reference<SlashBladeDefinition> left, Reference<SlashBladeDefinition> right) {
+
+            ResourceLocation leftKey = left.key().location();
+            ResourceLocation rightKey = right.key().location();
+            boolean checkSame = leftKey.getNamespace().equalsIgnoreCase(rightKey.getNamespace());
+            if (!checkSame) {
+                if (leftKey.getNamespace().equalsIgnoreCase(SlashBlade.MODID)) {
+                    return -1;
+                }
+
+                if (rightKey.getNamespace().equalsIgnoreCase(SlashBlade.MODID)) {
+                    return 1;
+                }
+            }
+            String leftName = leftKey.toString();
+            String rightName = rightKey.toString();
+
+            return leftName.compareToIgnoreCase(rightName);
+        }
+    }
 }

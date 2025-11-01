@@ -19,6 +19,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 
 @Mixin(value = ItemEmiStackSerializer.class, remap = false)
@@ -112,11 +113,11 @@ public abstract class MixinItemEmiStackSerializer implements EmiStackSerializer<
                     CompoundTag tag = new CompoundTag();
                     tag.put("Parent", TagParser.parseTag(capNBT));
                     ItemStack itemStack = new ItemStack(
-                            EmiPort.getItemRegistry().get(id),
+                            Objects.requireNonNull(EmiPort.getItemRegistry().get(id)),
                             (int) amount,
                             tag
                     );
-                    CompoundTag newNbt =  itemStack.getOrCreateTag();
+                    CompoundTag newNbt = itemStack.getOrCreateTag();
                     if (nbtComp != null) {
                         for (String key : nbtComp.getAllKeys()) {
                             newNbt.put(key, nbtComp.get(key).copy());

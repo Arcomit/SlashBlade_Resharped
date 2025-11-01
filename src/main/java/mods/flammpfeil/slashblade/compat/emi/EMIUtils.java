@@ -8,7 +8,9 @@ public class EMIUtils {
     public static Comparison SLASHBLADE_COMPARISON = Comparison.of((self, other) -> {
         ItemStack aStack = self.getItemStack();
         ItemStack bStack = other.getItemStack();
-        if (aStack.getItem() != bStack.getItem()) return false;
+        if (aStack.getItem() != bStack.getItem()) {
+            return false;
+        }
         String keyA = self.getNbt().getCompound("bladeState").getString("translationKey");
         String keyB = other.getNbt().getCompound("bladeState").getString("translationKey");
 
