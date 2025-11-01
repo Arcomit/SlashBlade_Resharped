@@ -10,23 +10,23 @@ import mods.flammpfeil.slashblade.util.AdvancementHelper;
 import mods.flammpfeil.slashblade.util.InputCommand;
 import mods.flammpfeil.slashblade.util.NBTHelper;
 import mods.flammpfeil.slashblade.util.VectorHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.TicketType;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.level.Level;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.TicketType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -42,6 +42,7 @@ public class SlayerStyleArts {
 
         private static final SlayerStyleArts INSTANCE = new SlayerStyleArts();
     }
+
     public static SlayerStyleArts getInstance() {
         return SlayerStyleArts.SingletonHolder.INSTANCE;
     }
@@ -95,8 +96,12 @@ public class SlayerStyleArts {
         ServerPlayer sender = event.getEntity();
         ItemStack stack = sender.getMainHandItem();
 
-        if (stack.isEmpty()) return;
-        if (!(stack.getItem() instanceof ItemSlashBlade)) return;
+        if (stack.isEmpty()) {
+            return;
+        }
+        if (!(stack.getItem() instanceof ItemSlashBlade)) {
+            return;
+        }
 
         ServerLevel worldIn = sender.serverLevel();
         EnumSet<InputCommand> old = event.getOld();
@@ -125,7 +130,7 @@ public class SlayerStyleArts {
         if (!isHandled && sender.onGround() &&
                 current.contains(InputCommand.SPRINT)
                 && current.stream().anyMatch(MOVE_COMMAND::contains)) {
-            isHandled = handleSprintMove(sender, current);
+            handleSprintMove(sender, current);
 
         }
     }
@@ -321,7 +326,9 @@ public class SlayerStyleArts {
     }
 
     public static void executeTeleport(Entity entityIn, LivingEntity target) {
-        if (!(entityIn.level() instanceof ServerLevel serverLevel)) return;
+        if (!(entityIn.level() instanceof ServerLevel serverLevel)) {
+            return;
+        }
 
         prepareTeleportEffects(entityIn);
         Vec3 teleportPos = calculateTeleportPosition(entityIn, target);
@@ -512,8 +519,8 @@ public class SlayerStyleArts {
         }
     }
 
-    
-	public boolean shouldApplyStepUpBoost(Player player) {
+
+    public boolean shouldApplyStepUpBoost(Player player) {
         Vec3 deltaMovement = calculatePlayerMovement(player);
 
         if (deltaMovement.equals(Vec3.ZERO)) {

@@ -10,6 +10,8 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -30,20 +32,16 @@ public class ModelResourceLoader implements PreparableReloadListener {
                 resLoc -> resLoc.getPath().endsWith(FILE_TYPES)
         );
 
-        resources.keySet().forEach(resourceLocation -> {
-            instance.getModel(resourceLocation);
-        });
+        resources.keySet().forEach(instance::getModel);
     }
 
     @Override
-    public CompletableFuture<Void> reload(PreparationBarrier stage,
-                                          ResourceManager resourceManager,
-                                          ProfilerFiller preparationsProfiler,
-                                          ProfilerFiller reloadProfiler,
-                                          Executor backgroundExecutor,
-                                          Executor gameExecutor) {
-        return CompletableFuture.runAsync(() -> {
-            loadResources(resourceManager);
-        }, backgroundExecutor).thenCompose(stage::wait);
+    public @NotNull CompletableFuture<Void> reload(PreparationBarrier stage,
+                                                   @NotNull ResourceManager resourceManager,
+                                                   @NotNull ProfilerFiller preparationsProfiler,
+                                                   @NotNull ProfilerFiller reloadProfiler,
+                                                   @NotNull Executor backgroundExecutor,
+                                                   @NotNull Executor gameExecutor) {
+        return CompletableFuture.runAsync(() -> loadResources(resourceManager), backgroundExecutor).thenCompose(stage::wait);
     }
 }

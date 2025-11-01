@@ -264,13 +264,13 @@ public abstract class SlashBladeEvent extends Event {
             this.knockback = knockback;
         }
 
-		public float getYRot() {
-			return yRot;
-		}
+        public float getYRot() {
+            return yRot;
+        }
 
-		public void setYRot(float yRot) {
-			this.yRot = yRot;
-		}
+        public void setYRot(float yRot) {
+            this.yRot = yRot;
+        }
 
     }
 

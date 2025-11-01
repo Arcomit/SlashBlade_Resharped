@@ -4,7 +4,8 @@ import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.stack.ItemEmiStack;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import net.minecraft.world.item.ItemStack;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,8 +28,9 @@ public abstract class MixinItemEmiStack extends EmiStack {
 
     @Inject(method = "getItemStack()Lnet/minecraft/world/item/ItemStack;", at = @At("TAIL"), cancellable = true)
     public void getItemStack(CallbackInfoReturnable<ItemStack> cir) {
-        if (this.slashBlade_Resharped$origionalStack != null)
+        if (this.slashBlade_Resharped$origionalStack != null) {
             cir.setReturnValue(this.slashBlade_Resharped$origionalStack.copy());
+        }
 
     }
 

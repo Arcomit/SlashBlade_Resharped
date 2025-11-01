@@ -105,7 +105,7 @@ public class SlashBladeSmithingEmiRecipe extends EMISimpleRecipe {
         widgets.addSlot(outputs.get(0), 94, 0).recipeContext(this);
     }
 
-	public SlashBladeSmithingRecipe getRecipe() {
-		return recipe;
-	}
+    public SlashBladeSmithingRecipe getRecipe() {
+        return recipe;
+    }
 }

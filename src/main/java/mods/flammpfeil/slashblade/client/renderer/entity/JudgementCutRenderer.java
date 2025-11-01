@@ -1,6 +1,7 @@
 package mods.flammpfeil.slashblade.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
@@ -10,14 +11,13 @@ import mods.flammpfeil.slashblade.entity.EntityJudgementCut;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import com.mojang.math.Axis;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.awt.*;
 
 @OnlyIn(Dist.CLIENT)
@@ -28,9 +28,8 @@ public class JudgementCutRenderer<T extends EntityJudgementCut> extends EntityRe
     static private final ResourceLocation textureLocation = new ResourceLocation(SlashBlade.MODID,
             "model/util/slashdim.png");
 
-    @Nullable
     @Override
-    public ResourceLocation getTextureLocation(T entity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull T entity) {
         return textureLocation;
     }
 
@@ -40,7 +39,7 @@ public class JudgementCutRenderer<T extends EntityJudgementCut> extends EntityRe
 
     @Override
     public void render(T entity, float entityYaw, float partialTicks, PoseStack matrixStackIn,
-            MultiBufferSource bufferIn, int packedLightIn) {
+                       @NotNull MultiBufferSource bufferIn, int packedLightIn) {
 
         try (MSAutoCloser msac = MSAutoCloser.pushMatrix(matrixStackIn)) {
 

@@ -191,10 +191,11 @@ public class BlandStandEventHandler {
         }
 
         var world = player.level();
-        
-        if(world.isClientSide())
-        	return;
-        
+
+        if (world.isClientSide()) {
+            return;
+        }
+
         var state = event.getSlashBladeState();
         var bladeStand = event.getBladeStand();
         var specialEffects = state.getSpecialEffects();
@@ -266,10 +267,11 @@ public class BlandStandEventHandler {
             return;
         }
         var world = player.level();
-        
-        if(world.isClientSide())
-        	return;
-        
+
+        if (world.isClientSide()) {
+            return;
+        }
+
         var state = event.getSlashBladeState();
         var bladeStand = event.getBladeStand();
         ResourceLocation SA = state.getSlashArtsKey();
@@ -318,10 +320,11 @@ public class BlandStandEventHandler {
         if (!(event.getDamageSource().getEntity() instanceof Player player)) {
             return;
         }
-        
-        if(player.level().isClientSide())
-        	return;
-        
+
+        if (player.level().isClientSide()) {
+            return;
+        }
+
         ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
         ItemStack blade = event.getBlade();
 

@@ -63,45 +63,50 @@ public class Guard {
         // item check
         ItemStack stack = victim.getMainHandItem();
         LazyOptional<ISlashBladeState> slashBlade = stack.getCapability(CapabilitySlashBlade.BLADESTATE);
-        if (!slashBlade.isPresent())
+        if (!slashBlade.isPresent()) {
             return;
-        if (slashBlade.filter(b -> b.isBroken()).isPresent())
+        }
+        if (slashBlade.filter(ISlashBladeState::isBroken).isPresent()) {
             return;
-        if (stack.getEnchantmentLevel(Enchantments.THORNS) <= 0)
-        	return;
+        }
+        if (stack.getEnchantmentLevel(Enchantments.THORNS) <= 0) {
+            return;
+        }
 
         // user check
-        if (!victim.onGround())
+        if (!victim.onGround()) {
             return;
+        }
         LazyOptional<IInputState> input = victim.getCapability(CapabilityInputState.INPUT_STATE);
-        if (!input.isPresent())
+        if (!input.isPresent()) {
             return;
+        }
 
         // commanc check
         InputCommand targetCommand = InputCommand.SNEAK;
         boolean handleCommand = input.filter(i -> i.getCommands().contains(targetCommand)
-                && !i.getCommands().stream().anyMatch(cc -> move.contains(cc))).isPresent();
+                && i.getCommands().stream().noneMatch(move::contains)).isPresent();
 
-        if (handleCommand)
+        if (handleCommand) {
             AdvancementHelper.grantCriterion(victim, ADVANCEMENT_GUARD);
+        }
 
         // ninja run
         handleCommand |= (input.filter(i -> i.getCommands().contains(InputCommand.SPRINT)).isPresent()
                 && victim.isSprinting());
 
-        if (!handleCommand)
+        if (!handleCommand) {
             return;
+        }
 
         // range check
-        if (!isInsideGuardableRange(source, victim))
+        if (!isInsideGuardableRange(source, victim)) {
             return;
+        }
 
         // performance branch -----------------
         // just check
-        long timeStartPress = input.map(i -> {
-            Long l = i.getLastPressTime(targetCommand);
-            return l == null ? 0 : l;
-        }).get();
+        long timeStartPress = input.map(i -> i.getLastPressTime(targetCommand)).orElse(-1L);
         long timeCurrent = victim.level().getGameTime();
 
         int soulSpeedLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.SOUL_SPEED, victim);
@@ -116,8 +121,9 @@ public class Guard {
         // rank check
         boolean isHighRank = false;
         LazyOptional<IConcentrationRank> rank = victim.getCapability(CapabilityConcentrationRank.RANK_POINT);
-        if (rank.filter(r -> IConcentrationRank.ConcentrationRanks.S.level <= r.getRank(timeCurrent).level).isPresent())
+        if (rank.filter(r -> IConcentrationRank.ConcentrationRanks.S.level <= r.getRank(timeCurrent).level).isPresent()) {
             isHighRank = true;
+        }
 
         // damage sauce check
         boolean isProjectile = source.is(DamageTypeTags.IS_PROJECTILE)
@@ -125,24 +131,28 @@ public class Guard {
 
         // after executable check -----------------
         if (!isJust) {
-            if (!isProjectile)
+            if (!isProjectile) {
                 return;
-            if (!isHighRank && source.is(DamageTypeTags.BYPASSES_ARMOR))
+            }
+            if (!isHighRank && source.is(DamageTypeTags.BYPASSES_ARMOR)) {
                 return;
+            }
 
             boolean inMotion = slashBlade.filter(s -> {
                 ResourceLocation current = s.resolvCurrentComboState(victim);
                 ComboState currentCS = ComboStateRegistry.REGISTRY.get().getValue(current);
-                if (!current.equals(ComboStateRegistry.NONE.getId()) && current == currentCS.getNext(victim))
-                    return true;
-                else
-                    return false;
+                if (currentCS != null) {
+                    return !current.equals(ComboStateRegistry.NONE.getId()) && current == currentCS.getNext(victim);
+                }
+                return false;
             }).isPresent();
-            if (inMotion)
+            if (inMotion) {
                 return;
+            }
         } else {
-            if (!isProjectile && !(source.getDirectEntity() instanceof LivingEntity))
+            if (!isProjectile && !(source.getDirectEntity() instanceof LivingEntity)) {
                 return;
+            }
         }
 
         // execute performance------------------
@@ -165,12 +175,14 @@ public class Guard {
         }
 
         // untouchable time
-        if (isJust)
+        if (isJust) {
             Untouchable.setUntouchable(victim, 10);
+        }
 
         // rankup
-        if (isJust)
+        if (isJust) {
             rank.ifPresent(r -> r.addRankPoint(victim.level().damageSources().thorns(victim)));
+        }
 
         // play sound
         if (victim instanceof Player) {
@@ -179,14 +191,13 @@ public class Guard {
         }
 
         // advancement
-        if (isJust)
+        if (isJust) {
             AdvancementHelper.grantCriterion(victim, ADVANCEMENT_GUARD_JUST);
+        }
 
         // cost-------------------------
         if (!isJust && !isHighRank) {
-            slashBlade.ifPresent(s -> {
-                stack.hurtAndBreak(1, victim, ItemSlashBlade.getOnBroken(stack));
-            });
+            slashBlade.ifPresent(s -> stack.hurtAndBreak(1, victim, ItemSlashBlade.getOnBroken(stack)));
         }
 
     }
@@ -197,9 +208,7 @@ public class Guard {
             Vec3 viewVec = victim.getViewVector(1.0F);
             Vec3 attackVec = sPos.vectorTo(victim.position()).normalize();
             attackVec = new Vec3(attackVec.x, 0.0D, attackVec.z);
-            if (attackVec.dot(viewVec) < 0.0D) {
-                return true;
-            }
+            return attackVec.dot(viewVec) < 0.0D;
         }
         return false;
     }
