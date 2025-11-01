@@ -5,11 +5,11 @@ import mods.flammpfeil.slashblade.data.builtin.SlashBladeBuiltInRegistry;
 import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.recipe.RequestDefinition;
 import mods.flammpfeil.slashblade.recipe.SlashBladeIngredient;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -226,7 +226,7 @@ public class BlandStandEventHandler {
                 continue;
             }
 
-            ItemStack orb = new ItemStack(SBItems.proudsoul_crystal);
+            ItemStack orb = new ItemStack(SlashBladeItems.PROUDSOUL_CRYSTAL.get());
             CompoundTag tag = new CompoundTag();
             tag.putString("SpecialEffectType", se.toString());
             orb.setTag(tag);
@@ -293,7 +293,7 @@ public class BlandStandEventHandler {
                 return;
             }
 
-            ItemStack orb = new ItemStack(SBItems.proudsoul_sphere);
+            ItemStack orb = new ItemStack(SlashBladeItems.PROUDSOUL_SPHERE.get());
             CompoundTag tag = new CompoundTag();
             tag.putString("SpecialAttackType", state.getSlashArtsKey().toString());
             orb.setTag(tag);
@@ -358,13 +358,13 @@ public class BlandStandEventHandler {
             }
 
             var probability = 1.0F;
-            if (stack.is(SBItems.proudsoul_tiny)) {
+            if (stack.is(SlashBladeItems.PROUDSOUL_TINY.get())) {
                 probability = 0.25F;
             }
-            if (stack.is(SBItems.proudsoul)) {
+            if (stack.is(SlashBladeItems.PROUDSOUL.get())) {
                 probability = 0.5F;
             }
-            if (stack.is(SBItems.proudsoul_ingot)) {
+            if (stack.is(SlashBladeItems.PROUDSOUL_INGOT.get())) {
                 probability = 0.75F;
             }
 

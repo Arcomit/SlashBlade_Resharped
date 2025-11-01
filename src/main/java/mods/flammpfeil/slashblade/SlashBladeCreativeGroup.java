@@ -1,8 +1,8 @@
 package mods.flammpfeil.slashblade;
 
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +20,7 @@ public class SlashBladeCreativeGroup {
 
     private static final CreativeModeTab SLASHBLADE = CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.slashblade")).icon(() -> {
-                ItemStack stack = new ItemStack(SBItems.slashblade);
+                ItemStack stack = new ItemStack(SlashBladeItems.SLASHBLADE.get());
                 stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(s -> {
                     s.setModel(new ResourceLocation(SlashBlade.MODID, "model/named/yamato.obj"));
                     s.setTexture(new ResourceLocation(SlashBlade.MODID, "model/named/yamato.png"));
@@ -28,27 +28,27 @@ public class SlashBladeCreativeGroup {
                 return stack;
             }).displayItems((features, output) -> {
 
-                output.accept(SBItems.proudsoul);
-                output.accept(SBItems.proudsoul_tiny);
-                output.accept(SBItems.proudsoul_ingot);
-                output.accept(SBItems.proudsoul_sphere);
+                output.accept(SlashBladeItems.PROUDSOUL.get());
+                output.accept(SlashBladeItems.PROUDSOUL_TINY.get());
+                output.accept(SlashBladeItems.PROUDSOUL_INGOT.get());
+                output.accept(SlashBladeItems.PROUDSOUL_SPHERE.get());
 
-                output.accept(SBItems.proudsoul_crystal);
-                output.accept(SBItems.proudsoul_trapezohedron);
+                output.accept(SlashBladeItems.PROUDSOUL_CRYSTAL.get());
+                output.accept(SlashBladeItems.PROUDSOUL_TRAPEZOHEDRON.get());
                 fillEnchantmentsSouls(output);
                 fillSASpheres(output);
-                output.accept(SBItems.bladestand_1);
-                output.accept(SBItems.bladestand_1w);
-                output.accept(SBItems.bladestand_2);
-                output.accept(SBItems.bladestand_2w);
-                output.accept(SBItems.bladestand_s);
-                output.accept(SBItems.bladestand_v);
+                output.accept(SlashBladeItems.BLADESTAND_1.get());
+                output.accept(SlashBladeItems.BLADESTAND_1_W.get());
+                output.accept(SlashBladeItems.BLADESTAND_2.get());
+                output.accept(SlashBladeItems.BLADESTAND_2_W.get());
+                output.accept(SlashBladeItems.BLADESTAND_S.get());
+                output.accept(SlashBladeItems.BLADESTAND_V.get());
 
-                output.accept(SBItems.slashblade_wood);
-                output.accept(SBItems.slashblade_bamboo);
-                output.accept(SBItems.slashblade_silverbamboo);
-                output.accept(SBItems.slashblade_white);
-                output.accept(SBItems.slashblade);
+                output.accept(SlashBladeItems.SLASHBLADE_WOOD.get());
+                output.accept(SlashBladeItems.SLASHBLADE_BAMBOO.get());
+                output.accept(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get());
+                output.accept(SlashBladeItems.SLASHBLADE_WHITE.get());
+                output.accept(SlashBladeItems.SLASHBLADE.get());
 
                 //fillBlades(features, output);
             }).build();
@@ -69,9 +69,9 @@ public class SlashBladeCreativeGroup {
 
     private static void fillEnchantmentsSouls(CreativeModeTab.Output output) {
         ForgeRegistries.ENCHANTMENTS.forEach(enchantment -> {
-            ItemStack blade = new ItemStack(SBItems.slashblade);
+            ItemStack blade = new ItemStack(SlashBladeItems.SLASHBLADE.get());
             if (blade.canApplyAtEnchantingTable(enchantment)) {
-                ItemStack soul = new ItemStack(SBItems.proudsoul_tiny);
+                ItemStack soul = new ItemStack(SlashBladeItems.PROUDSOUL_TINY.get());
                 soul.enchant(enchantment, 1);
                 output.accept(soul);
             }
@@ -85,7 +85,7 @@ public class SlashBladeCreativeGroup {
             if (slashArts.equals(SlashArtsRegistry.NONE.get()) || key == null) {
                 return;
             }
-            ItemStack sphere = new ItemStack(SBItems.proudsoul_sphere);
+            ItemStack sphere = new ItemStack(SlashBladeItems.PROUDSOUL_SPHERE.get());
             CompoundTag tag = new CompoundTag();
             tag.putString("SpecialAttackType", key.toString());
             sphere.setTag(tag);

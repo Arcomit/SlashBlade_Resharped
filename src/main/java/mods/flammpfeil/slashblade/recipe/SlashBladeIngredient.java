@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import mods.flammpfeil.slashblade.init.SBItems;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -48,7 +48,7 @@ public class SlashBladeIngredient extends Ingredient {
     }
 
     public static SlashBladeIngredient of(RequestDefinition request) {
-        return new SlashBladeIngredient(Set.of(SBItems.slashblade), request);
+        return new SlashBladeIngredient(Set.of(SlashBladeItems.SLASHBLADE.get()), request);
     }
 
     public static SlashBladeIngredient of(ItemLike item, ResourceLocation request) {
@@ -57,7 +57,7 @@ public class SlashBladeIngredient extends Ingredient {
     }
 
     public static SlashBladeIngredient of(ResourceLocation request) {
-        return new SlashBladeIngredient(Set.of(SBItems.slashblade),
+        return new SlashBladeIngredient(Set.of(SlashBladeItems.SLASHBLADE.get()),
                 RequestDefinition.Builder.newInstance().name(request).build());
     }
 

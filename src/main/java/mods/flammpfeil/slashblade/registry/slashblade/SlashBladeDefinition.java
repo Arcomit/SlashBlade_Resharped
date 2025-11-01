@@ -7,8 +7,8 @@ import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.SlashBladeCreativeGroup;
 import mods.flammpfeil.slashblade.capability.slashblade.SlashBladeState;
 import mods.flammpfeil.slashblade.event.SlashBladeRegistryEvent;
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import net.minecraft.Util;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.Registry;
@@ -165,7 +165,7 @@ public class SlashBladeDefinition {
         @Nullable
         Item value = ForgeRegistries.ITEMS.getValue(this.item);
         if (value == null) {
-            return SBItems.slashblade;
+            return SlashBladeItems.SLASHBLADE.get();
         }
         return value;
     }

@@ -10,10 +10,10 @@ import mods.flammpfeil.slashblade.client.renderer.util.BladeRenderState;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
 import mods.flammpfeil.slashblade.init.DefaultResources;
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.item.ItemSlashBladeDetune;
 import mods.flammpfeil.slashblade.item.SwordType;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -308,7 +308,7 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
                         break;
                 }
 
-                if (type == SBItems.bladestand_2) {
+                if (type == SlashBladeItems.BLADESTAND_2.get()) {
                     bladeOffset = new Vec3(0, 21.5f, 0);
                     if (hFlip) {
                         sheathOffset = new Vec3(-40, -27, 0);
@@ -316,12 +316,12 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
                         sheathOffset = new Vec3(40, -27, 0);
                     }
                     sheathOffsetBaseRot = -4;
-                } else if (type == SBItems.bladestand_v) {
+                } else if (type == SlashBladeItems.BLADESTAND_V.get()) {
                     bladeOffset = new Vec3(-100, 230, 0);
                     sheathOffset = new Vec3(-100, 230, 0);
                     bladeOffsetRot = 80;
                     sheathOffsetRot = 80;
-                } else if (type == SBItems.bladestand_s) {
+                } else if (type == SlashBladeItems.BLADESTAND_S.get()) {
                     if (hFlip) {
                         bladeOffset = new Vec3(60, -25, 0);
                         sheathOffset = new Vec3(60, -25, 0);
@@ -329,8 +329,8 @@ public class SlashBladeTEISR extends BlockEntityWithoutLevelRenderer {
                         bladeOffset = new Vec3(-60, -25, 0);
                         sheathOffset = new Vec3(-60, -25, 0);
                     }
-                } else if (type == SBItems.bladestand_1w) {
-                } else if (type == SBItems.bladestand_2w) {
+                } else if (type == SlashBladeItems.BLADESTAND_1_W.get()) {
+                } else if (type == SlashBladeItems.BLADESTAND_2_W.get()) {
                     bladeOffset = new Vec3(0, 21.5f, 0);
                     if (hFlip) {
                         sheathOffset = new Vec3(-40, -27, 0);

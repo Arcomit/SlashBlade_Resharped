@@ -11,7 +11,7 @@ import mods.flammpfeil.slashblade.compat.playerAnim.PlayerAnimationOverrider;
 import mods.flammpfeil.slashblade.event.client.AdvancementsRecipeRenderer;
 import mods.flammpfeil.slashblade.event.client.SneakingMotionCanceller;
 import mods.flammpfeil.slashblade.event.client.UserPoseOverrider;
-import mods.flammpfeil.slashblade.init.SBItems;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -60,31 +60,31 @@ public class ClientHandler {
 
         RankRenderer.getInstance().register();
 
-        ItemProperties.register(SBItems.slashblade, new ResourceLocation("slashblade:user"),
+        ItemProperties.register(SlashBladeItems.SLASHBLADE.get(), new ResourceLocation("slashblade:user"),
                 (ClampedItemPropertyFunction) (p_174564_, p_174565_, p_174566_, p_174567_) -> {
                     BladeModel.user = p_174566_;
                     return 0;
                 });
 
-        ItemProperties.register(SBItems.slashblade_bamboo, new ResourceLocation("slashblade:user"),
+        ItemProperties.register(SlashBladeItems.SLASHBLADE_BAMBOO.get(), new ResourceLocation("slashblade:user"),
                 (ClampedItemPropertyFunction) (p_174564_, p_174565_, p_174566_, p_174567_) -> {
                     BladeModel.user = p_174566_;
                     return 0;
                 });
 
-        ItemProperties.register(SBItems.slashblade_silverbamboo, new ResourceLocation("slashblade:user"),
+        ItemProperties.register(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get(), new ResourceLocation("slashblade:user"),
                 (ClampedItemPropertyFunction) (p_174564_, p_174565_, p_174566_, p_174567_) -> {
                     BladeModel.user = p_174566_;
                     return 0;
                 });
 
-        ItemProperties.register(SBItems.slashblade_white, new ResourceLocation("slashblade:user"),
+        ItemProperties.register(SlashBladeItems.SLASHBLADE_WHITE.get(), new ResourceLocation("slashblade:user"),
                 (ClampedItemPropertyFunction) (p_174564_, p_174565_, p_174566_, p_174567_) -> {
                     BladeModel.user = p_174566_;
                     return 0;
                 });
 
-        ItemProperties.register(SBItems.slashblade_wood, new ResourceLocation("slashblade:user"),
+        ItemProperties.register(SlashBladeItems.SLASHBLADE_WOOD.get(), new ResourceLocation("slashblade:user"),
                 (ClampedItemPropertyFunction) (p_174564_, p_174565_, p_174566_, p_174567_) -> {
                     BladeModel.user = p_174566_;
                     return 0;
@@ -115,11 +115,11 @@ public class ClientHandler {
 
     @SubscribeEvent
     public static void Baked(final ModelEvent.ModifyBakingResult event) {
-        bakeBlade(SBItems.slashblade, event);
-        bakeBlade(SBItems.slashblade_white, event);
-        bakeBlade(SBItems.slashblade_wood, event);
-        bakeBlade(SBItems.slashblade_silverbamboo, event);
-        bakeBlade(SBItems.slashblade_bamboo, event);
+        bakeBlade(SlashBladeItems.SLASHBLADE.get(), event);
+        bakeBlade(SlashBladeItems.SLASHBLADE_WHITE.get(), event);
+        bakeBlade(SlashBladeItems.SLASHBLADE_WOOD.get(), event);
+        bakeBlade(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get(), event);
+        bakeBlade(SlashBladeItems.SLASHBLADE_BAMBOO.get(), event);
     }
 
     public static void bakeBlade(Item blade, final ModelEvent.ModifyBakingResult event) {

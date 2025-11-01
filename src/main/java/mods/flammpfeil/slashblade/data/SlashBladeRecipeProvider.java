@@ -4,12 +4,12 @@ import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.advancement.SlashBladeItemPredicate;
 import mods.flammpfeil.slashblade.data.builtin.SlashBladeBuiltInRegistry;
 import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.SwordType;
 import mods.flammpfeil.slashblade.recipe.RequestDefinition;
 import mods.flammpfeil.slashblade.recipe.SlashBladeIngredient;
 import mods.flammpfeil.slashblade.recipe.SlashBladeShapedRecipeBuilder;
 import mods.flammpfeil.slashblade.recipe.SlashBladeSmithingRecipeBuilder;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.slashblade.EnchantmentDefinition;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -50,21 +50,21 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                 .unlocks(getHasName(Items.NETHERITE_INGOT), has(Tags.Items.INGOTS_NETHERITE))
                 .save(consumer, SlashBlade.prefix("rodai_netherite_smithing"));
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, SBItems.slashblade_wood).pattern("  L").pattern(" L ")
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, SlashBladeItems.SLASHBLADE_WOOD.get()).pattern("  L").pattern(" L ")
                 .pattern("B  ").define('B', Items.WOODEN_SWORD).define('L', ItemTags.LOGS)
                 .unlockedBy(getHasName(Items.WOODEN_SWORD), has(Items.WOODEN_SWORD)).save(consumer);
-        SlashBladeShapedRecipeBuilder.shaped(SBItems.slashblade_bamboo).pattern("  L").pattern(" L ").pattern("B  ")
-                .define('B', SBItems.slashblade_wood).define('L', SlashBladeItemTags.BAMBOO)
-                .unlockedBy(getHasName(SBItems.slashblade_wood), has(SBItems.slashblade_wood)).save(consumer);
-        SlashBladeShapedRecipeBuilder.shaped(SBItems.slashblade_silverbamboo).pattern(" EI").pattern("SBD")
-                .pattern("PS ").define('B', SBItems.slashblade_bamboo).define('I', Tags.Items.INGOTS_IRON)
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeItems.SLASHBLADE_BAMBOO.get()).pattern("  L").pattern(" L ").pattern("B  ")
+                .define('B', SlashBladeItems.SLASHBLADE_WOOD.get()).define('L', SlashBladeItemTags.BAMBOO)
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_WOOD.get()), has(SlashBladeItems.SLASHBLADE_WOOD.get())).save(consumer);
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()).pattern(" EI").pattern("SBD")
+                .pattern("PS ").define('B', SlashBladeItems.SLASHBLADE_BAMBOO.get()).define('I', Tags.Items.INGOTS_IRON)
                 .define('S', Tags.Items.STRING).define('P', Items.PAPER).define('E', Items.EGG)
                 .define('D', Tags.Items.DYES_BLACK)
-                .unlockedBy(getHasName(SBItems.slashblade_bamboo), has(SBItems.slashblade_bamboo)).save(consumer);
-        SlashBladeShapedRecipeBuilder.shaped(SBItems.slashblade_white).pattern("  L").pattern(" L ").pattern("BG ")
-                .define('B', SBItems.slashblade_wood).define('L', SBItems.proudsoul_ingot)
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_BAMBOO.get()), has(SlashBladeItems.SLASHBLADE_BAMBOO.get())).save(consumer);
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeItems.SLASHBLADE_WHITE.get()).pattern("  L").pattern(" L ").pattern("BG ")
+                .define('B', SlashBladeItems.SLASHBLADE_WOOD.get()).define('L', SlashBladeItems.PROUDSOUL_INGOT.get())
                 .define('G', Tags.Items.INGOTS_GOLD)
-                .unlockedBy(getHasName(SBItems.slashblade_wood), has(SBItems.slashblade_wood)).save(consumer);
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_WOOD.get()), has(SlashBladeItems.SLASHBLADE_WOOD.get())).save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.YAMATO.location())
                 .pattern("PPP")
@@ -74,8 +74,8 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                         SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
                                 .name(SlashBladeBuiltInRegistry.YAMATO.location()).addSwordType(SwordType.BROKEN)
                                 .addSwordType(SwordType.SEALED).build()))
-                .define('P', SBItems.proudsoul_sphere)
-                .unlockedBy(getHasName(SBItems.proudsoul_sphere), inventoryTrigger(
+                .define('P', SlashBladeItems.PROUDSOUL_SPHERE.get())
+                .unlockedBy(getHasName(SlashBladeItems.PROUDSOUL_SPHERE.get()), inventoryTrigger(
                         new SlashBladeItemPredicate(
                                 RequestDefinition.Builder.newInstance()
                                         .name(SlashBladeBuiltInRegistry.YAMATO.location()).addSwordType(SwordType.BROKEN)
@@ -85,40 +85,40 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                 ))
                 .save(consumer, SlashBlade.prefix("yamato_fix"));
 
-        SlashBladeShapedRecipeBuilder.shaped(SBItems.slashblade).pattern(" EI").pattern("PBD").pattern("SI ")
+        SlashBladeShapedRecipeBuilder.shaped(SlashBladeItems.SLASHBLADE.get()).pattern(" EI").pattern("PBD").pattern("SI ")
                 .define('B',
-                        SlashBladeIngredient.of(SBItems.slashblade_white,
+                        SlashBladeIngredient.of(SlashBladeItems.SLASHBLADE_WHITE.get(),
                                 RequestDefinition.Builder.newInstance().addSwordType(SwordType.BROKEN).build()))
                 .define('I', Tags.Items.INGOTS_GOLD).define('S', Tags.Items.STRING).define('P', Tags.Items.DYES_BLUE)
                 .define('E', Tags.Items.RODS_BLAZE).define('D', Tags.Items.STORAGE_BLOCKS_COAL)
-                .unlockedBy(getHasName(SBItems.slashblade_white), has(SBItems.slashblade_white)).save(consumer);
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_WHITE.get()), has(SlashBladeItems.SLASHBLADE_WHITE.get())).save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.RUBY.location()).pattern("DPI").pattern("PB ")
                 .pattern("S  ")
                 .define('B',
-                        SlashBladeIngredient.of(SBItems.slashblade_silverbamboo,
+                        SlashBladeIngredient.of(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get(),
                                 RequestDefinition.Builder.newInstance().addSwordType(SwordType.BROKEN).build()))
-                .define('I', SBItems.proudsoul).define('S', Tags.Items.STRING).define('P', SBItems.proudsoul_ingot)
+                .define('I', SlashBladeItems.PROUDSOUL.get()).define('S', Tags.Items.STRING).define('P', SlashBladeItems.PROUDSOUL_INGOT.get())
                 .define('D', Tags.Items.DYES_RED)
-                .unlockedBy(getHasName(SBItems.slashblade_silverbamboo), has(SBItems.slashblade_silverbamboo))
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()), has(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()))
                 .save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.FOX_BLACK.location()).pattern(" EF")
                 .pattern("BCS").pattern("WQ ").define('W', Tags.Items.CROPS_WHEAT)
                 .define('Q', Tags.Items.STORAGE_BLOCKS_QUARTZ).define('B', Items.BLAZE_POWDER)
-                .define('S', SBItems.proudsoul_crystal).define('E', Tags.Items.OBSIDIAN)
+                .define('S', SlashBladeItems.PROUDSOUL_CRYSTAL.get()).define('E', Tags.Items.OBSIDIAN)
                 .define('F', Tags.Items.FEATHERS)
                 .define('C', SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
                         .name(SlashBladeBuiltInRegistry.RUBY.location())
                         .addEnchantment(new EnchantmentDefinition(getEnchantmentID(Enchantments.SMITE), 1)).build()))
 
-                .unlockedBy(getHasName(SBItems.slashblade_silverbamboo), has(SBItems.slashblade_silverbamboo))
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()), has(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()))
                 .save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.FOX_WHITE.location()).pattern(" EF")
                 .pattern("BCS").pattern("WQ ").define('W', Tags.Items.CROPS_WHEAT)
                 .define('Q', Tags.Items.STORAGE_BLOCKS_QUARTZ).define('B', Items.BLAZE_POWDER)
-                .define('S', SBItems.proudsoul_crystal).define('E', Tags.Items.OBSIDIAN)
+                .define('S', SlashBladeItems.PROUDSOUL_CRYSTAL.get()).define('E', Tags.Items.OBSIDIAN)
                 .define('F', Tags.Items.FEATHERS)
                 .define('C',
                         SlashBladeIngredient.of(
@@ -128,7 +128,7 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                                                 getEnchantmentID(Enchantments.MOB_LOOTING), 1))
                                         .build()))
 
-                .unlockedBy(getHasName(SBItems.slashblade_silverbamboo), has(SBItems.slashblade_silverbamboo))
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()), has(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()))
                 .save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.MURAMASA.location()).pattern("SSS")
@@ -136,8 +136,8 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                 .define('B',
                         SlashBladeIngredient
                                 .of(RequestDefinition.Builder.newInstance().proudSoul(10000).refineCount(20).build()))
-                .define('S', Ingredient.of(SBItems.proudsoul_sphere))
-                .unlockedBy(getHasName(SBItems.slashblade), inventoryTrigger(
+                .define('S', Ingredient.of(SlashBladeItems.PROUDSOUL_SPHERE.get()))
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE.get()), inventoryTrigger(
                         new SlashBladeItemPredicate(
                                 RequestDefinition.Builder.newInstance().build()
                         )
@@ -147,28 +147,28 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.TAGAYASAN.location()).pattern("SES")
                 .pattern("DBD").pattern("SES")
                 .define('B',
-                        SlashBladeIngredient.of(SBItems.slashblade_wood, RequestDefinition.Builder.newInstance()
+                        SlashBladeIngredient.of(SlashBladeItems.SLASHBLADE_WOOD.get(), RequestDefinition.Builder.newInstance()
                                 .addEnchantment(new EnchantmentDefinition(getEnchantmentID(Enchantments.UNBREAKING), 1))
                                 .proudSoul(1000).refineCount(10).build()))
-                .define('S', Ingredient.of(SBItems.proudsoul_sphere)).define('E', Ingredient.of(Items.ENDER_EYE))
+                .define('S', Ingredient.of(SlashBladeItems.PROUDSOUL_SPHERE.get())).define('E', Ingredient.of(Items.ENDER_EYE))
                 .define('D', Ingredient.of(Items.ENDER_PEARL))
-                .unlockedBy(getHasName(SBItems.slashblade_wood), has(SBItems.slashblade_wood)).save(consumer);
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_WOOD.get()), has(SlashBladeItems.SLASHBLADE_WOOD.get())).save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.AGITO.location()).pattern(" S ").pattern("SBS")
                 .pattern(" S ")
                 .define('B',
                         SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
                                 .name(SlashBladeBuiltInRegistry.AGITO_RUST.location()).killCount(100).build()))
-                .define('S', Ingredient.of(SBItems.proudsoul))
-                .unlockedBy(getHasName(SBItems.proudsoul), has(SBItems.proudsoul)).save(consumer);
+                .define('S', Ingredient.of(SlashBladeItems.PROUDSOUL.get()))
+                .unlockedBy(getHasName(SlashBladeItems.PROUDSOUL.get()), has(SlashBladeItems.PROUDSOUL.get())).save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.OROTIAGITO_SEALED.location()).pattern(" S ")
                 .pattern("SBS").pattern(" S ")
                 .define('B',
                         SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
                                 .name(SlashBladeBuiltInRegistry.OROTIAGITO_RUST.location()).killCount(100).build()))
-                .define('S', Ingredient.of(SBItems.proudsoul))
-                .unlockedBy(getHasName(SBItems.proudsoul), has(SBItems.proudsoul)).save(consumer);
+                .define('S', Ingredient.of(SlashBladeItems.PROUDSOUL.get()))
+                .unlockedBy(getHasName(SlashBladeItems.PROUDSOUL.get()), has(SlashBladeItems.PROUDSOUL.get())).save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.OROTIAGITO.location()).pattern("PSP")
                 .pattern("SBS").pattern("PSP")
@@ -176,8 +176,8 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                         SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
                                 .name(SlashBladeBuiltInRegistry.OROTIAGITO_SEALED.location()).killCount(1000)
                                 .proudSoul(1000).refineCount(10).build()))
-                .define('P', Ingredient.of(SBItems.proudsoul)).define('S', Ingredient.of(SBItems.proudsoul_sphere))
-                .unlockedBy(getHasName(SBItems.proudsoul_sphere), has(SBItems.proudsoul_sphere)).save(consumer);
+                .define('P', Ingredient.of(SlashBladeItems.PROUDSOUL.get())).define('S', Ingredient.of(SlashBladeItems.PROUDSOUL_SPHERE.get()))
+                .unlockedBy(getHasName(SlashBladeItems.PROUDSOUL_SPHERE.get()), has(SlashBladeItems.PROUDSOUL_SPHERE.get())).save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.DOUTANUKI.location()).pattern("  P")
                 .pattern(" B ").pattern("P  ")
@@ -185,8 +185,8 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                         SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
                                 .name(SlashBladeBuiltInRegistry.SABIGATANA.location()).killCount(100).proudSoul(1000)
                                 .refineCount(10).build()))
-                .define('P', Ingredient.of(SBItems.proudsoul_sphere))
-                .unlockedBy(getHasName(SBItems.proudsoul_sphere), has(SBItems.proudsoul_sphere)).save(consumer);
+                .define('P', Ingredient.of(SlashBladeItems.PROUDSOUL_SPHERE.get()))
+                .unlockedBy(getHasName(SlashBladeItems.PROUDSOUL_SPHERE.get()), has(SlashBladeItems.PROUDSOUL_SPHERE.get())).save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.SABIGATANA.location()).pattern("  P")
                 .pattern(" P ").pattern("B  ")
@@ -194,8 +194,8 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                         SlashBladeIngredient.of(RequestDefinition.Builder.newInstance()
                                 .name(SlashBladeBuiltInRegistry.SABIGATANA.location()).addSwordType(SwordType.BROKEN)
                                 .addSwordType(SwordType.SEALED).build()))
-                .define('P', Ingredient.of(SBItems.proudsoul_ingot))
-                .unlockedBy(getHasName(SBItems.proudsoul_ingot), has(SBItems.proudsoul_ingot)).save(consumer);
+                .define('P', Ingredient.of(SlashBladeItems.PROUDSOUL_INGOT.get()))
+                .unlockedBy(getHasName(SlashBladeItems.PROUDSOUL_INGOT.get()), has(SlashBladeItems.PROUDSOUL_INGOT.get())).save(consumer);
 
         SlashBladeShapedRecipeBuilder.shaped(SlashBladeBuiltInRegistry.TUKUMO.location()).pattern("ESD").pattern("RBL")
                 .pattern("ISG").define('D', Tags.Items.STORAGE_BLOCKS_DIAMOND)
@@ -207,8 +207,8 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
                                 .addEnchantment(
                                         new EnchantmentDefinition(getEnchantmentID(Enchantments.FIRE_ASPECT), 1))
                                 .build()))
-                .define('S', Ingredient.of(SBItems.proudsoul_sphere))
-                .unlockedBy(getHasName(SBItems.slashblade), inventoryTrigger(
+                .define('S', Ingredient.of(SlashBladeItems.PROUDSOUL_SPHERE.get()))
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE.get()), inventoryTrigger(
                         new SlashBladeItemPredicate(
                                 RequestDefinition.Builder.newInstance().build()
                         )
@@ -225,21 +225,21 @@ public class SlashBladeRecipeProvider extends RecipeProvider implements IConditi
 
     private void rodaiRecipe(ResourceLocation rodai, ItemLike sword, Consumer<FinishedRecipe> consumer) {
         SlashBladeShapedRecipeBuilder.shaped(rodai).pattern("  P").pattern(" B ").pattern("WS ").define('B',
-                        SlashBladeIngredient.of(SBItems.slashblade_silverbamboo,
+                        SlashBladeIngredient.of(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get(),
                                 RequestDefinition.Builder.newInstance().killCount(100).addSwordType(SwordType.BROKEN).build()))
                 .define('W', Ingredient.of(sword)).define('S', Ingredient.of(Tags.Items.STRING))
-                .define('P', Ingredient.of(SBItems.proudsoul_crystal))
-                .unlockedBy(getHasName(SBItems.slashblade_silverbamboo), has(SBItems.slashblade_silverbamboo))
+                .define('P', Ingredient.of(SlashBladeItems.PROUDSOUL_CRYSTAL.get()))
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()), has(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()))
                 .save(consumer);
     }
 
     private void rodaiAdvRecipe(ResourceLocation rodai, ItemLike sword, Consumer<FinishedRecipe> consumer) {
         SlashBladeShapedRecipeBuilder.shaped(rodai).pattern("  P").pattern(" B ").pattern("WS ").define('B',
-                        SlashBladeIngredient.of(SBItems.slashblade_silverbamboo,
+                        SlashBladeIngredient.of(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get(),
                                 RequestDefinition.Builder.newInstance().killCount(100).addSwordType(SwordType.BROKEN).build()))
                 .define('W', Ingredient.of(sword)).define('S', Ingredient.of(Tags.Items.STRING))
-                .define('P', Ingredient.of(SBItems.proudsoul_trapezohedron))
-                .unlockedBy(getHasName(SBItems.slashblade_silverbamboo), has(SBItems.slashblade_silverbamboo))
+                .define('P', Ingredient.of(SlashBladeItems.PROUDSOUL_TRAPEZOHEDRON.get()))
+                .unlockedBy(getHasName(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()), has(SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get()))
                 .save(consumer);
     }
 
