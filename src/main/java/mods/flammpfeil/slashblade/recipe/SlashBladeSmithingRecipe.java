@@ -2,8 +2,8 @@ package mods.flammpfeil.slashblade.recipe;
 
 import com.google.gson.JsonObject;
 import mods.flammpfeil.slashblade.SlashBladeConfig;
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
@@ -61,9 +61,9 @@ public class SlashBladeSmithingRecipe implements SmithingRecipe {
 
     private static ItemStack getResultBlade(ResourceLocation outputBlade) {
         Item bladeItem = ForgeRegistries.ITEMS.containsKey(outputBlade) ? ForgeRegistries.ITEMS.getValue(outputBlade)
-                : SBItems.slashblade;
+                : SlashBladeItems.SLASHBLADE.get();
 
-        return Objects.requireNonNullElseGet(bladeItem, () -> SBItems.slashblade).getDefaultInstance();
+        return Objects.requireNonNullElseGet(bladeItem, SlashBladeItems.SLASHBLADE).getDefaultInstance();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class SlashBladeSmithingRecipe implements SmithingRecipe {
     public @NotNull ItemStack assemble(@NotNull Container container, @NotNull RegistryAccess access) {
         var result = this.getResultItem(access);
         if (!(result.getItem() instanceof ItemSlashBlade)) {
-            result = new ItemStack(SBItems.slashblade);
+            result = new ItemStack(SlashBladeItems.SLASHBLADE.get());
         }
 
         var resultState = result.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);

@@ -11,8 +11,8 @@ import mods.flammpfeil.slashblade.data.tag.SlashBladeItemTags;
 import mods.flammpfeil.slashblade.entity.BladeItemEntity;
 import mods.flammpfeil.slashblade.event.SlashBladeEvent;
 import mods.flammpfeil.slashblade.init.DefaultResources;
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.combo.ComboState;
 import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import mods.flammpfeil.slashblade.util.InputCommand;
@@ -279,7 +279,7 @@ public class ItemSlashBlade extends SwordItem {
                                 .contains(Objects.requireNonNull(ForgeRegistries.ENCHANTMENTS.getKey(enchantment)).toString()))
                         .toList();
                 for (int i = 0; i < count; i += 1) {
-                    ItemStack enchanted_soul = new ItemStack(SBItems.proudsoul_tiny);
+                    ItemStack enchanted_soul = new ItemStack(SlashBladeItems.PROUDSOUL_TINY.get());
                     Enchantment enchant = enchantments.get(user.getRandom().nextInt(0, enchantments.size()));
                     if (enchant != null) {
                         enchanted_soul.enchant(enchant, 1);
@@ -291,7 +291,7 @@ public class ItemSlashBlade extends SwordItem {
                     state.setProudSoulCount(state.getProudSoulCount() - 100);
                 }
             }
-            ItemStack soul = new ItemStack(SBItems.proudsoul_tiny);
+            ItemStack soul = new ItemStack(SlashBladeItems.PROUDSOUL_TINY.get());
 
             int count = state.getProudSoulCount() >= SlashBladeConfig.MAX_PROUDSOUL_DROP.get() * 100 ?
                     SlashBladeConfig.MAX_PROUDSOUL_DROP.get() : Math.max(1, state.getProudSoulCount() / 100);

@@ -3,9 +3,9 @@ package mods.flammpfeil.slashblade.advancement;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import mods.flammpfeil.slashblade.SlashBlade;
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.recipe.RequestDefinition;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -38,7 +38,7 @@ public class SlashBladeItemPredicate extends ItemPredicate {
         var name = this.getRequest().name();
         boolean requestCheck = this.getRequest().test(stack);
         if (name.equals(SlashBlade.prefix("none"))) {
-            return requestCheck && stack.is(SBItems.slashblade);
+            return requestCheck && stack.is(SlashBladeItems.SLASHBLADE.get());
         }
         if (ForgeRegistries.ITEMS.containsKey(name)) {
             return requestCheck && stack.is(ForgeRegistries.ITEMS.getValue(name));

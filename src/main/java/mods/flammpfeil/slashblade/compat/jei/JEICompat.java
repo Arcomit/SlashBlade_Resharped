@@ -8,9 +8,9 @@ import mezz.jei.api.registration.ISubtypeRegistration;
 import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.capability.slashblade.ISlashBladeState;
-import mods.flammpfeil.slashblade.init.SBItems;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
 import mods.flammpfeil.slashblade.recipe.SlashBladeSmithingRecipe;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class JEICompat implements IModPlugin {
 
     @Override
     public void registerItemSubtypes(ISubtypeRegistration registration) {
-        registration.registerSubtypeInterpreter(SBItems.slashblade, JEICompat::syncSlashBlade);
+        registration.registerSubtypeInterpreter(SlashBladeItems.SLASHBLADE.get(), JEICompat::syncSlashBlade);
     }
 
     public static String syncSlashBlade(ItemStack stack, UidContext context) {

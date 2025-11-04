@@ -5,7 +5,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemProudSoul extends Item {
-
     public ItemProudSoul(Properties properties) {
         super(properties);
     }
@@ -14,5 +13,4 @@ public class ItemProudSoul extends Item {
     public boolean isFoil(@NotNull ItemStack item) {
         return true;
     }
-
 }
