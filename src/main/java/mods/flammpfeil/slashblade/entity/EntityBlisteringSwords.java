@@ -125,7 +125,7 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
                         .filter(Optional::isPresent).map(Optional::get).findFirst();
             }
 
-            Vec3 targetPos = null;
+            Vec3 targetPos = Vec3.ZERO;
             if (foundTarget.isPresent()) {
                 targetPos = foundTarget.map((e) -> new Vec3(e.getX(), e.getY() + e.getEyeHeight() * 0.5, e.getZ()))
                         .orElseGet(() -> {
@@ -140,7 +140,7 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
             }
 
             Vec3 pos = this.getPosition(0.0f);
-            dir = Objects.requireNonNull(targetPos).subtract(pos).normalize();
+            dir = targetPos.subtract(pos).normalize();
 
             this.shoot(dir.x, dir.y, dir.z, 3.0f, 1.0f);
             if (sender instanceof ServerPlayer) {
