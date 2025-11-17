@@ -80,7 +80,7 @@ public record RequestDefinition(ResourceLocation name, int proudSoulCount, int k
 
         this.enchantments()
                 .forEach(enchantment -> blade.enchant(
-                        Objects.requireNonNull(ForgeRegistries.ENCHANTMENTS.getValue(enchantment.getEnchantmentID())),
+                        ForgeRegistries.ENCHANTMENTS.getValue(enchantment.getEnchantmentID()),
                         enchantment.getEnchantmentLevel()));
         this.defaultType.forEach(type -> {
             switch (type) {

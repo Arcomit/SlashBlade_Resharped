@@ -17,7 +17,6 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -68,8 +67,8 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
 
             // performance setting
 
-            tag.putString("SpecialAttackType", Objects.requireNonNull(Optional.ofNullable(instance.getSlashArtsKey())
-                    .orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId())).toString());
+            tag.putString("SpecialAttackType", Optional.ofNullable(instance.getSlashArtsKey())
+                    .orElse(SlashArtsRegistry.JUDGEMENT_CUT.getId()).toString());
             // render info
             tag.putByte("StandbyRenderType", (byte) instance.getCarryType().ordinal());
             tag.putInt("SummonedSwordColor", instance.getColorCode());
@@ -77,7 +76,7 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
             tag.put("adjustXYZ", NBTHelper.newDoubleNBTList(instance.getAdjust()));
 
             tag.putString("ComboRoot",
-                    Objects.requireNonNull(Optional.ofNullable(instance.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId())).toString());
+                    Optional.ofNullable(instance.getComboRoot()).orElse(ComboStateRegistry.STANDBY.getId()).toString());
 
         });
 
