@@ -33,6 +33,8 @@ import org.joml.Math;
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -370,10 +372,10 @@ public class SlashBladeState implements ISlashBladeState {
         this.proudSoul = Math.max(0, psCount);
     }
 
-    protected List<ResourceLocation> specialEffects = new ArrayList<>();
+    protected Collection<ResourceLocation> specialEffects = new HashSet<>();
 
     @Override
-    public List<ResourceLocation> getSpecialEffects() {
+    public Collection<ResourceLocation> getSpecialEffects() {
         return this.specialEffects;
     }
 
@@ -409,7 +411,7 @@ public class SlashBladeState implements ISlashBladeState {
             return this.specialEffects.contains(se);
         }
         this.specialEffects.remove(se);
-        return true;
+        return false;
     }
 
     @Override

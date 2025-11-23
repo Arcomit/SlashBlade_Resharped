@@ -417,9 +417,9 @@ public class ItemSlashBlade extends SwordItem {
 
         stack.getCapability(BLADESTATE).ifPresent((state) -> {
 
-            (Objects.requireNonNull(ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq()) != null
+            (ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq()) != null
                     ? ComboStateRegistry.REGISTRY.get().getValue(state.getComboSeq())
-                    : ComboStateRegistry.NONE.get())).holdAction(player);
+                    : ComboStateRegistry.NONE.get()).holdAction(player);
             var swordType = SwordType.from(stack);
             if (state.isBroken() || state.isSealed() || !(swordType.contains(SwordType.ENCHANTED))) {
                 return;
@@ -457,7 +457,7 @@ public class ItemSlashBlade extends SwordItem {
                     boolean hasHunger = player.hasEffect(MobEffects.HUNGER) && SlashBladeConfig.HUNGER_CAN_REPAIR.get();
                     if (swordType.contains(SwordType.BEWITCHED) || hasHunger) {
                         if (stack.getDamageValue() > 0 && player.getFoodData().getFoodLevel() > 0) {
-                            int hungerAmplifier = hasHunger ? Objects.requireNonNull(player.getEffect(MobEffects.HUNGER)).getAmplifier() : 0;
+                            int hungerAmplifier = hasHunger ? player.getEffect(MobEffects.HUNGER).getAmplifier() : 0;
                             int level = 1 + hungerAmplifier;
                             Boolean expCostFlag = SlashBladeConfig.SELF_REPAIR_COST_EXP.get();
                             int expCost = SlashBladeConfig.BEWITCHED_EXP_COST.get() * level;

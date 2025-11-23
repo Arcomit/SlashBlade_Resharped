@@ -32,7 +32,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 public interface ISlashBladeState extends INBTSerializable<CompoundTag> {
 
@@ -461,7 +460,7 @@ public interface ISlashBladeState extends INBTSerializable<CompoundTag> {
 
     void setMaxDamage(int damage);
 
-    List<ResourceLocation> getSpecialEffects();
+    Collection<ResourceLocation> getSpecialEffects();
 
     void setSpecialEffects(ListTag list);
 

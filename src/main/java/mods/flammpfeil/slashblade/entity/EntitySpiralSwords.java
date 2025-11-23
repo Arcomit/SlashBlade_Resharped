@@ -51,8 +51,8 @@ public class EntitySpiralSwords extends EntityAbstractSummonedSword {
     public void tick() {
         if (!itFired()) {
             if (level().isClientSide()) {
-                if (getVehicle() == null) {
-                    startRiding(Objects.requireNonNull(this.getOwner()), true);
+            	if (getVehicle() == null && this.getOwner() != null) {
+                    startRiding(this.getOwner(), true);
                 }
             }
         }
