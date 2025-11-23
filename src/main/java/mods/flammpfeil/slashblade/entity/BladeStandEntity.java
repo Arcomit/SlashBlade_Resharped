@@ -198,7 +198,7 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
     @Override
     protected void recalculateBoundingBox() {
         if (this.direction != null) {
-            double d0 = 0.46875D;
+            double d0 = 2D / 16D;
             double d1 = (double)this.pos.getX() + 0.5D - (double)this.direction.getStepX() * d0;
             double d2 = (double)this.pos.getY() + 0.5D - (double)this.direction.getStepY() * d0;
             double d3 = (double)this.pos.getZ() + 0.5D - (double)this.direction.getStepZ() * d0;
