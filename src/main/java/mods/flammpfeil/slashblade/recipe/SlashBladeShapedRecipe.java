@@ -1,7 +1,8 @@
 package mods.flammpfeil.slashblade.recipe;
 
-import mods.flammpfeil.slashblade.init.SBItems;
+import mods.flammpfeil.slashblade.SlashBladeConfig;
 import mods.flammpfeil.slashblade.item.ItemSlashBlade;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -14,6 +15,9 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class SlashBladeShapedRecipe extends ShapedRecipe {
 
@@ -30,9 +34,9 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
 
     private static ItemStack getResultBlade(ResourceLocation outputBlade) {
         Item bladeItem = ForgeRegistries.ITEMS.containsKey(outputBlade) ? ForgeRegistries.ITEMS.getValue(outputBlade)
-                : SBItems.slashblade;
+                : SlashBladeItems.SLASHBLADE.get();
 
-        return bladeItem.getDefaultInstance();
+        return Objects.requireNonNullElseGet(bladeItem, SlashBladeItems.SLASHBLADE).getDefaultInstance();
     }
 
     public ResourceLocation getOutputBlade() {
@@ -44,10 +48,10 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess access) {
+    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess access) {
         ItemStack result = SlashBladeShapedRecipe.getResultBlade(this.getOutputBlade());
 
-        if (!ForgeRegistries.ITEMS.getKey(result.getItem()).equals(getOutputBlade())) {
+        if (!Objects.equals(ForgeRegistries.ITEMS.getKey(result.getItem()), getOutputBlade())) {
             result = access.registryOrThrow(SlashBladeDefinition.REGISTRY_KEY).getOrThrow(getOutputBladeKey())
                     .getBlade();
         }
@@ -56,25 +60,37 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, RegistryAccess access) {
+    public @NotNull ItemStack assemble(@NotNull CraftingContainer container, @NotNull RegistryAccess access) {
         var result = this.getResultItem(access);
         if (!(result.getItem() instanceof ItemSlashBlade)) {
-        	result = new ItemStack(SBItems.slashblade);
+            result = new ItemStack(SlashBladeItems.SLASHBLADE.get());
         }
-        
+
         var resultState = result.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
+        boolean sumRefine = SlashBladeConfig.DO_CRAFTING_SUM_REFINE.get();
+        int proudSoul = resultState.getProudSoulCount();
+        int killCount = resultState.getKillCount();
+        int refine = resultState.getRefine();
         for (var stack : container.getItems()) {
-            if (!(stack.getItem() instanceof ItemSlashBlade))
+            if (!(stack.getItem() instanceof ItemSlashBlade)) {
                 continue;
+            }
             var ingredientState = stack.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
 
-            resultState.setProudSoulCount(resultState.getProudSoulCount() + ingredientState.getProudSoulCount());
-            resultState.setKillCount(resultState.getKillCount() + ingredientState.getKillCount());
-            resultState.setRefine(resultState.getRefine() + ingredientState.getRefine());
-            result.getOrCreateTag().put("bladeState", resultState.serializeNBT());
+            proudSoul += ingredientState.getProudSoulCount();
+            killCount += ingredientState.getKillCount();
+            if (sumRefine) {
+                refine += ingredientState.getRefine();
+            } else {
+                refine = Math.max(refine, ingredientState.getRefine());
+            }
             updateEnchantment(result, stack);
         }
-        
+        resultState.setProudSoulCount(proudSoul);
+        resultState.setKillCount(killCount);
+        resultState.setRefine(refine);
+        result.getOrCreateTag().put("bladeState", resultState.serializeNBT());
+
         return result;
     }
 
@@ -82,32 +98,32 @@ public class SlashBladeShapedRecipe extends ShapedRecipe {
         var newItemEnchants = result.getAllEnchantments();
         var oldItemEnchants = ingredient.getAllEnchantments();
         for (Enchantment enchantIndex : oldItemEnchants.keySet()) {
-            Enchantment enchantment = enchantIndex;
 
-            int destLevel = newItemEnchants.containsKey(enchantIndex) ? newItemEnchants.get(enchantIndex) : 0;
+            int destLevel = newItemEnchants.getOrDefault(enchantIndex, 0);
             int srcLevel = oldItemEnchants.get(enchantIndex);
 
             srcLevel = Math.max(srcLevel, destLevel);
-            srcLevel = Math.min(srcLevel, enchantment.getMaxLevel());
+            srcLevel = Math.min(srcLevel, enchantIndex.getMaxLevel());
 
-            boolean canApplyFlag = enchantment.canApplyAtEnchantingTable(result);
+            boolean canApplyFlag = enchantIndex.canApplyAtEnchantingTable(result);
             if (canApplyFlag) {
                 for (Enchantment curEnchantIndex : newItemEnchants.keySet()) {
                     if (curEnchantIndex != enchantIndex
-                            && !enchantment.isCompatibleWith(curEnchantIndex) /* canApplyTogether */) {
+                            && !enchantIndex.isCompatibleWith(curEnchantIndex) /* canApplyTogether */) {
                         canApplyFlag = false;
                         break;
                     }
                 }
-                if (canApplyFlag)
-                    newItemEnchants.put(enchantIndex, Integer.valueOf(srcLevel));
+                if (canApplyFlag) {
+                    newItemEnchants.put(enchantIndex, srcLevel);
+                }
             }
         }
         EnchantmentHelper.setEnchantments(newItemEnchants, result);
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return SERIALIZER;
     }
 

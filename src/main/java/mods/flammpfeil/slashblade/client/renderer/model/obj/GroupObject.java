@@ -10,7 +10,7 @@ import java.util.List;
 
 public class GroupObject {
     public String name;
-    public List<Face> faces = new ArrayList<Face>();
+    public List<Face> faces = new ArrayList<>();
     public int glDrawingMode;
 
     public GroupObject(String name) {
@@ -24,7 +24,7 @@ public class GroupObject {
 
     @OnlyIn(Dist.CLIENT)
     public void render(VertexConsumer tessellator, PoseStack matrixStack, int light, int color) {
-        if (faces.size() > 0) {
+        if (!faces.isEmpty()) {
             for (Face face : faces) {
                 face.addFaceForRender(tessellator, matrixStack, light, color);
             }

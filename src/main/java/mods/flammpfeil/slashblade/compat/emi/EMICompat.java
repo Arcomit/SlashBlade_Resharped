@@ -42,18 +42,19 @@ public class EMICompat implements EmiPlugin {
             registry.addRecipe(new SlashBladeSmithingEmiRecipe(recipe));
             vanillaSmithing.add(recipe.getId());
         }
-        registry.removeRecipes(emiRecipe -> {
-            return vanillaSmithing.contains(emiRecipe.getId()) && !(emiRecipe instanceof SlashBladeSmithingEmiRecipe);
-        });
+        registry.removeRecipes(emiRecipe -> vanillaSmithing.contains(emiRecipe.getId()) && !(emiRecipe instanceof SlashBladeSmithingEmiRecipe));
 
         // 添加工作站
         registry.addWorkstation(SLASHBLADE_SMITHING_CATEGORY, EmiStack.of(Blocks.SMITHING_TABLE));
-        registry.removeRecipes(ResourceLocation.parse("emi:/crafting/repairing/slashblade/slashblade"));
+        registry.removeRecipes(ResourceLocation.tryParse("emi:/crafting/repairing/slashblade/slashblade"));
 
     }
 
     private static <C extends Container, T extends Recipe<C>> List<T> findRecipesByType(RecipeType<T> type) {
         Minecraft instance = Minecraft.getInstance();
-		return instance.level.getRecipeManager().getAllRecipesFor(type);
+        if (instance.level != null) {
+            return instance.level.getRecipeManager().getAllRecipesFor(type);
+        }
+        return List.of();
     }
 }

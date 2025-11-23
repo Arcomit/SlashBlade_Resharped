@@ -1,17 +1,11 @@
 package mods.flammpfeil.slashblade.recipe;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-
-import mods.flammpfeil.slashblade.init.SBItems;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -22,6 +16,13 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SlashBladeIngredient extends Ingredient {
     private final Set<Item> items;
@@ -47,27 +48,28 @@ public class SlashBladeIngredient extends Ingredient {
     }
 
     public static SlashBladeIngredient of(RequestDefinition request) {
-        return new SlashBladeIngredient(Set.of(SBItems.slashblade), request);
+        return new SlashBladeIngredient(Set.of(SlashBladeItems.SLASHBLADE.get()), request);
     }
-    
+
     public static SlashBladeIngredient of(ItemLike item, ResourceLocation request) {
-        return new SlashBladeIngredient(Set.of(item.asItem()), 
-        		RequestDefinition.Builder.newInstance().name(request).build());
+        return new SlashBladeIngredient(Set.of(item.asItem()),
+                RequestDefinition.Builder.newInstance().name(request).build());
     }
 
     public static SlashBladeIngredient of(ResourceLocation request) {
-        return new SlashBladeIngredient(Set.of(SBItems.slashblade), 
-        		RequestDefinition.Builder.newInstance().name(request).build());
+        return new SlashBladeIngredient(Set.of(SlashBladeItems.SLASHBLADE.get()),
+                RequestDefinition.Builder.newInstance().name(request).build());
     }
-    
+
     public static SlashBladeIngredient blankNameless() {
-		return of(RequestDefinition.Builder.newInstance().build());
-	}
+        return of(RequestDefinition.Builder.newInstance().build());
+    }
 
     @Override
     public boolean test(ItemStack input) {
-        if (input == null)
+        if (input == null) {
             return false;
+        }
         return items.contains(input.getItem()) && this.request.test(input);
     }
 
@@ -77,16 +79,16 @@ public class SlashBladeIngredient extends Ingredient {
     }
 
     @Override
-    public IIngredientSerializer<? extends Ingredient> getSerializer() {
+    public @NotNull IIngredientSerializer<? extends Ingredient> getSerializer() {
         return Serializer.INSTANCE;
     }
 
     @Override
-    public JsonElement toJson() {
+    public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();
-        json.addProperty("type", CraftingHelper.getID(Serializer.INSTANCE).toString());
+        json.addProperty("type", Objects.requireNonNull(CraftingHelper.getID(Serializer.INSTANCE)).toString());
         if (items.size() == 1) {
-            json.addProperty("item", ForgeRegistries.ITEMS.getKey(items.iterator().next()).toString());
+            json.addProperty("item", Objects.requireNonNull(ForgeRegistries.ITEMS.getKey(items.iterator().next())).toString());
         } else {
             JsonArray items = new JsonArray();
             // ensure the order of items in the set is deterministic when saved to JSON
@@ -101,7 +103,7 @@ public class SlashBladeIngredient extends Ingredient {
         public static final Serializer INSTANCE = new Serializer();
 
         @Override
-        public SlashBladeIngredient parse(FriendlyByteBuf buffer) {
+        public @NotNull SlashBladeIngredient parse(FriendlyByteBuf buffer) {
             Set<Item> items = Stream.generate(() -> buffer.readRegistryIdUnsafe(ForgeRegistries.ITEMS))
                     .limit(buffer.readVarInt()).collect(Collectors.toSet());
             RequestDefinition request = RequestDefinition.fromNetwork(buffer);
@@ -109,12 +111,12 @@ public class SlashBladeIngredient extends Ingredient {
         }
 
         @Override
-        public SlashBladeIngredient parse(JsonObject json) {
+        public @NotNull SlashBladeIngredient parse(JsonObject json) {
             // parse items
             Set<Item> items;
-            if (json.has("item"))
+            if (json.has("item")) {
                 items = Set.of(CraftingHelper.getItem(GsonHelper.getAsString(json, "item"), true));
-            else if (json.has("items")) {
+            } else if (json.has("items")) {
                 ImmutableSet.Builder<Item> builder = ImmutableSet.builder();
                 JsonArray itemArray = GsonHelper.getAsJsonArray(json, "items");
                 for (int i = 0; i < itemArray.size(); i++) {
@@ -122,8 +124,9 @@ public class SlashBladeIngredient extends Ingredient {
                             true));
                 }
                 items = builder.build();
-            } else
+            } else {
                 throw new JsonSyntaxException("Must set either 'item' or 'items'");
+            }
             var request = RequestDefinition.fromJSON(json.getAsJsonObject("request"));
             return new SlashBladeIngredient(items, request);
         }
@@ -131,8 +134,9 @@ public class SlashBladeIngredient extends Ingredient {
         @Override
         public void write(FriendlyByteBuf buffer, SlashBladeIngredient ingredient) {
             buffer.writeVarInt(ingredient.items.size());
-            for (Item item : ingredient.items)
+            for (Item item : ingredient.items) {
                 buffer.writeRegistryIdUnsafe(ForgeRegistries.ITEMS, item);
+            }
             ingredient.request.toNetwork(buffer);
         }
 

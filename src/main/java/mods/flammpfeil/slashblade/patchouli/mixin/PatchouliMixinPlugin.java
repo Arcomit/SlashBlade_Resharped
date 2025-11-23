@@ -11,7 +11,8 @@ import java.util.Set;
 public class PatchouliMixinPlugin implements IMixinConfigPlugin {
 
     @Override
-    public void onLoad(String mixinPackage) {}
+    public void onLoad(String mixinPackage) {
+    }
 
     @Override
     public String getRefMapperConfig() {
@@ -20,11 +21,12 @@ public class PatchouliMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-    	return LoadingModList.get().getModFileById("patchouli") != null;
+        return LoadingModList.get().getModFileById("patchouli") != null;
     }
 
     @Override
-    public void acceptTargets(Set<String> set, Set<String> set1) {}
+    public void acceptTargets(Set<String> set, Set<String> set1) {
+    }
 
     @Override
     public List<String> getMixins() {

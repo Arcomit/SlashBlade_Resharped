@@ -10,49 +10,25 @@ import mods.flammpfeil.slashblade.capability.slashblade.CapabilitySlashBlade;
 import mods.flammpfeil.slashblade.client.renderer.entity.*;
 import mods.flammpfeil.slashblade.client.renderer.model.BladeModelManager;
 import mods.flammpfeil.slashblade.entity.*;
-import mods.flammpfeil.slashblade.event.*;
-import mods.flammpfeil.slashblade.event.handler.AllowFlightOverrwrite;
-import mods.flammpfeil.slashblade.event.handler.BlockPickCanceller;
-import mods.flammpfeil.slashblade.event.handler.CapabilityAttachHandler;
-import mods.flammpfeil.slashblade.event.handler.FallHandler;
-import mods.flammpfeil.slashblade.event.handler.KillCounter;
-import mods.flammpfeil.slashblade.event.handler.KnockBackHandler;
-import mods.flammpfeil.slashblade.event.handler.RankPointHandler;
-import mods.flammpfeil.slashblade.event.handler.RefineHandler;
-import mods.flammpfeil.slashblade.item.BladeStandItem;
-import mods.flammpfeil.slashblade.item.ItemProudSoul;
-import mods.flammpfeil.slashblade.item.ItemSlashBlade;
-import mods.flammpfeil.slashblade.item.ItemSlashBladeDetune;
-import mods.flammpfeil.slashblade.item.ItemTierSlashBlade;
+import mods.flammpfeil.slashblade.event.BladeMotionEventBroadcaster;
+import mods.flammpfeil.slashblade.event.handler.*;
 import mods.flammpfeil.slashblade.network.NetworkManager;
 import mods.flammpfeil.slashblade.recipe.RecipeSerializerRegistry;
-import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
-import mods.flammpfeil.slashblade.registry.ModAttributes;
-import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
-import mods.flammpfeil.slashblade.registry.SpecialEffectsRegistry;
+import mods.flammpfeil.slashblade.registry.*;
 import mods.flammpfeil.slashblade.registry.combo.ComboCommands;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
-import mods.flammpfeil.slashblade.registry.specialeffects.SpecialEffect;
 import mods.flammpfeil.slashblade.util.TargetSelector;
-import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.stats.StatFormatter;
-import net.minecraft.stats.Stats;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.stats.StatFormatter;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -62,17 +38,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.*;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-
-import static mods.flammpfeil.slashblade.SlashBladeConfig.TRAPEZOHEDRON_MAX_REFINE;
 
 @Mod(SlashBlade.MODID)
 public class SlashBlade {
@@ -97,6 +68,7 @@ public class SlashBlade {
         ModAttributes.ATTRIBUTES.register(modEventBus);
         NetworkManager.register();
 
+        SlashBladeItems.ITEMS.register(modEventBus);
         ComboStateRegistry.COMBO_STATE.register(modEventBus);
         SlashArtsRegistry.SLASH_ARTS.register(modEventBus);
         SlashBladeCreativeGroup.CREATIVE_MODE_TABS.register(modEventBus);
@@ -135,7 +107,7 @@ public class SlashBlade {
 
         ComboCommands.initDefaultStandByCommands();
 
-        
+
     }
 
     // You can use EventBusSubscriber to automatically subscribe events on the
@@ -184,137 +156,131 @@ public class SlashBlade {
 
         @SubscribeEvent
         public static void register(RegisterEvent event) {
-            event.register(ForgeRegistries.Keys.ITEMS, helper -> {
-
-                helper.register(new ResourceLocation(MODID, "slashblade_wood"),
-                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(60, 2F), 2, 0.0F,
-                                (new Item.Properties()))).setDestructable()
-                                        .setTexture(SlashBlade.prefix("model/wood.png")));
-
-                helper.register(new ResourceLocation(MODID, "slashblade_bamboo"),
-                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 3F), 3, 0.0F,
-                                (new Item.Properties()))).setDestructable()
-                                        .setTexture(SlashBlade.prefix("model/bamboo.png")));
-
-                helper.register(new ResourceLocation(MODID, "slashblade_silverbamboo"),
-                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(40, 3F), 3, 0.0F,
-                                (new Item.Properties()))).setTexture(SlashBlade.prefix("model/silverbamboo.png")));
-
-                helper.register(new ResourceLocation(MODID, "slashblade_white"),
-                        (ItemSlashBladeDetune) (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 4F), 4, 0.0F,
-                                (new Item.Properties()))).setTexture(SlashBlade.prefix("model/white.png")));
-
-                helper.register(new ResourceLocation(MODID, "slashblade"),
-                        new ItemSlashBlade(new ItemTierSlashBlade(40, 4F), 4, 0.0F, (new Item.Properties())));
-
-                helper.register(new ResourceLocation(MODID, "proudsoul"), new ItemProudSoul((new Item.Properties())) {
-
-                    @Override
-                    public int getEnchantmentValue(ItemStack stack) {
-                        return 50;
-                    }
-                    
-                });
-
-                helper.register(new ResourceLocation(MODID, "proudsoul_ingot"), new ItemProudSoul((new Item.Properties())) {
-
-                    @Override
-                    public int getEnchantmentValue(ItemStack stack) {
-                        return 100;
-                    }
-                });
-
-                helper.register(new ResourceLocation(MODID, "proudsoul_tiny"), new ItemProudSoul((new Item.Properties())) {
-
-                    @Override
-                    public int getEnchantmentValue(ItemStack stack) {
-                        return 10;
-                    }
-                });
-
-                helper.register(new ResourceLocation(MODID, "proudsoul_sphere"),
-                        new ItemProudSoul((new Item.Properties()).rarity(Rarity.UNCOMMON)) {
-
-                            @Override
-                            public int getEnchantmentValue(ItemStack stack) {
-                                return 150;
-                            }
-
-                            @Override
-                            public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flag)
-                            {
-                                if (stack.getTag() != null)
-                                {
-                                    CompoundTag tag = stack.getTag();
-                                    if (tag.contains("SpecialAttackType"))
-                                    {
-                                        ResourceLocation SA = new ResourceLocation(tag.getString("SpecialAttackType"));
-                                        if (SlashArtsRegistry.REGISTRY.get().containsKey(SA) && !SlashArtsRegistry.REGISTRY.get().getValue(SA).equals(SlashArtsRegistry.NONE.get()))
-                                        {
-                                            components.add(Component.translatable("slashblade.tooltip.slash_art", SlashArtsRegistry.REGISTRY.get().getValue(SA).getDescription()).withStyle(ChatFormatting.GRAY));
-                                        }
-                                    }
-                                }
-                                super.appendHoverText(stack, level, components, flag);
-                            }
-                        });
-
-                helper.register(new ResourceLocation(MODID, "proudsoul_crystal"),
-                        new ItemProudSoul((new Item.Properties()).rarity(Rarity.RARE)) {
-
-                            @Override
-                            public int getEnchantmentValue(ItemStack stack) {
-                                return 200;
-                            }
-                            
-                            @Override
-                            @OnlyIn(Dist.CLIENT)
-                            public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> components, TooltipFlag flag)
-                            {
-                                if (stack.getTag() != null)
-                                {
-                                    CompoundTag tag = stack.getTag();
-                                    if (tag.contains("SpecialEffectType"))
-                                    {
-                                    	Minecraft mcinstance = Minecraft.getInstance();
-                                		Player player = mcinstance.player;
-                                        ResourceLocation se = new ResourceLocation(tag.getString("SpecialEffectType"));
-                                        if (SpecialEffectsRegistry.REGISTRY.get().containsKey(se))
-                                        {
-                                        	components.add(Component.translatable("slashblade.tooltip.special_effect", SpecialEffect.getDescription(se),
-                                					Component.literal(String.valueOf(SpecialEffect.getRequestLevel(se)))
-                                							.withStyle(SpecialEffect.isEffective(se, player.experienceLevel) ? ChatFormatting.RED
-                                									: ChatFormatting.DARK_GRAY))
-                                					.withStyle(ChatFormatting.GRAY));
-                                        }
-                                    }
-                                }
-                                super.appendHoverText(stack, level, components, flag);
-                            }
-                        });
-
-                helper.register(new ResourceLocation(MODID, "proudsoul_trapezohedron"),
-                        new ItemProudSoul((new Item.Properties()).rarity(Rarity.EPIC)) {
-
-                            @Override
-                            public int getEnchantmentValue(ItemStack stack) {
-                                return TRAPEZOHEDRON_MAX_REFINE.get();
-                            }
-                        });
-
-                helper.register(new ResourceLocation(MODID, "bladestand_1"),
-                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                helper.register(new ResourceLocation(MODID, "bladestand_2"),
-                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                helper.register(new ResourceLocation(MODID, "bladestand_v"),
-                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                helper.register(new ResourceLocation(MODID, "bladestand_s"),
-                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
-                helper.register(new ResourceLocation(MODID, "bladestand_1w"),
-                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON), true));
-                helper.register(new ResourceLocation(MODID, "bladestand_2w"),
-                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON), true));
-            });
+//            event.register(ForgeRegistries.Keys.ITEMS, helper -> {
+//
+//                helper.register(new ResourceLocation(MODID, "slashblade_wood"),
+//                        (new ItemSlashBladeDetune(new ItemTierSlashBlade(60, 2F), 2, 0.0F,
+//                                (new Item.Properties()))).setDestructable()
+//                                .setTexture(SlashBlade.prefix("model/wood.png")));
+//
+//                helper.register(new ResourceLocation(MODID, "slashblade_bamboo"),
+//                        (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 3F), 3, 0.0F,
+//                                (new Item.Properties()))).setDestructable()
+//                                .setTexture(SlashBlade.prefix("model/bamboo.png")));
+//
+//                helper.register(new ResourceLocation(MODID, "slashblade_silverbamboo"),
+//                        (new ItemSlashBladeDetune(new ItemTierSlashBlade(40, 3F), 3, 0.0F,
+//                                (new Item.Properties()))).setTexture(SlashBlade.prefix("model/silverbamboo.png")));
+//
+//                helper.register(new ResourceLocation(MODID, "slashblade_white"),
+//                        (new ItemSlashBladeDetune(new ItemTierSlashBlade(70, 4F), 4, 0.0F,
+//                                (new Item.Properties()))).setTexture(SlashBlade.prefix("model/white.png")));
+//
+//                helper.register(new ResourceLocation(MODID, "slashblade"),
+//                        new ItemSlashBlade(new ItemTierSlashBlade(40, 4F), 4, 0.0F, (new Item.Properties())));
+//
+//                helper.register(new ResourceLocation(MODID, "proudsoul"), new ItemProudSoul((new Item.Properties())) {
+//
+//                    @Override
+//                    public int getEnchantmentValue(ItemStack stack) {
+//                        return 50;
+//                    }
+//
+//                });
+//
+//                helper.register(new ResourceLocation(MODID, "proudsoul_ingot"), new ItemProudSoul((new Item.Properties())) {
+//
+//                    @Override
+//                    public int getEnchantmentValue(ItemStack stack) {
+//                        return 100;
+//                    }
+//                });
+//
+//                helper.register(new ResourceLocation(MODID, "proudsoul_tiny"), new ItemProudSoul((new Item.Properties())) {
+//
+//                    @Override
+//                    public int getEnchantmentValue(ItemStack stack) {
+//                        return 10;
+//                    }
+//                });
+//
+//                helper.register(new ResourceLocation(MODID, "proudsoul_sphere"),
+//                        new ItemProudSoul((new Item.Properties()).rarity(Rarity.UNCOMMON)) {
+//
+//                            @Override
+//                            public int getEnchantmentValue(ItemStack stack) {
+//                                return 150;
+//                            }
+//
+//                            @Override
+//                            public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag flag) {
+//                                if (stack.getTag() != null) {
+//                                    CompoundTag tag = stack.getTag();
+//                                    if (tag.contains("SpecialAttackType")) {
+//                                        ResourceLocation SA = new ResourceLocation(tag.getString("SpecialAttackType"));
+//                                        if (SlashArtsRegistry.REGISTRY.get().containsKey(SA) && !Objects.equals(SlashArtsRegistry.REGISTRY.get().getValue(SA), SlashArtsRegistry.NONE.get())) {
+//                                            components.add(Component.translatable("slashblade.tooltip.slash_art", Objects.requireNonNull(SlashArtsRegistry.REGISTRY.get().getValue(SA)).getDescription()).withStyle(ChatFormatting.GRAY));
+//                                        }
+//                                    }
+//                                }
+//                                super.appendHoverText(stack, level, components, flag);
+//                            }
+//                        });
+//
+//                helper.register(new ResourceLocation(MODID, "proudsoul_crystal"),
+//                        new ItemProudSoul((new Item.Properties()).rarity(Rarity.RARE)) {
+//
+//                            @Override
+//                            public int getEnchantmentValue(ItemStack stack) {
+//                                return 200;
+//                            }
+//
+//                            @Override
+//                            @OnlyIn(Dist.CLIENT)
+//                            public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag flag) {
+//                                if (stack.getTag() != null) {
+//                                    CompoundTag tag = stack.getTag();
+//                                    if (tag.contains("SpecialEffectType")) {
+//                                        Minecraft mcinstance = Minecraft.getInstance();
+//                                        Player player = mcinstance.player;
+//                                        ResourceLocation se = new ResourceLocation(tag.getString("SpecialEffectType"));
+//                                        if (SpecialEffectsRegistry.REGISTRY.get().containsKey(se)) {
+//                                            if (player != null) {
+//                                                components.add(Component.translatable("slashblade.tooltip.special_effect", SpecialEffect.getDescription(se),
+//                                                                Component.literal(String.valueOf(SpecialEffect.getRequestLevel(se)))
+//                                                                        .withStyle(SpecialEffect.isEffective(se, player.experienceLevel) ? ChatFormatting.RED
+//                                                                                : ChatFormatting.DARK_GRAY))
+//                                                        .withStyle(ChatFormatting.GRAY));
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                                super.appendHoverText(stack, level, components, flag);
+//                            }
+//                        });
+//
+//                helper.register(new ResourceLocation(MODID, "proudsoul_trapezohedron"),
+//                        new ItemProudSoul((new Item.Properties()).rarity(Rarity.EPIC)) {
+//
+//                            @Override
+//                            public int getEnchantmentValue(ItemStack stack) {
+//                                return TRAPEZOHEDRON_MAX_REFINE.get();
+//                            }
+//                        });
+//
+//                helper.register(new ResourceLocation(MODID, "bladestand_1"),
+//                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
+//                helper.register(new ResourceLocation(MODID, "bladestand_2"),
+//                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
+//                helper.register(new ResourceLocation(MODID, "bladestand_v"),
+//                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
+//                helper.register(new ResourceLocation(MODID, "bladestand_s"),
+//                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON)));
+//                helper.register(new ResourceLocation(MODID, "bladestand_1w"),
+//                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON), true));
+//                helper.register(new ResourceLocation(MODID, "bladestand_2w"),
+//                        new BladeStandItem((new Item.Properties()).rarity(Rarity.COMMON), true));
+//            });
 
             event.register(ForgeRegistries.Keys.ENTITY_TYPES, helper -> {
                 {
@@ -400,9 +366,7 @@ public class SlashBlade {
 
             });
 
-            event.register(ForgeRegistries.Keys.STAT_TYPES, helper -> {
-                SWORD_SUMMONED = registerCustomStat("sword_summoned");
-            });
+            event.register(ForgeRegistries.Keys.STAT_TYPES, helper -> SWORD_SUMMONED = registerCustomStat("sword_summoned"));
 
         }
 
@@ -448,15 +412,16 @@ public class SlashBlade {
             return resourcelocation;
         }
 
-        /**
-         * /scoreboard objectives add stat minecraft.custom:slashblade.sword_summoned
-         * /scoreboard objectives setdisplay sidebar stat
+        /*
+          /scoreboard objectives add stat minecraft.custom:slashblade.sword_summoned
+          /scoreboard objectives setdisplay sidebar stat
          */
     }
 
     public static Registry<SlashBladeDefinition> getSlashBladeDefinitionRegistry(Level level) {
-        if (level.isClientSide())
+        if (level.isClientSide()) {
             return BladeModelManager.getClientSlashBladeRegistry();
+        }
         return level.registryAccess().registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }
 

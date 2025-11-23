@@ -62,7 +62,7 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
     @Override
     public void tick() {
         if (!itFired()) {
-            if (getVehicle() == null) {
+            if (getVehicle() == null && this.getOwner() != null) {
                 startRiding(this.getOwner(), true);
             }
         }
@@ -76,25 +76,26 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
             faceEntityStandby();
             Entity vehicle = getVehicle();
             Vec3 dir = this.getViewVector(0);
-            if (!(vehicle instanceof LivingEntity)) {
-                ((EntityBlisteringSwords) this).shoot(dir.x, dir.y, dir.z, 3.0f, 1.0f);
+            if (!(vehicle instanceof LivingEntity sender)) {
+                this.shoot(dir.x, dir.y, dir.z, 3.0f, 1.0f);
                 return;
             }
 
-            LivingEntity sender = (LivingEntity) getVehicle();
             this.stopRiding();
 
             this.tickCount = 0;
 
-            Level worldIn = sender.level();
+            Level worldIn;
+            worldIn = sender.level();
             Entity lockTarget = null;
             if (sender instanceof LivingEntity) {
-                lockTarget = ((LivingEntity) sender).getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
+                lockTarget = sender.getMainHandItem().getCapability(ItemSlashBlade.BLADESTATE)
                         .filter(state -> state.getTargetEntity(worldIn) != null)
                         .map(state -> state.getTargetEntity(worldIn)).orElse(null);
             }
 
-            Optional<Entity> foundTarget = Stream
+            Optional<Entity> foundTarget;
+            foundTarget = Stream
                     .of(Optional.ofNullable(lockTarget),
                             RayTraceHelper
                                     .rayTrace(sender.level(), sender, sender.getEyePosition(1.0f),
@@ -104,11 +105,13 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
                                         Entity target = er.getEntity();
 
                                         boolean isMatch = true;
-                                        if (target instanceof LivingEntity)
+                                        if (target instanceof LivingEntity) {
                                             isMatch = TargetSelector.test.test(sender, (LivingEntity) target);
+                                        }
 
-                                        if (target instanceof IShootable)
+                                        if (target instanceof IShootable) {
                                             isMatch = ((IShootable) target).getShooter() != sender;
+                                        }
 
                                         return isMatch;
                                     }).map(r -> ((EntityHitResult) r).getEntity()))
@@ -118,7 +121,8 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
                     .orElseGet(() -> {
                         Vec3 start = sender.getEyePosition(1.0f);
                         Vec3 end = start.add(sender.getLookAngle().scale(40));
-                        HitResult result = worldIn.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER,
+                        HitResult result;
+                        result = worldIn.clip(new ClipContext(start, end, ClipContext.Block.COLLIDER,
                                 ClipContext.Fluid.NONE, sender));
                         return result.getLocation();
                     });
@@ -126,7 +130,7 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
             Vec3 pos = this.getPosition(0.0f);
             dir = targetPos.subtract(pos).normalize();
 
-            ((EntityBlisteringSwords) this).shoot(dir.x, dir.y, dir.z, 3.0f, 1.0f);
+            this.shoot(dir.x, dir.y, dir.z, 3.0f, 1.0f);
             if (sender instanceof ServerPlayer) {
                 ((ServerPlayer) sender).playNotifySound(SoundEvents.ENDER_DRAGON_FLAP, SoundSource.PLAYERS, 1.0F, 1.0F);
             }
@@ -136,15 +140,15 @@ public class EntityBlisteringSwords extends EntityAbstractSummonedSword {
 
         // this.startRiding()
         this.setDeltaMovement(Vec3.ZERO);
-        if (canUpdate())
+        if (canUpdate()) {
             this.baseTick();
+        }
 
         faceEntityStandby();
         // this.getVehicle().positionRider(this);
 
         // lifetime check
-        if (!itFired() && getVehicle() instanceof LivingEntity) {
-            LivingEntity owner = (LivingEntity) getVehicle();
+        if (!itFired() && getVehicle() instanceof LivingEntity owner) {
             owner.getCapability(InputStateCapabilityProvider.INPUT_STATE).ifPresent(s -> {
                 if (!s.getCommands().contains(InputCommand.M_DOWN)) {
 

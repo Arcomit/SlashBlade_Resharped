@@ -1,23 +1,23 @@
 package mods.flammpfeil.slashblade.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import mods.flammpfeil.slashblade.client.renderer.util.MSAutoCloser;
 import mods.flammpfeil.slashblade.entity.BladeStandEntity;
-import mods.flammpfeil.slashblade.init.SBItems;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemFrameRenderer;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
-import com.mojang.math.Axis;
+import org.jetbrains.annotations.NotNull;
 
 public class BladeStandEntityRenderer extends ItemFrameRenderer<BladeStandEntity> {
     private final net.minecraft.client.renderer.entity.ItemRenderer itemRenderer;
@@ -29,13 +29,13 @@ public class BladeStandEntityRenderer extends ItemFrameRenderer<BladeStandEntity
     }
 
     @Override
-    public void render(BladeStandEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn,
-            MultiBufferSource bufferIn, int packedLightIn) {
+    public void render(@NotNull BladeStandEntity entity, float entityYaw, float partialTicks, @NotNull PoseStack matrixStackIn,
+                       @NotNull MultiBufferSource bufferIn, int packedLightIn) {
         doRender(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
     public void doRender(BladeStandEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn,
-            MultiBufferSource bufferIn, int packedLightIn) {
+                         MultiBufferSource bufferIn, int packedLightIn) {
 
         if (entity.currentTypeStack.isEmpty()) {
             if (entity.currentType == null || entity.currentType == Items.AIR) {
@@ -59,18 +59,18 @@ public class BladeStandEntityRenderer extends ItemFrameRenderer<BladeStandEntity
 
                 matrixStackIn.scale(2, 2, 2);
                 Item type = entity.currentType;
-                if (type == SBItems.bladestand_1) {
+                if (type == SlashBladeItems.BLADESTAND_1.get()) {
                     matrixStackIn.mulPose(Axis.XP.rotationDegrees(-90f));
-                } else if (type == SBItems.bladestand_2) {
+                } else if (type == SlashBladeItems.BLADESTAND_2.get()) {
                     matrixStackIn.mulPose(Axis.XP.rotationDegrees(-90f));
-                } else if (type == SBItems.bladestand_v) {
+                } else if (type == SlashBladeItems.BLADESTAND_V.get()) {
                     matrixStackIn.mulPose(Axis.XP.rotationDegrees(-90f));
-                } else if (type == SBItems.bladestand_s) {
+                } else if (type == SlashBladeItems.BLADESTAND_S.get()) {
                     matrixStackIn.mulPose(Axis.XP.rotationDegrees(-90f));
-                } else if (type == SBItems.bladestand_1w) {
+                } else if (type == SlashBladeItems.BLADESTAND_1_W.get()) {
                     matrixStackIn.mulPose(Axis.YP.rotationDegrees(180f));
                     matrixStackIn.translate(0, 0, -0.15f);
-                } else if (type == SBItems.bladestand_2w) {
+                } else if (type == SlashBladeItems.BLADESTAND_2_W.get()) {
                     matrixStackIn.mulPose(Axis.YP.rotationDegrees(180f));
                     matrixStackIn.translate(0, 0, -0.15f);
                 }
@@ -83,9 +83,8 @@ public class BladeStandEntityRenderer extends ItemFrameRenderer<BladeStandEntity
                 this.renderItem(entity, entity.currentTypeStack, matrixStackIn, bufferIn, packedLightIn);
                 matrixStackIn.popPose();
 
-                if (entity.currentType == SBItems.bladestand_1w || type == SBItems.bladestand_2w) {
+                if (entity.currentType == SlashBladeItems.BLADESTAND_1_W.get() || type == SlashBladeItems.BLADESTAND_2_W.get()) {
                     matrixStackIn.translate(0, 0, -0.19f);
-                } else if (entity.currentType == SBItems.bladestand_1) {
                 }
                 // blade render
                 matrixStackIn.mulPose(Axis.YP.rotationDegrees(-180f));
@@ -103,15 +102,15 @@ public class BladeStandEntityRenderer extends ItemFrameRenderer<BladeStandEntity
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(renderNameplateEvent);
         if (renderNameplateEvent.getResult() != net.minecraftforge.eventbus.api.Event.Result.DENY
                 && (renderNameplateEvent.getResult() == net.minecraftforge.eventbus.api.Event.Result.ALLOW
-                        || this.shouldShowName(entity))) {
+                || this.shouldShowName(entity))) {
             this.renderNameTag(entity, renderNameplateEvent.getContent(), matrixStackIn, bufferIn, packedLightIn);
         }
     }
 
     private void renderItem(BladeStandEntity entity, ItemStack itemstack, PoseStack matrixStackIn,
-            MultiBufferSource bufferIn, int packedLightIn) {
+                            MultiBufferSource bufferIn, int packedLightIn) {
         if (!itemstack.isEmpty()) {
-            BakedModel ibakedmodel = this.itemRenderer.getModel(itemstack, entity.level(), (LivingEntity) null, 0);
+            BakedModel ibakedmodel = this.itemRenderer.getModel(itemstack, entity.level(), null, 0);
             this.itemRenderer.render(itemstack, ItemDisplayContext.FIXED, false, matrixStackIn, bufferIn, packedLightIn,
                     OverlayTexture.NO_OVERLAY, ibakedmodel);
         }

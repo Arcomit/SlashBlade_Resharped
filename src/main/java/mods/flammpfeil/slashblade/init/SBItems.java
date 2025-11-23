@@ -1,46 +1,77 @@
 package mods.flammpfeil.slashblade.init;
 
-import mods.flammpfeil.slashblade.SlashBlade;
+import mods.flammpfeil.slashblade.registry.SlashBladeItems;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.registries.ObjectHolder;
+
+import org.jetbrains.annotations.NotNull;
 
 public class SBItems {
+    @NotNull
+    @Deprecated
+    public static Item proudsoul = SlashBladeItems.PROUDSOUL.get();
 
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul")
-    public static final Item proudsoul = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul_ingot")
-    public static final Item proudsoul_ingot = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul_tiny")
-    public static final Item proudsoul_tiny = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul_sphere")
-    public static final Item proudsoul_sphere = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul_crystal")
-    public static final Item proudsoul_crystal = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":proudsoul_trapezohedron")
-    public static final Item proudsoul_trapezohedron = null;
+    @NotNull
+    @Deprecated
+    public static Item proudsoul_ingot = SlashBladeItems.PROUDSOUL_INGOT.get();
 
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade_wood")
-    public static final Item slashblade_wood = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade_bamboo")
-    public static final Item slashblade_bamboo = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade_silverbamboo")
-    public static final Item slashblade_silverbamboo = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade_white")
-    public static final Item slashblade_white = null;
+    @NotNull
+    @Deprecated
+    public static Item proudsoul_tiny = SlashBladeItems.PROUDSOUL_TINY.get();
 
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":slashblade")
-    public static final Item slashblade = null;
+    @NotNull
+    @Deprecated
+    public static Item proudsoul_sphere = SlashBladeItems.PROUDSOUL_SPHERE.get();
 
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":bladestand_1")
-    public static final Item bladestand_1 = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":bladestand_2")
-    public static final Item bladestand_2 = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":bladestand_v")
-    public static final Item bladestand_v = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":bladestand_s")
-    public static final Item bladestand_s = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":bladestand_1w")
-    public static final Item bladestand_1w = null;
-    @ObjectHolder(registryName = "minecraft:item", value = SlashBlade.MODID + ":bladestand_2w")
-    public static final Item bladestand_2w = null;
+    @NotNull
+    @Deprecated
+    public static Item proudsoul_crystal = SlashBladeItems.PROUDSOUL_CRYSTAL.get();
+
+    @NotNull
+    @Deprecated
+    public static Item proudsoul_trapezohedron = SlashBladeItems.PROUDSOUL_TRAPEZOHEDRON.get();
+
+    @NotNull
+    @Deprecated
+    public static Item slashblade_wood = SlashBladeItems.SLASHBLADE_WOOD.get();
+
+    @NotNull
+    @Deprecated
+    public static Item slashblade_bamboo = SlashBladeItems.SLASHBLADE_BAMBOO.get();
+
+    @NotNull
+    @Deprecated
+    public static Item slashblade_silverbamboo = SlashBladeItems.SLASHBLADE_SILVERBAMBOO.get();
+
+    @NotNull
+    @Deprecated
+    public static Item slashblade_white = SlashBladeItems.SLASHBLADE_WHITE.get();
+
+    @NotNull
+    @Deprecated
+    public static Item slashblade = SlashBladeItems.SLASHBLADE.get();
+
+
+    @NotNull
+    @Deprecated
+    public static Item bladestand_1 = SlashBladeItems.BLADESTAND_1.get();
+
+    @NotNull
+    @Deprecated
+    public static Item bladestand_2 = SlashBladeItems.BLADESTAND_2.get();
+
+    @NotNull
+    @Deprecated
+    public static Item bladestand_v = SlashBladeItems.BLADESTAND_V.get();
+
+    @NotNull
+    @Deprecated
+    public static Item bladestand_s = SlashBladeItems.BLADESTAND_S.get();
+
+    @NotNull
+    @Deprecated
+    public static Item bladestand_1w = SlashBladeItems.BLADESTAND_1_W.get();
+
+    @NotNull
+    @Deprecated
+    public static Item bladestand_2w = SlashBladeItems.BLADESTAND_2_W.get();
 }

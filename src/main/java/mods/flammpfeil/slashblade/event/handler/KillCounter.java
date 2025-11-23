@@ -36,18 +36,21 @@ public class KillCounter {
     public void onLivingDeathEvent(LivingDeathEvent event) {
         Entity trueSource = event.getSource().getEntity();
 
-        if (!(trueSource instanceof LivingEntity))
+        if (!(trueSource instanceof LivingEntity)) {
             return;
+        }
 
         ItemStack stack = ((LivingEntity) trueSource).getMainHandItem();
-        if (stack.isEmpty())
+        if (stack.isEmpty()) {
             return;
-        if (!(stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent()))
+        }
+        if (!(stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent())) {
             return;
+        }
 
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
-        	var killCountEvent = new SlashBladeEvent.AddKillCountEvent(stack, state, 1);
-        	MinecraftForge.EVENT_BUS.post(killCountEvent);
+            var killCountEvent = new SlashBladeEvent.AddKillCountEvent(stack, state, 1);
+            MinecraftForge.EVENT_BUS.post(killCountEvent);
             state.setKillCount(state.getKillCount() + killCountEvent.getNewCount());
         });
     }
@@ -55,13 +58,16 @@ public class KillCounter {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onXPDropping(LivingExperienceDropEvent event) {
         Player player = event.getAttackingPlayer();
-        if (player == null)
+        if (player == null) {
             return;
+        }
         ItemStack stack = player.getMainHandItem();
-        if (stack.isEmpty())
+        if (stack.isEmpty()) {
             return;
-        if (!(stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent()))
+        }
+        if (!(stack.getCapability(ItemSlashBlade.BLADESTATE).isPresent())) {
             return;
+        }
 
         IConcentrationRank.ConcentrationRanks rankBonus = player
                 .getCapability(ConcentrationRankCapabilityProvider.RANK_POINT)
@@ -70,16 +76,16 @@ public class KillCounter {
         int souls = (int) Math.floor(event.getDroppedExperience() * (1.0F + (rankBonus.level * 0.1F)));
 
         stack.getCapability(ItemSlashBlade.BLADESTATE).ifPresent(state -> {
-        	var soulEvent = new SlashBladeEvent.AddProudSoulEvent(stack, state, Math.min(SlashBladeConfig.MAX_PROUD_SOUL_GOT.get(), souls));
-        	MinecraftForge.EVENT_BUS.post(soulEvent);
+            var soulEvent = new SlashBladeEvent.AddProudSoulEvent(stack, state, Math.min(SlashBladeConfig.MAX_PROUD_SOUL_GOT.get(), souls));
+            MinecraftForge.EVENT_BUS.post(soulEvent);
             int newCount = soulEvent.getNewCount();
-			state.setProudSoulCount(
+            state.setProudSoulCount(
                     state.getProudSoulCount() + newCount);
-			if(SwordType.from(stack).contains(SwordType.SOULEATER)) {
-				int damage = Math.max(1, newCount / 4);
-				stack.setDamageValue(Math.max(stack.getDamageValue() - damage, 0));
+            if (SwordType.from(stack).contains(SwordType.SOULEATER)) {
+                int damage = Math.max(1, newCount / 4);
+                stack.setDamageValue(Math.max(stack.getDamageValue() - damage, 0));
             }
         });
-        
+
     }
 }

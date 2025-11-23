@@ -6,12 +6,15 @@ import mods.flammpfeil.slashblade.registry.ComboStateRegistry;
 import mods.flammpfeil.slashblade.registry.SlashArtsRegistry;
 import mods.flammpfeil.slashblade.util.EnumSetConverter;
 import mods.flammpfeil.slashblade.util.NBTHelper;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.*;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -24,27 +27,27 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
     protected LazyOptional<ISlashBladeState> state;
 
     public SimpleBladeStateCapabilityProvider(ItemStack blade, ResourceLocation model, ResourceLocation texture, float attack,
-            int damage) {
-    	if(!blade.isEmpty()) {
-    		state = LazyOptional.of(() -> new SimpleSlashBladeState(blade, model, texture, attack, damage));
-    	}else {
-	    	state = LazyOptional.empty();
-    	}
-        
+                                              int damage) {
+        if (!blade.isEmpty()) {
+            state = LazyOptional.of(() -> new SimpleSlashBladeState(blade, model, texture, attack, damage));
+        } else {
+            state = LazyOptional.empty();
+        }
+
     }
 
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-    	return ItemSlashBlade.BLADESTATE.orEmpty(cap, state);
+        return ItemSlashBlade.BLADESTATE.orEmpty(cap, state);
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         state.ifPresent(instance -> {
-        	
-        	
+
+
             // action state
             tag.putLong("lastActionTime", instance.getLastActionTime());
             tag.putInt("TargetEntity", instance.getTargetEntityId());
@@ -84,7 +87,9 @@ public class SimpleBladeStateCapabilityProvider implements ICapabilityProvider, 
     public void deserializeNBT(CompoundTag tag) {
 
         state.ifPresent(instance -> {
-            if (tag == null) return;
+            if (tag == null) {
+                return;
+            }
             instance.setNonEmpty();
             // action state
             instance.setLastActionTime(tag.getLong("lastActionTime"));

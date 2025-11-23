@@ -3,6 +3,7 @@ package mods.flammpfeil.slashblade.client.renderer.model;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+import mods.flammpfeil.slashblade.SlashBlade;
 import mods.flammpfeil.slashblade.client.renderer.model.obj.WavefrontObject;
 import mods.flammpfeil.slashblade.init.DefaultResources;
 import mods.flammpfeil.slashblade.registry.slashblade.SlashBladeDefinition;
@@ -11,6 +12,9 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 import java.util.concurrent.Executors;
 
 /**
@@ -28,7 +32,7 @@ public class BladeModelManager {
     }
 
     public static Registry<SlashBladeDefinition> getClientSlashBladeRegistry() {
-        return Minecraft.getInstance().getConnection().registryAccess()
+        return Objects.requireNonNull(Minecraft.getInstance().getConnection()).registryAccess()
                 .registryOrThrow(SlashBladeDefinition.REGISTRY_KEY);
     }
 
@@ -40,9 +44,9 @@ public class BladeModelManager {
         defaultModel = new WavefrontObject(DefaultResources.resourceDefaultModel);
 
         cache = CacheBuilder.newBuilder()
-                .build(CacheLoader.asyncReloading(new CacheLoader<ResourceLocation, WavefrontObject>() {
+                .build(CacheLoader.asyncReloading(new CacheLoader<>() {
                     @Override
-                    public WavefrontObject load(ResourceLocation key) throws Exception {
+                    public @NotNull WavefrontObject load(@NotNull ResourceLocation key) {
                         try {
                             return new WavefrontObject(key);
                         } catch (Exception e) {
@@ -58,7 +62,7 @@ public class BladeModelManager {
             try {
                 return cache.get(loc);
             } catch (Exception e) {
-                e.printStackTrace();
+                SlashBlade.LOGGER.warn(e);
             }
         }
         return defaultModel;
