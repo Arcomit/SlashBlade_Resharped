@@ -189,6 +189,10 @@ public class BladeStandEntity extends ItemFrame implements IEntityAdditionalSpaw
     @Override
     public void tick() {
         super.tick();
+        ItemStack blade = this.getItem();
+        if (blade.isEmpty()) return;
+        ISlashBladeState state = blade.getCapability(ItemSlashBlade.BLADESTATE).orElseThrow(NullPointerException::new);
+        MinecraftForge.EVENT_BUS.post(new SlashBladeEvent.BladeStandTickEvent(blade, state, this));
     }
 
     @Override
